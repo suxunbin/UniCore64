@@ -1,0 +1,8 @@
+### General setup
+CONFIG_LOCALVERSION="-uc64"
+
+### Processor and System Type
+#	Processor Features
+CONFIG_ARCH_FPGA=y
+CONFIG_CPU_ICACHE_DISABLE=y
+CONFIG_CPU_DCACHE_DISABLE=y

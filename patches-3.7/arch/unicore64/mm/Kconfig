@@ -1,0 +1,24 @@
+comment "Processor Type"
+
+# Select CPU types depending on the architecture selected.  This selects
+# which CPUs we support in the kernel image, and the compiler instruction
+# optimiser behaviour.
+
+config CPU_UCV3
+	def_bool y
+
+comment "Processor Features"
+
+config CPU_ICACHE_DISABLE
+	bool "Disable I-Cache (I-bit)"
+	help
+	  Say Y here to disable the processor instruction cache.
+	  ONLY used when debugging or special circumstance.
+	  It unsure, say N.
+
+config CPU_DCACHE_DISABLE
+	bool "Disable D-Cache (D-bit)"
+	help
+	  Say Y here to disable the processor data cache.
+	  ONLY used when debugging or special circumstance.
+	  It unsure, say N.
