@@ -45,4 +45,13 @@ struct pt_regs {
 #define UC64_ASR		uc64_regs[32]
 #define UC64_O00		uc64_regs[33] /* Orig R00 */
 
+#ifdef __KERNEL__
+
+#define MODE_MASK		0x0000001f /* FIXME */
+#define USER_MODE		0x00000010
+
+#define user_mode(regs)		(((regs)->UC64_ASR & MODE_MASK) == USER_MODE)
+
+#endif /* __KERNEL__ */
+
 #endif /* __ASM_UNICORE64_PTRACE_H__ */

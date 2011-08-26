@@ -14,6 +14,9 @@ config UNICORE64
 config 64BIT
 	def_bool y
 
+config ARCH_DMA_ADDR_T_64BIT
+	def_bool y
+
 config RWSEM_GENERIC_SPINLOCK
 	def_bool y
 
@@ -76,3 +79,9 @@ source "drivers/Kconfig"
 source "fs/Kconfig"
 
 source "lib/Kconfig"
+
+menu "Kernel hacking"
+
+source "lib/Kconfig.debug"
+
+endmenu

@@ -10,6 +10,25 @@
 #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
 #define PAGE_MASK		(~(PAGE_SIZE-1))
 
+#define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
+#define copy_page(to, from)	memcpy((void *)(to), (void *)(from), PAGE_SIZE)
+
+#define clear_user_page(page, vaddr, pg)	clear_page(page)
+#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+
+#define __va(x)			((void *)((unsigned long)(x) + PAGE_OFFSET))
+#define __pa(x)			((unsigned long)(x) - PAGE_OFFSET)
+
+#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+#define page_to_phys(page)	((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
+
+#define pfn_valid(pfn)		((pfn) < max_mapnr)
+
+#define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
+
+#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | VM_MAYREAD | \
+					VM_MAYWRITE | VM_MAYEXEC)
+
 #define STRICT_MM_TYPECHECKS
 
 #ifdef STRICT_MM_TYPECHECKS
@@ -49,11 +68,6 @@ typedef u64 pgprot_t;
 #endif /* STRICT_MM_TYPECHECKS */
 
 typedef struct page *pgtable_t;
-
-#define __va(x)			((void *)((unsigned long)(x) + PAGE_OFFSET))
-#define __pa(x)			((unsigned long)(x) - PAGE_OFFSET)
-
-#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
 
 #include <asm-generic/getorder.h>
 #include <asm-generic/memory_model.h>

@@ -3,11 +3,12 @@
 
 #ifdef __KERNEL__
 
-#define THREAD_SIZE_ORDER	(1)
-#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
-
 #include <asm/types.h>
 #include <asm/segment.h>
+#include <asm/page.h>
+
+#define THREAD_SIZE_ORDER	(1)
+#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
 
 /*
  * low level task data that entry.S needs immediate access to.
@@ -36,6 +37,19 @@ struct thread_info {
 }
 
 #define init_thread_info	(init_thread_union.thread_info)
+
+static inline struct thread_info *current_thread_info(void)
+{
+	register u64 sp __asm__("sp");
+	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
+}
+
+/* thread information flags: */
+#define TIF_SIGPENDING		0 /* signal pending */
+#define TIF_NEED_RESCHED	1 /* rescheduling necessary */
+#define TIF_SYSCALL_TRACE	2 /* syscall trace active */
+#define TIF_RESTORE_SIGMASK	3 /* restore signal mask in do_signal */
+#define TIF_MEMDIE		4 /* is terminating due to OOM killer */
 
 #endif /* __KERNEL__ */
 #endif /* __ASM_UNICORE64_THREAD_INFO_H__ */

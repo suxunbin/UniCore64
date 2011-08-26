@@ -16,5 +16,7 @@
 #define UC64_L3_EXEC		(1 << 5)
 #define UC64_L3_WRITE		(1 << 6)
 #define UC64_L3_READ		(1 << 7)
+#define UC64_L3_CACHE		(1 << 8)
+#define UC64_L3_FILE		(1 << 3) /* FIXME */
 
 #endif /* __ASM_UNICORE64_PGTABLE_HWDEF_H__ */

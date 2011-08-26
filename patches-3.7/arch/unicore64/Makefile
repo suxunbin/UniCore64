@@ -36,20 +36,23 @@ KBUILD_CFLAGS		+= -msoft-float
 
 ASM_GENERIC_HEADERS	:= auxvec.h
 ASM_GENERIC_HEADERS	+= bug.h bugs.h
-ASM_GENERIC_HEADERS	+= cache.h cacheflush.h
+ASM_GENERIC_HEADERS	+= cache.h cacheflush.h checksum.h
 ASM_GENERIC_HEADERS	+= cmpxchg.h cmpxchg-local.h
 ASM_GENERIC_HEADERS	+= cputime.h current.h
 ASM_GENERIC_HEADERS	+= delay.h device.h div64.h dma.h
-ASM_GENERIC_HEADERS	+= errno.h fcntl.h ftrace.h hardirq.h hw_irq.h
+ASM_GENERIC_HEADERS	+= emergency-restart.h errno.h
+ASM_GENERIC_HEADERS	+= fcntl.h ftrace.h futex.h hardirq.h hw_irq.h
 ASM_GENERIC_HEADERS	+= io.h ioctl.h ioctls.h ipcbuf.h
 ASM_GENERIC_HEADERS	+= irq.h irq_regs.h irqflags.h
-ASM_GENERIC_HEADERS	+= kmap_types.h linkage.h local.h
-ASM_GENERIC_HEADERS	+= mman.h module.h msgbuf.h
+ASM_GENERIC_HEADERS	+= kdebug.h kmap_types.h linkage.h local.h
+ASM_GENERIC_HEADERS	+= mman.h module.h msgbuf.h mutex.h
 ASM_GENERIC_HEADERS	+= param.h percpu.h poll.h posix_types.h resource.h
-ASM_GENERIC_HEADERS	+= sections.h sembuf.h setup.h shmbuf.h shmparam.h
+ASM_GENERIC_HEADERS	+= scatterlist.h sections.h sembuf.h setup.h
+ASM_GENERIC_HEADERS	+= shmbuf.h shmparam.h
 ASM_GENERIC_HEADERS	+= siginfo.h signal.h socket.h sockios.h
 ASM_GENERIC_HEADERS	+= stat.h statfs.h string.h swab.h system.h
-ASM_GENERIC_HEADERS	+= termbits.h termios.h topology.h types.h uaccess.h
+ASM_GENERIC_HEADERS	+= termbits.h termios.h tlb.h topology.h types.h
+ASM_GENERIC_HEADERS	+= uaccess.h unaligned.h
 
 archprepare:
 	$(Q)$(foreach a, $(ASM_GENERIC_HEADERS),	\
