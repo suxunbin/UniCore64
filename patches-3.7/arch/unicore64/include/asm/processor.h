@@ -31,6 +31,8 @@ struct thread_struct {
 /* Create a new kernel thread */
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
+extern unsigned long get_wchan(struct task_struct *p);
+
 #endif /* __KERNEL__ */
 
 #endif /* __ASM_UNICORE64_PROCESSOR_H__ */
