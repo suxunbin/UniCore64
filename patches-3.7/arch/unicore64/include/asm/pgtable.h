@@ -29,6 +29,7 @@
 
 #define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
 #define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+#define PTRS_PER_PTE		(PAGE_SIZE / sizeof(pte_t))
 
 extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 
