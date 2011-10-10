@@ -34,4 +34,11 @@ typedef struct fpu_regs elf_fpregset_t;
 
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 
+/* This is the location that an ET_DYN program is loaded if exec'ed.  Typical
+   use of this is to invoke "./ld.so someprog" to test out a new version of
+   the loader.  We need to make sure that it is out of the way of the program
+   that it will "exec", and that there is sufficient room for the brk.  */
+
+#define ELF_ET_DYN_BASE	(2 * TASK_SIZE / 3)
+
 #endif /* __ASM_UNICORE64_ELF_H__ */
