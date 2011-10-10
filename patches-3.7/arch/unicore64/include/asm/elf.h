@@ -32,4 +32,6 @@ typedef struct fpu_regs elf_fpregset_t;
 	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
 	(x)->e_machine == EM_UNICORE64)
 
+#define SET_PERSONALITY(ex) set_personality(PER_LINUX)
+
 #endif /* __ASM_UNICORE64_ELF_H__ */
