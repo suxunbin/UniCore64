@@ -25,4 +25,11 @@ typedef struct fpu_regs elf_fpregset_t;
 #define ELF_HWCAP              0
 #endif
 
+/*
+* This is used to ensure we don't load something for the wrong architecture.
+*/
+#define elf_check_arch(x)  \
+	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
+	(x)->e_machine == EM_UNICORE64)
+
 #endif /* __ASM_UNICORE64_ELF_H__ */
