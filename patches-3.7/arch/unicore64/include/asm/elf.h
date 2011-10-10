@@ -15,6 +15,16 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 #define ELF_PLATFORM		(NULL)
 #define ELF_EXEC_PAGESIZE	PAGE_SIZE
 
+#ifndef __ASSEMBLY__
+
+#define FP_REGS_NUMBER		33
+
+struct fpu_regs {
+	unsigned int regs[FP_REGS_NUMBER];
+} __attribute__((aligned(8)));
+
+#endif
+
 typedef struct fpu_regs elf_fpregset_t;
 
 #if defined(__KERNEL__) && !defined(__ASSEMBLY__)
