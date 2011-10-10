@@ -65,3 +65,4 @@ generic-y += uaccess.h
 generic-y += unaligned.h
 generic-y += user.h
 generic-y += pci.h
+generic-y += vga.h
