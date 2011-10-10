@@ -15,4 +15,6 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 #define ELF_PLATFORM		(NULL)
 #define ELF_EXEC_PAGESIZE	PAGE_SIZE
 
+typedef struct fpu_regs elf_fpregset_t;
+
 #endif /* __ASM_UNICORE64_ELF_H__ */
