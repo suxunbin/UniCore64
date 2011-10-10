@@ -33,6 +33,14 @@ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
 extern unsigned long get_wchan(struct task_struct *p);
 
+/* Return some info about the user process TASK. */
+#define KSTK_PTREGS_GAP  8 /* FIXME */
+#define task_pt_regs(p)	((struct pt_regs *) \
+		(task_stack_page(p) + THREAD_SIZE - KSTK_PTREGS_GAP) - 1)
+/* Aliases for pc and sp (used in fs/proc/array.c) */
+#define KSTK_EIP(tsk)  (task_pt_regs(tsk)->UC64_R31)
+#define KSTK_ESP(tsk)  (task_pt_regs(tsk)->UC64_R29)
+
 #endif /* __KERNEL__ */
 
 #endif /* __ASM_UNICORE64_PROCESSOR_H__ */
