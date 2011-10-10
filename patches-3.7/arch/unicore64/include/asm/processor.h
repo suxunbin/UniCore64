@@ -43,4 +43,17 @@ extern unsigned long get_wchan(struct task_struct *p);
 
 #endif /* __KERNEL__ */
 
+#define start_thread(regs, pc, sp)					\
+({									\
+	unsigned long *stack = (unsigned long *)sp;			\
+	set_fs(USER_DS);						\
+	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
+	regs->UC64_ASR = USER_MODE;					\
+	regs->UC64_R31 = pc & ~1;	/* pc */                        \
+	regs->UC64_R29 = sp;		/* sp */                        \
+	regs->UC64_R02 = stack[2];	/* r2 (envp) */                 \
+	regs->UC64_R01 = stack[1];	/* r1 (argv) */                 \
+	regs->UC64_R00 = stack[0];	/* r0 (argc) */                 \
+})
+
 #endif /* __ASM_UNICORE64_PROCESSOR_H__ */
