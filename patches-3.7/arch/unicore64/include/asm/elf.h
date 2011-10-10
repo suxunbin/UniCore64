@@ -17,4 +17,12 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 
 typedef struct fpu_regs elf_fpregset_t;
 
+#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
+/*
+* This yields a mask that user programs can use to figure out what
+* instruction set this cpu supports.
+*/
+#define ELF_HWCAP              0
+#endif
+
 #endif /* __ASM_UNICORE64_ELF_H__ */
