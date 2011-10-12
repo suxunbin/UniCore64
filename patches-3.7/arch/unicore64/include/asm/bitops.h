@@ -8,7 +8,7 @@
  *
  * Undefined if no set bit exists, so code should check against 0 first.
  */
-static __always_inline unsigned long __fls(unsigned long word)
+static inline unsigned long __fls(unsigned long word)
 {
 	/* FIXME: NOT implemented */
 	return 0;
@@ -21,7 +21,7 @@ static __always_inline unsigned long __fls(unsigned long word)
  *
  * Undefined if no bit exists, so code should check against 0 first.
  */
-static __always_inline unsigned long __ffs(unsigned long word)
+static inline unsigned long __ffs(unsigned long word)
 {
 	/* FIXME: NOT implemented */
 	return 0;
