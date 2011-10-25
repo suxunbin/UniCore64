@@ -91,3 +91,14 @@ void set_pte(pte_t *ptep, pte_t pte)
 	/* FIXME */
 	BUG();
 }
+
+/**
+ * pud_populate() - Allocate and initialize the kernel pmds
+ * @mm:
+ * pmd:
+ */
+void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
+{
+	/* FIXME */
+	BUG();
+}
