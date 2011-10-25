@@ -1,1 +1,1 @@
-obj-y				:= mmu.o
+obj-y				:= mmu.o pgtable.o
