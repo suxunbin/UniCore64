@@ -19,7 +19,7 @@ endif
 # Provide the path to use for "make defconfig".
 KBUILD_DEFCONFIG	:= $(ARCH)_defconfig
 
-LDFLAGS_vmlinux		:= -p --no-undefined -X
+LDFLAGS_vmlinux		:= --no-undefined -X
 
 OBJCOPYFLAGS		:= -O binary -R .note -R .note.gnu.build-id -R .comment -S
 
