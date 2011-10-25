@@ -30,7 +30,7 @@ KBUILD_CFLAGS		+= -msoft-float
 #head-y			+= arch/unicore64/kernel/init_task.o
 
 core-y			+= arch/unicore64/kernel/
-#core-y			+= arch/unicore64/mm/
+core-y			+= arch/unicore64/mm/
 
 #libs-y			+= arch/unicore64/lib/
 
