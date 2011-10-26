@@ -1,5 +1,6 @@
 config UNICORE64
 	def_bool y
+	select HAVE_GENERIC_HARDIRQS
 	select HAVE_KERNEL_GZIP
 	select HAVE_KERNEL_BZIP2
 	select HAVE_KERNEL_LZO
