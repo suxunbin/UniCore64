@@ -1,1 +1,1 @@
-obj-y				:= mmu.o pgtable.o
+obj-y				:= mmu.o pgtable.o ioremap.o
