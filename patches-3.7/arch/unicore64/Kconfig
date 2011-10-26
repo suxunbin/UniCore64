@@ -20,6 +20,9 @@ config ARCH_DMA_ADDR_T_64BIT
 config RWSEM_GENERIC_SPINLOCK
 	def_bool y
 
+config GENERIC_HWEIGHT
+	def_bool y
+
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
 
