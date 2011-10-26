@@ -1,2 +1,3 @@
 obj-y			:= tlb.o
-extra-y			:= vmlinux.lds
+head-y			:= head.o
+extra-y			:= $(head-y) vmlinux.lds
