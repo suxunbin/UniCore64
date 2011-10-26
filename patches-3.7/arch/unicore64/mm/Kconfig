@@ -22,3 +22,9 @@ config CPU_DCACHE_DISABLE
 	  Say Y here to disable the processor data cache.
 	  ONLY used when debugging or special circumstance.
 	  It unsure, say N.
+
+config SWIOTLB
+	def_bool y
+
+config NEED_SG_DMA_LENGTH
+	def_bool SWIOTLB
