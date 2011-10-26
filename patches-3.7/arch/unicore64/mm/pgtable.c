@@ -1,4 +1,6 @@
+#include <linux/kernel.h>
 #include <linux/mm.h>
+#include <asm/pgtable.h>
 
 /**
  * pgd_alloc() - Allocates a new Page Global Directory
@@ -98,6 +100,52 @@ void set_pte(pte_t *ptep, pte_t pte)
  * pmd:
  */
 void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
+{
+	/* FIXME */
+	BUG();
+}
+
+/**
+ * pmd_populate() -
+ * @mm:
+ * @pmd:
+ * @page:
+ */
+void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page)
+{
+	/* FIXME */
+	BUG();
+}
+
+/**
+ * pmd_populate_kernel() -
+ * @mm:
+ * @pmd:
+ * @ptep:
+ */
+void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *ptep)
+{
+	/* FIXME */
+	BUG();
+}
+
+/**
+ * pmd_alloc_one() -
+ * @mm:
+ * @addr:
+ */
+pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+{
+	/* FIXME */
+	BUG();
+}
+
+/**
+ * pmd_free() -
+ * @mm:
+ * @pmdp:
+ */
+void pmd_free(struct mm_struct *mm, pmd_t *pmdp)
 {
 	/* FIXME */
 	BUG();
