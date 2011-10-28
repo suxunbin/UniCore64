@@ -1,6 +1,44 @@
 #include <linux/kernel.h>
 
 /**
+ * kernel_thread() - Create a kernel thread
+ * @fn:
+ * @arg:
+ * @flags:
+ */
+int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
+{
+	/* FIXME */
+	BUG();
+	return 0;
+}
+
+/**
+ * copy_thread() - Copy a thread
+ * @clone_flags:
+ * @stack_start:
+ * @stk_sz:
+ * @p:
+ * @regs:
+ */
+int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+	    unsigned long stk_sz, struct task_struct *p, struct pt_regs *regs)
+{
+	/* FIXME */
+	BUG();
+	return 0;
+}
+
+/**
+ * exit_thread() - Free current thread data structures etc..
+ */
+void exit_thread(void)
+{
+	/* FIXME */
+	BUG();
+}
+
+/**
  * machine_restart() - Reboot the machine
  * @cmd:
  */
