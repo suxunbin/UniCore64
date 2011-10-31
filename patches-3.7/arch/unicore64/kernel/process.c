@@ -70,3 +70,14 @@ void machine_power_off(void)
  * Function pointers to optional machine specific functions
  */
 void (*pm_power_off)(void) = NULL;
+
+/**
+ * get_wchan() -
+ * @p:
+ */
+unsigned long get_wchan(struct task_struct *p)
+{
+	/* FIXME */
+	BUG();
+	return 0;
+}
