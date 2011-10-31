@@ -1,4 +1,5 @@
 #include <linux/kernel.h>
+#include <linux/elfcore.h>
 
 /**
  * kernel_thread() - Create a kernel thread
@@ -94,4 +95,16 @@ void cpu_idle(void)
 {
 	/* FIXME */
 	BUG();
+}
+
+/**
+ * dump_fpu() -
+ * @regs:
+ * @fp:
+ */
+int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
+{
+	/* FIXME: fill in the fpe structure for a core dump... */
+	BUG();
+	return 0;
 }
