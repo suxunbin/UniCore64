@@ -108,3 +108,13 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
 	BUG();
 	return 0;
 }
+
+/**
+ * show_regs() -
+ * @regs:
+ */
+void show_regs(struct pt_regs *regs)
+{
+	/* FIXME */
+	BUG();
+}
