@@ -81,3 +81,17 @@ unsigned long get_wchan(struct task_struct *p)
 	BUG();
 	return 0;
 }
+
+/**
+ * cpu_idle() - The idle thread
+ *
+ * The idle thread. There's no useful work to be
+ * done, so just try to conserve power and have a
+ * low exit latency (ie sit in a loop waiting for
+ * somebody to say that they'd like to reschedule)
+ */
+void cpu_idle(void)
+{
+	/* FIXME */
+	BUG();
+}
