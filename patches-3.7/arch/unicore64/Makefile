@@ -32,7 +32,7 @@ KBUILD_CFLAGS		+= -msoft-float
 core-y			+= arch/unicore64/kernel/
 core-y			+= arch/unicore64/mm/
 
-#libs-y			+= arch/unicore64/lib/
+libs-y			+= arch/unicore64/lib/
 
 all:	vmlinux
 
