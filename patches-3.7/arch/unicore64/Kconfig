@@ -15,6 +15,7 @@ config UNICORE64
 
 config 64BIT
 	def_bool y
+	select GENERIC_ATOMIC64
 
 config ARCH_DMA_ADDR_T_64BIT
 	def_bool y
