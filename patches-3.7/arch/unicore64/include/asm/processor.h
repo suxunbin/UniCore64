@@ -16,7 +16,7 @@
 #define current_text_addr()	({ __label__ _l; _l: &&_l; })
 
 struct thread_struct {
-	u64 pc;
+	unsigned long pc;
 };
 
 #define INIT_THREAD		{ }
