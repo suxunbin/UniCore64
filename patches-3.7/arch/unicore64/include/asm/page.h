@@ -10,6 +10,8 @@
 #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
 #define PAGE_MASK		(~(PAGE_SIZE-1))
 
+#ifndef __ASSEMBLY__
+
 #define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
 #define copy_page(to, from)	memcpy((void *)(to), (void *)(from), PAGE_SIZE)
 
@@ -68,6 +70,8 @@ typedef unsigned long pgprot_t;
 #endif /* STRICT_MM_TYPECHECKS */
 
 typedef struct page *pgtable_t;
+
+#endif /* !__ASSEMBLY__ */
 
 #include <asm-generic/getorder.h>
 #include <asm-generic/memory_model.h>

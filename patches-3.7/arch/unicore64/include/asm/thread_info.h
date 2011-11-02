@@ -4,11 +4,15 @@
 #ifdef __KERNEL__
 
 #include <asm/types.h>
-#include <asm/segment.h>
 #include <asm/page.h>
 
 #define THREAD_SIZE_ORDER	(1)
 #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+
+
+#ifndef __ASSEMBLY__
+
+#include <asm/segment.h>
 
 /*
  * low level task data that entry.S needs immediate access to.
@@ -43,6 +47,8 @@ static inline struct thread_info *current_thread_info(void)
 	register u64 sp __asm__("sp");
 	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
 }
+
+#endif /* !__ASSEMBLY__ */
 
 /* thread information flags: */
 #define TIF_SIGPENDING		0 /* signal pending */
