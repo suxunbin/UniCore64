@@ -33,10 +33,10 @@
 
 #ifdef STRICT_MM_TYPECHECKS
 /* These are used to make use of C type-checking.. */
-typedef struct { u64 pte; } pte_t;
-typedef struct { u64 pmd; } pmd_t;
-typedef struct { u64 pgd; } pgd_t;
-typedef struct { u64 pgprot; } pgprot_t;
+typedef struct { unsigned long pte; } pte_t;
+typedef struct { unsigned long pmd; } pmd_t;
+typedef struct { unsigned long pgd; } pgd_t;
+typedef struct { unsigned long pgprot; } pgprot_t;
 
 #define pte_val(x)	((x).pte)
 #define pmd_val(x)	((x).pmd)
@@ -50,10 +50,10 @@ typedef struct { u64 pgprot; } pgprot_t;
 
 #else /* STRICT_MM_TYPECHECKS */
 /* .. while these make it easier on the compiler */
-typedef u64 pte_t;
-typedef u64 pmd_t;
-typedef u64 pgd_t;
-typedef u64 pgprot_t;
+typedef unsigned long pte_t;
+typedef unsigned long pmd_t;
+typedef unsigned long pgd_t;
+typedef unsigned long pgprot_t;
 
 #define pte_val(x)	(x)
 #define pmd_val(x)	(x)
