@@ -41,7 +41,12 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 #define pmd_offset(pudp, addr)	((pmd_t *)pud_val(*(pudp)) + pmd_index(addr))
 
 #define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
-#define pte_offset_kernel(pmdp, addr)	({BUG(); 0; })
+static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
+{
+	/* FIXME */
+	BUG();
+	return 0;
+}
 #define pte_offset_map(dir, addr)	pte_offset_kernel((dir), (addr))
 #define pte_unmap(pte)			do { } while (0)
 
