@@ -4,7 +4,7 @@
 extern pgd_t *pgd_alloc(struct mm_struct *);
 extern void pgd_free(struct mm_struct *, pgd_t *);
 
-extern pgtable_t *pte_alloc_one(struct mm_struct *, unsigned long);
+extern pgtable_t pte_alloc_one(struct mm_struct *, unsigned long);
 extern pte_t *pte_alloc_one_kernel(struct mm_struct *, unsigned long);
 
 extern void pte_free(struct mm_struct *, pgtable_t);
