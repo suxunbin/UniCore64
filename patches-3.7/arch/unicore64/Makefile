@@ -26,7 +26,7 @@ OBJCOPYFLAGS		:= -O binary -R .note -R .note.gnu.build-id -R .comment -S
 # Never use hard float in kernel
 KBUILD_CFLAGS		+= -msoft-float
 
-#head-y			:= arch/unicore64/kernel/head.o
+head-y			:= arch/unicore64/kernel/head.o
 #head-y			+= arch/unicore64/kernel/init_task.o
 
 core-y			+= arch/unicore64/kernel/
