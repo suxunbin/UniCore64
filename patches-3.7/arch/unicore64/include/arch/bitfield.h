@@ -12,9 +12,9 @@
 #define UData(Data)	(Data)
 #endif
 
-#define FIELD(val, vmask, vshift)		\\
+#define FIELD(val, vmask, vshift)		\
 		(((val) & ((UData(1) << (vmask)) - 1)) << (vshift))
-#define FMASK(vmask, vshift)			\\
+#define FMASK(vmask, vshift)			\
 		(((UData(1) << (vmask)) - 1) << (vshift))
 
 #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
