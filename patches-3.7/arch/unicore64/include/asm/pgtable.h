@@ -137,7 +137,7 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
 
 #define pte_file(pte)			(pte_val(pte) & UC64_L3_FILE)
 #define pte_to_pgoff(x)			({BUG(); 0; })
-#define pgoff_to_pte(x)			__pte({BUG(); 0;})
+#define pgoff_to_pte(x)			__pte({BUG(); 0; })
 
 #define PTE_FILE_MAX_BITS		36 /* FIXME */
 
