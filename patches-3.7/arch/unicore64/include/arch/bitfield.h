@@ -13,4 +13,10 @@
 #define FMASK(vmask, vshift)			\
 		(((_AC(1, UL) << (vmask)) - 1) << (vshift))
 
+/*
+ * To define 64-bit addresses:
+ *   HEX64(1f, ffffffff) means 0x1fffffffff
+ */
+#define HEX64(hi, lo)		_AC(0x ## hi ## lo, UL)
+
 #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
