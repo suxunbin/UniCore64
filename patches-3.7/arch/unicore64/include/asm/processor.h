@@ -46,7 +46,6 @@ extern unsigned long get_wchan(struct task_struct *p);
 #define start_thread(regs, pc, sp)					\
 ({									\
 	unsigned long *stack = (unsigned long *)sp;			\
-	set_fs(USER_DS);						\
 	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
 	regs->UC64_ASR = ASR_MODE_USER;					\
 	regs->UC64_R31 = pc & ~1;	/* pc */                        \
