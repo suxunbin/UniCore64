@@ -48,7 +48,7 @@ extern unsigned long get_wchan(struct task_struct *p);
 	unsigned long *stack = (unsigned long *)sp;			\
 	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
 	regs->UC64_ASR = ASR_MODE_USER;					\
-	regs->UC64_R31 = pc & ~1;	/* pc */                        \
+	regs->UC64_R31 = pc;		/* pc */                        \
 	regs->UC64_R29 = sp;		/* sp */                        \
 	regs->UC64_R02 = stack[2];	/* r2 (envp) */                 \
 	regs->UC64_R01 = stack[1];	/* r1 (argv) */                 \
