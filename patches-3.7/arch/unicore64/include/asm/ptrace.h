@@ -47,10 +47,10 @@ struct pt_regs {
 
 #ifdef __KERNEL__
 
-#define MODE_MASK		0x0000001f /* FIXME */
-#define USER_MODE		0x00000010
+#include <arch/hwdef-cpu.h>
 
-#define user_mode(regs)		(((regs)->UC64_ASR & MODE_MASK) == USER_MODE)
+#define user_mode(regs)			\
+	(((regs)->UC64_ASR & ASR_MODE_MASK) == ASR_MODE_USER)
 
 #endif /* __KERNEL__ */
 
