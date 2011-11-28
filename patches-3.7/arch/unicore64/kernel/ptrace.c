@@ -7,6 +7,7 @@
  */
 void ptrace_disable(struct task_struct *child)
 {
+	BUG();
 }
 
 /**
@@ -19,5 +20,6 @@ void ptrace_disable(struct task_struct *child)
 long arch_ptrace(struct task_struct *child, long request,
 		 unsigned long addr, unsigned long data)
 {
+	BUG();
 	return 0;
 }
