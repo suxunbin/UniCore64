@@ -4,8 +4,7 @@
 #include <asm/page.h>
 #include <asm/cache.h>
 
-OUTPUT_ARCH(i386:x86-64)
-/* OUTPUT_ARCH(unicore64) */
+OUTPUT_ARCH(unicore64)
 ENTRY(stext)
 
 jiffies = jiffies_64;
