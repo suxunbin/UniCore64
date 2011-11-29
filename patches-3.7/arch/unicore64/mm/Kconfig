@@ -15,6 +15,7 @@ config CPU_ICACHE_DISABLE
 	  Say Y here to disable the processor instruction cache.
 	  ONLY used when debugging or special circumstance.
 	  It unsure, say N.
+	  Please see web page at <http://www.pkunity.com/>
 
 config CPU_DCACHE_DISABLE
 	bool "Disable D-Cache (D-bit)"
@@ -22,6 +23,7 @@ config CPU_DCACHE_DISABLE
 	  Say Y here to disable the processor data cache.
 	  ONLY used when debugging or special circumstance.
 	  It unsure, say N.
+	  Please see web page at <http://www.pkunity.com/>
 
 config SWIOTLB
 	def_bool y
