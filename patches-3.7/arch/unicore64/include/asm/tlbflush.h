@@ -8,7 +8,8 @@
 
 extern void flush_tlb_mm(struct mm_struct *);
 extern void flush_tlb_page(struct vm_area_struct *, unsigned long);
-extern void flush_tlb_range(struct vm_area_struct *, unsigned long, unsigned long);
+extern void flush_tlb_range(struct vm_area_struct *, unsigned long,	\
+		unsigned long);
 
 extern void flush_tlb_kernel_range(unsigned long, unsigned long);
 
