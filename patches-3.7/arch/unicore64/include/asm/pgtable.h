@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_PGTABLE_H__
-#define __ASM_UNICORE64_PGTABLE_H__
+#ifndef __UNICORE64_ASM_PGTABLE_H__
+#define __UNICORE64_ASM_PGTABLE_H__
 
 #include <asm-generic/pgtable-nopud.h>
 #include <arch/hwdef-pgtable.h>
@@ -144,4 +144,4 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
 
 #include <asm-generic/pgtable.h>
 
-#endif /* __ASM_UNICORE64_PGTABLE_H__ */
+#endif /* __UNICORE64_ASM_PGTABLE_H__ */

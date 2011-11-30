@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_ELF_H__
-#define __ASM_UNICORE64_ELF_H__
+#ifndef __UNICORE64_ASM_ELF_H__
+#define __UNICORE64_ASM_ELF_H__
 
 #include <asm/ptrace.h>
 
@@ -51,4 +51,4 @@ typedef struct fpu_regs elf_fpregset_t;
 
 #define ELF_ET_DYN_BASE	(2 * TASK_SIZE / 3)
 
-#endif /* __ASM_UNICORE64_ELF_H__ */
+#endif /* __UNICORE64_ASM_ELF_H__ */

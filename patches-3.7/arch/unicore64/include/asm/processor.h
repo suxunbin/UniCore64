@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_PROCESSOR_H__
-#define __ASM_UNICORE64_PROCESSOR_H__
+#ifndef __UNICORE64_ASM_PROCESSOR_H__
+#define __UNICORE64_ASM_PROCESSOR_H__
 
 #ifdef __KERNEL__
 
@@ -55,4 +55,4 @@ extern unsigned long get_wchan(struct task_struct *p);
 	regs->UC64_R00 = stack[0];	/* r0 (argc) */                 \
 })
 
-#endif /* __ASM_UNICORE64_PROCESSOR_H__ */
+#endif /* __UNICORE64_ASM_PROCESSOR_H__ */

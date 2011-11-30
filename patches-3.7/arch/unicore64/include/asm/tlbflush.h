@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_TLBFLUSH_H__
-#define __ASM_UNICORE64_TLBFLUSH_H__
+#ifndef __UNICORE64_ASM_TLBFLUSH_H__
+#define __UNICORE64_ASM_TLBFLUSH_H__
 
 /* following macros used for asm-generic/tlb.h */
 #define tlb_start_vma(tlb, vma)				do { } while (0)
@@ -17,4 +17,4 @@ extern void update_mmu_cache(struct vm_area_struct *, unsigned long, pte_t *);
 
 #define tlb_flush(tlb)		flush_tlb_mm((tlb)->mm)
 
-#endif /* __ASM_UNICORE64_TLBFLUSH_H__ */
+#endif /* __UNICORE64_ASM_TLBFLUSH_H__ */

@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_PAGE_H__
-#define __ASM_UNICORE64_PAGE_H__
+#ifndef __UNICORE64_ASM_PAGE_H__
+#define __UNICORE64_ASM_PAGE_H__
 
 #include <arch/hwdef-memory.h>
 
@@ -77,4 +77,4 @@ typedef struct page *pgtable_t;
 #include <asm-generic/getorder.h>
 #include <asm-generic/memory_model.h>
 
-#endif /* __ASM_UNICORE64_PAGE_H__ */
+#endif /* __UNICORE64_ASM_PAGE_H__ */

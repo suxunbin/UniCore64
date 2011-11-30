@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_THREAD_INFO_H__
-#define __ASM_UNICORE64_THREAD_INFO_H__
+#ifndef __UNICORE64_ASM_THREAD_INFO_H__
+#define __UNICORE64_ASM_THREAD_INFO_H__
 
 #ifdef __KERNEL__
 
@@ -58,4 +58,4 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_MEMDIE		4 /* is terminating due to OOM killer */
 
 #endif /* __KERNEL__ */
-#endif /* __ASM_UNICORE64_THREAD_INFO_H__ */
+#endif /* __UNICORE64_ASM_THREAD_INFO_H__ */

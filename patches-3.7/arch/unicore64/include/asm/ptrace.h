@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_PTRACE_H__
-#define __ASM_UNICORE64_PTRACE_H__
+#ifndef __UNICORE64_ASM_PTRACE_H__
+#define __UNICORE64_ASM_PTRACE_H__
 
 /*
  * This struct defines the way the registers are stored on the
@@ -54,4 +54,4 @@ struct pt_regs {
 
 #endif /* __KERNEL__ */
 
-#endif /* __ASM_UNICORE64_PTRACE_H__ */
+#endif /* __UNICORE64_ASM_PTRACE_H__ */

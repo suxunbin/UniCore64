@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_DMA_MAPPING_H__
-#define __ASM_UNICORE64_DMA_MAPPING_H__
+#ifndef __UNICORE64_ASM_DMA_MAPPING_H__
+#define __UNICORE64_ASM_DMA_MAPPING_H__
 
 extern struct dma_map_ops swiotlb_dma_map_ops;
 
@@ -24,4 +24,4 @@ extern void dma_mark_clean(void *addr, size_t size);
 
 #include <asm-generic/dma-mapping-common.h>
 
-#endif /* __ASM_UNICORE64_DMA_MAPPING_H__ */
+#endif /* __UNICORE64_ASM_DMA_MAPPING_H__ */

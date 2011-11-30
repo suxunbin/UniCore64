@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_BITOPS_H__
-#define __ASM_UNICORE64_BITOPS_H__
+#ifndef __UNICORE64_ASM_BITOPS_H__
+#define __UNICORE64_ASM_BITOPS_H__
 
 #define _ASM_GENERIC_BITOPS___FLS_H_
 /*
@@ -29,4 +29,4 @@ static inline unsigned long __ffs(unsigned long word)
 
 #include <asm-generic/bitops.h>
 
-#endif /* __ASM_UNICORE64_BITOPS_H__ */
+#endif /* __UNICORE64_ASM_BITOPS_H__ */

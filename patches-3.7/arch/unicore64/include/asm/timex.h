@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_TIMEX_H__
-#define __ASM_UNICORE64_TIMEX_H__
+#ifndef __UNICORE64_ASM_TIMEX_H__
+#define __UNICORE64_ASM_TIMEX_H__
 
 #ifdef CONFIG_ARCH_FPGA
 /* in FPGA, OST clock is 32K */
@@ -8,4 +8,4 @@
 
 #include <asm-generic/timex.h>
 
-#endif /* __ASM_UNICORE64_TIMEX_H__ */
+#endif /* __UNICORE64_ASM_TIMEX_H__ */

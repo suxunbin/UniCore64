@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_IRQFLAGS_H__
-#define __ASM_UNICORE64_IRQFLAGS_H__
+#ifndef __UNICORE64_ASM_IRQFLAGS_H__
+#define __UNICORE64_ASM_IRQFLAGS_H__
 
 #include <arch/hwdef-cpu.h>
 
@@ -37,4 +37,4 @@ static inline void arch_local_irq_restore(unsigned long flags)
 
 #include <asm-generic/irqflags.h>
 
-#endif /* __ASM_UNICORE64_IRQFLAGS_H__ */
+#endif /* __UNICORE64_ASM_IRQFLAGS_H__ */

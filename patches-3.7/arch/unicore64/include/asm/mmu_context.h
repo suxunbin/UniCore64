@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_MMU_CONTEXT_H__
-#define __ASM_UNICORE64_MMU_CONTEXT_H__
+#ifndef __UNICORE64_ASM_MMU_CONTEXT_H__
+#define __UNICORE64_ASM_MMU_CONTEXT_H__
 
 #include <asm-generic/mm_hooks.h>
 
@@ -16,4 +16,4 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 	BUG();
 }
 
-#endif /* __ASM_UNICORE64_MMU_CONTEXT_H__ */
+#endif /* __UNICORE64_ASM_MMU_CONTEXT_H__ */

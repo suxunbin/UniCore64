@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_SIGCONTEXT_H__
-#define __ASM_UNICORE64_SIGCONTEXT_H__
+#ifndef __UNICORE64_ASM_SIGCONTEXT_H__
+#define __UNICORE64_ASM_SIGCONTEXT_H__
 
 #include <asm/ptrace.h>
 /*
@@ -11,4 +11,4 @@ struct sigcontext {
 	struct pt_regs regs;
 };
 
-#endif /* __ASM_UNICORE64_SIGCONTEXT_H__ */
+#endif /* __UNICORE64_ASM_SIGCONTEXT_H__ */

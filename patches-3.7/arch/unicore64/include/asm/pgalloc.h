@@ -1,5 +1,5 @@
-#ifndef __ASM_UNICORE64_PGALLOC_H__
-#define __ASM_UNICORE64_PGALLOC_H__
+#ifndef __UNICORE64_ASM_PGALLOC_H__
+#define __UNICORE64_ASM_PGALLOC_H__
 
 extern pgd_t *pgd_alloc(struct mm_struct *);
 extern void pgd_free(struct mm_struct *, pgd_t *);
@@ -21,4 +21,4 @@ extern void pud_populate(struct mm_struct *, pud_t *, pmd_t *);
 #define __pte_free_tlb(tlb, ptep, addr)	BUG()
 #define __pmd_free_tlb(tlb, pmdp, addr)	BUG()
 
-#endif /* __ASM_UNICORE64_PGALLOC_H__ */
+#endif /* __UNICORE64_ASM_PGALLOC_H__ */
