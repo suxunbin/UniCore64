@@ -5,7 +5,9 @@
  * DOC: HWDEF_CPU_H
  * This file defines the bit pattern for the processor status registers
  * and the processor flag registers.
- *
+ */
+
+/**
  * ASR_MODE_MASK:	mode state mask
  * ASR_MODE_USER:	user state
  * ASR_MODE_PRIV:	privilege state
