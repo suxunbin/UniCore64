@@ -1,9 +1,10 @@
 #ifndef __ASM_UNICORE64_PAGE_H__
 #define __ASM_UNICORE64_PAGE_H__
 
-#include <linux/const.h>
+#include <arch/hwdef-memory.h>
 
-#define PAGE_OFFSET		_AC(0xfffffff800000000, UL)
+/* Virtual start address of the first bank of RAM */
+#define PAGE_OFFSET		UC64_VM_KERNEL_START
 
 /* PAGE_SHIFT determines the page size */
 #define PAGE_SHIFT		(12)

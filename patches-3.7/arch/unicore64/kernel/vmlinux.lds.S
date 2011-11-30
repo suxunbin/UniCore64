@@ -1,8 +1,8 @@
 #include <asm-generic/vmlinux.lds.h>
 #include <asm/thread_info.h>
-#include <arch/memory.h>
 #include <asm/page.h>
 #include <asm/cache.h>
+#include <arch/hwdef-memory.h>
 
 OUTPUT_ARCH(unicore64)
 ENTRY(stext)
@@ -11,7 +11,7 @@ jiffies = jiffies_64;
 
 SECTIONS
 {
-	. = PAGE_OFFSET + KERNEL_IMAGE_START;
+	. = PAGE_OFFSET + UC64_PM_KIMAGE_START;
 
 	_text = .;
 	__init_begin = .;
