@@ -45,9 +45,9 @@
 #define UC64_VM_DMAP_START		UC64_VM_KERNEL_START
 #define UC64_VM_DMAP_END		HEX64(ffffffef, ffffffff)
 
-/* 
+/*
  * We have 36-bit pm address which means 64GB physical space
- * as below: 
+ * as below:
  */
 #define UC64_PM_START			HEX64(00000000, 00000000)
 #define UC64_PM_END			HEX64(0000000f, ffffffff)
