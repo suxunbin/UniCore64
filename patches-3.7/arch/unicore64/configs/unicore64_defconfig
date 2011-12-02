@@ -9,3 +9,7 @@ CONFIG_CPU_DCACHE_DISABLE=y
 
 #	Console display driver support
 CONFIG_VGA_CONSOLE=n
+
+### Kernel hacking
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_OCD=y
