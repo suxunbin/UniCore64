@@ -5,17 +5,17 @@
  * DOC: HWDEF_CPU_H
  * This file defines the bit pattern for the processor status registers
  * and the processor flag registers.
- */
-
-/**
+ *
+ * \\\\lt:programlisting\\\\gt:
+ * -
  * ASR_MODE_MASK:	mode state mask
  * ASR_MODE_USER:	user state
  * ASR_MODE_PRIV:	privilege state
  * ASR_MODE_DEBUG:	debug state
- *
+ * -
  * ASR_T_BIT:		multi processors consistency enable bit
  * ASR_D_BIT:		debug mode enable bit
- *
+ * -
  * ASR_INTR_MASK:	interrupt mask
  * ASR_INTR_SMP:	interrupt between multi processors
  * ASR_INTR_LSU:	interrupt about LSU
@@ -23,12 +23,14 @@
  * ASR_INTR_OTM:	outer timer interrupt
  * ASR_INTR_DEV:	outer device interrupt
  * ASR_INTR_PFM:	performance monitor interrupt
- *
+ * -
  * AFR_MASK:		AFR flag bit mask
  * AFR_V_BIT:		overflow flag bit
  * AFR_C_BIT:		carry flag bit
  * AFR_Z_BIT:		zero flag bit
  * AFR_S_BIT:		negative flag bit
+ * -
+ * \\\\lt:/programlisting\\\\gt:
  */
 
 #include <arch/bitfield.h>
