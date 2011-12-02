@@ -85,14 +85,8 @@ source "net/Kconfig"
 
 source "drivers/Kconfig"
 
-source "arch/unicore64/Kconfig.debug"
-
 source "fs/Kconfig"
 
 source "lib/Kconfig"
 
-menu "Kernel hacking"
-
-source "lib/Kconfig.debug"
-
-endmenu
+source "arch/unicore64/Kconfig.debug"

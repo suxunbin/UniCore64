@@ -1,6 +1,7 @@
 menu "Kernel hacking"
 
-# These options are only for real kernel hackers who want to get their hands dirty.
+source "lib/Kconfig.debug"
+
 config DEBUG_OCD
 	bool "Kernel low-level debugging via On-Chip-Debugger"
 	depends on DEBUG_KERNEL
