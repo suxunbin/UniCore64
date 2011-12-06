@@ -41,6 +41,6 @@ archdoc:
 	$(Q)$(MAKE) $(build)=$(DOC_DIR) DOCBOOKS=unicore64-kernel.xml pdfdocs
 
 define archhelp
-	echo  '  defconfig     - using arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
+	echo  '  defconfig     - Use arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
 	echo  '  archdoc       - Generate $(DOC_DIR)/unicore64-kernel.pdf'
 endef
