@@ -1,6 +1,8 @@
 #ifndef __UNICORE64_ARCH_HWDEF_COPRO_H__
 #define __UNICORE64_ARCH_HWDEF_COPRO_H__
 
+#include <arch/bitfield.h>
+
 /**
  * DOC: hwdef-copro.h
  *
@@ -38,5 +40,21 @@
 #define CP0_INTR_VECBASE	p0.c9
 #define CP0_INTR_STAT		p0.c10
 #define CP0_RWM			p0.c11
+
+/*
+ * CR1 bits (CP#0 CR1)
+ * CP0_CTRLREG_MMU:		MMU enable
+ * CP0_CTRLREG_ALIGN:		Alignment abort enable
+ * CP0_CTRLREG_DCACHE:		Dcache enable
+ * CP0_CTRLREG_ICACHE:		Icache enable
+ * CP0_CTRLREG_SAVEPOWER:	Save power enable
+ * CP0_CTRLREG_WRITEBACK:	Dcache write mechanism: write back
+ */
+#define CP0_CTRLREG_MMU			FIELD(1, 1, 0)
+#define CP0_CTRLREG_ALIGN		FIELD(1, 1, 1)
+#define CP0_CTRLREG_DCACHE		FIELD(1, 1, 2)
+#define CP0_CTRLREG_ICACHE		FIELD(1, 1, 3)
+#define CP0_CTRLREG_SAVEPOWER		FIELD(1, 1, 4)
+#define CP0_CTRLREG_WRITEBACK		FIELD(1, 1, 5)
 
 #endif /* __UNICORE64_ARCH_HWDEF_COPRO_H__ */
