@@ -8,6 +8,9 @@
 
 /**
  * arch_local_save_flags() - Save the current interrupt enable state.
+ *
+ * Return codes:
+ * Current CPU interrupt state.
  */
 static inline unsigned long arch_local_save_flags(void)
 {
@@ -20,7 +23,7 @@ static inline unsigned long arch_local_save_flags(void)
 
 /**
  * arch_local_irq_restore() - restore saved IRQ state
- * @flags:
+ * @flags: CPU interrupt mask
  */
 static inline void arch_local_irq_restore(unsigned long flags)
 {
