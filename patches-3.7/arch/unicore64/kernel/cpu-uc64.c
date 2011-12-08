@@ -59,7 +59,3 @@ const struct seq_operations cpuinfo_op = {
 	.stop	= cpu_ucv3_stop,
 	.show	= cpu_ucv3_show
 };
-
-#ifdef CONFIG_CPU_FREQ
-	/* FIXME */
-#endif
