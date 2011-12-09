@@ -9,29 +9,32 @@
  * Use the 38:37 bits(the higher bits are extended the same as the
  * 38th bit) to divide it in 4 parts as below:
  *
- *  [38:37]bits			         Address Range		Size
- *		+---------------+
- *		|		|      0xffffffff_ffffffff
- *	11b	| Kernel space	|     |				128GB
- *		|		|      0xffffffe0_00000000
- *		+---------------+
- *		|		|      0xffffffdf_ffffffff
- *	10b	|   Reserved	|     |				128GB
- *		|		|      0xffffffc0_00000000
- *		+---------------+
- *		~     Hole	~	For sign-expanion
- *		+---------------+
- *		|		|      0x0000003f_ffffffff
- *	01b	|   Reserved	|     |				128GB
- *		|		|      0x00000020_00000000
- *		+---------------+
- *		|		|      0x0000001f_ffffffff
- *	00b	|  User space	|     |				128GB
- *		|		|      0x00000000_00000000
- *		+---------------+
- *
+ * \\\\lt:programlisting\\\\gt:
+ * -
+ * -[38:37]bits                         Address Range           Size
+ * -            +---------------+
+ * -            |               |      0xffffffff_ffffffff
+ * -    11b     | Kernel space  |     |                         128GB
+ * -            |               |      0xffffffe0_00000000
+ * -            +---------------+
+ * -            |               |      0xffffffdf_ffffffff
+ * -    10b     |   Reserved    |     |                         128GB
+ * -            |               |      0xffffffc0_00000000
+ * -            +---------------+
+ * -            ~     Hole      ~      For sign-expanion
+ * -            +---------------+
+ * -            |               |      0x0000003f_ffffffff
+ * -    01b     |   Reserved    |     |                         128GB
+ * -            |               |      0x00000020_00000000
+ * -            +---------------+
+ * -            |               |      0x0000001f_ffffffff
+ * -    00b     |  User space   |     |                         128GB
+ * -            |               |      0x00000000_00000000
+ * -            +---------------+
+ * -
  * In the Kernel space, the first 64GB(physical space is 64G) space
  * is Direct Mapping space.
+ * \\\\lt:/programlisting\\\\gt:
  */
 
 /* virtual address of USER space */
