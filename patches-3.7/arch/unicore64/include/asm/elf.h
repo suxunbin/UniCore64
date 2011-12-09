@@ -21,7 +21,7 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 
 struct fpu_regs {
 	unsigned int regs[FP_REGS_NUMBER];
-} __attribute__((aligned(8)));
+};
 
 #endif
 
