@@ -5,9 +5,9 @@
 #include <arch/hwdef-pgtable.h>
 
 #define PTE_FILE		PTE_YOUNG	/* only when !PRESENT */
-/* FIXME */
-#define VMALLOC_START		_AC(0x0000000100000000, UL)
-#define VMALLOC_END		_AC(0x0000000200000000, UL)
+
+#define VMALLOC_START		UC64_VM_VMALLOC_START
+#define VMALLOC_END		UC64_VM_VMALLOC_END
 
 #define FIRST_USER_ADDRESS	(0)
 
