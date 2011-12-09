@@ -57,4 +57,11 @@ __ASMMACRO_WRAP(.macro	uc64_enable_icache, rt;
 #endif
 		.endm)
 
+/**
+ * uc64_set_pgd -  set pgd address
+ */
+__ASMMACRO_WRAP(.macro	uc64_set_pgd, rpgd;
+			movc	p0.c2, &rpgd, #0;
+		.endm)
+
 #endif /* __UNICORE64_ARCH_ASM_MMUOPS_H__ */
