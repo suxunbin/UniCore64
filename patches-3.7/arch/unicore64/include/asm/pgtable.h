@@ -11,27 +11,6 @@
 
 #define FIRST_USER_ADDRESS	(0)
 
-/*
- * 3-level translation table walking: 9+9+9+12
- *  PGTBL_ENTRYSHIFT: the logarithm of the size of pagetable entry space,
- *			which is the same for PGD/PMD/PTE, i.e., 8 bytes.
- */
-#define PGTBL_ENTRYSHIFT	(3)
-
-#define PGDIR_SHIFT		(PAGE_SHIFT				\
-				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT)	\
-				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
-#define PGDIR_SIZE		(_AC(1, UL) << PGDIR_SHIFT)
-#define PGDIR_MASK		(~(PGDIR_SIZE-1))
-
-#define PMD_SHIFT		(PAGE_SHIFT + (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
-#define PMD_SIZE		(_AC(1, UL) << PMD_SHIFT)
-#define PMD_MASK		(~(PMD_SIZE-1))
-
-#define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
-#define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
-#define PTRS_PER_PTE		(PAGE_SIZE / sizeof(pte_t))
-
 extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 
 #define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
