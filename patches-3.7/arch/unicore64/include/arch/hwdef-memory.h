@@ -61,5 +61,11 @@
 
 /* The byte offset of the kernel image in RAM from the start of RAM. */
 #define UC64_PM_KIMAGE_START		HEX64(00000000, 00408000)
+#define UC64_VM_KIMAGE_START		(UC64_VM_KERNEL_START + \
+						UC64_PM_KIMAGE_START)
+
+/* physical and virtual address of the initial page table */
+#define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - 0x1000)
+#define UC64_VM_PGTABLE_PGD		(UC64_VM_KIMAGE_START - 0x1000)
 
 #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
