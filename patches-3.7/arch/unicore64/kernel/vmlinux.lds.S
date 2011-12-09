@@ -1,3 +1,8 @@
+/**
+ * DOC: VMLINUX_LDS_S
+ * ld script to make UniCore64 Linux kernel
+ */
+
 #include <asm-generic/vmlinux.lds.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
