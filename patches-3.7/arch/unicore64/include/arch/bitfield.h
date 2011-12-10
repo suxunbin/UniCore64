@@ -8,8 +8,10 @@
 
 #include <linux/const.h>
 
-#define BFSIZE(vbits)		(_AC(1, UL) << (vbits))
-#define BFMASK(vmask, vshift)	(((BFSIZE(vmask)) - 1) << (vshift))
+#define BFSIZE(vbits)			(_AC(1, UL) << (vbits))
+#define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+#define BFMASK_NOT(vmask, vshift)	(~BFMASK(vmask, vshift))
+
 #define BFIELD(val, vmask, vshift)		\
 		(((val) << (vshift)) & BFMASK(vmask, vshift))
 
