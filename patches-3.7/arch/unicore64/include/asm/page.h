@@ -2,14 +2,15 @@
 #define __UNICORE64_ASM_PAGE_H__
 
 #include <arch/hwdef-memory.h>
+#include <arch/hwdef-pgtable.h>
 
 /* Virtual start address of the first bank of RAM */
 #define PAGE_OFFSET		UC64_VM_KERNEL_START
 
 /* PAGE_SHIFT determines the page size */
-#define PAGE_SHIFT		(12)
-#define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
-#define PAGE_MASK		(~(PAGE_SIZE-1))
+#define PAGE_SHIFT		UC64_PAGE_BITS
+#define PAGE_SIZE		UC64_PAGE_SIZE
+#define PAGE_MASK		UC64_PAGE_MASK
 
 #ifndef __ASSEMBLY__
 
