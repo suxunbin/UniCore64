@@ -10,7 +10,7 @@
 /* PAGE_SHIFT determines the page size */
 #define PAGE_SHIFT		UC64_PAGE_BITS
 #define PAGE_SIZE		UC64_PAGE_SIZE
-#define PAGE_MASK		UC64_PAGE_MASK
+#define PAGE_MASK		(~(UC64_PAGE_MASK))
 
 #ifndef __ASSEMBLY__
 
