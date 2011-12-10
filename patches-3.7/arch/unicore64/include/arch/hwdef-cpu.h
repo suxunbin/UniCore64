@@ -35,26 +35,26 @@
 
 #include <arch/bitfield.h>
 
-#define ASR_MODE_MASK		FMASK(3, 0)
-#define ASR_MODE_USER		FIELD(1, 1, 0)
-#define ASR_MODE_PRIV		FIELD(1, 1, 1)
-#define ASR_MODE_DEBUG		FIELD(1, 1, 2)
+#define ASR_MODE_MASK		BFMASK(3, 0)
+#define ASR_MODE_USER		BFIELD(1, 1, 0)
+#define ASR_MODE_PRIV		BFIELD(1, 1, 1)
+#define ASR_MODE_DEBUG		BFIELD(1, 1, 2)
 
-#define ASR_T_BIT		FIELD(1, 1, 3)
-#define ASR_D_BIT		FIELD(1, 1, 4)
+#define ASR_T_BIT		BFIELD(1, 1, 3)
+#define ASR_D_BIT		BFIELD(1, 1, 4)
 
-#define ASR_INTR_MASK		FMASK(6, 5)
-#define ASR_INTR_SMP		FIELD(1, 1, 5)
-#define ASR_INTR_LSU		FIELD(1, 1, 6)
-#define ASR_INTR_ITM		FIELD(1, 1, 7)
-#define ASR_INTR_OTM		FIELD(1, 1, 8)
-#define ASR_INTR_DEV		FIELD(1, 1, 9)
-#define ASR_INTR_PFM		FIELD(1, 1, 10)
+#define ASR_INTR_MASK		BFMASK(6, 5)
+#define ASR_INTR_SMP		BFIELD(1, 1, 5)
+#define ASR_INTR_LSU		BFIELD(1, 1, 6)
+#define ASR_INTR_ITM		BFIELD(1, 1, 7)
+#define ASR_INTR_OTM		BFIELD(1, 1, 8)
+#define ASR_INTR_DEV		BFIELD(1, 1, 9)
+#define ASR_INTR_PFM		BFIELD(1, 1, 10)
 
-#define AFR_MASK		FMASK(4, 0)
-#define AFR_V_BIT		FIELD(1, 1, 0)
-#define AFR_C_BIT		FIELD(1, 1, 1)
-#define AFR_Z_BIT		FIELD(1, 1, 2)
-#define AFR_S_BIT		FIELD(1, 1, 3)
+#define AFR_MASK		BFMASK(4, 0)
+#define AFR_V_BIT		BFIELD(1, 1, 0)
+#define AFR_C_BIT		BFIELD(1, 1, 1)
+#define AFR_Z_BIT		BFIELD(1, 1, 2)
+#define AFR_S_BIT		BFIELD(1, 1, 3)
 
 #endif /* __UNICORE64_ARCH_HWDEF_CPU_H__ */

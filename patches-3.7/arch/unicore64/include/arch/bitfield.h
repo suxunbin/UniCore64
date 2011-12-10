@@ -8,9 +8,9 @@
 
 #include <linux/const.h>
 
-#define FIELD(val, vmask, vshift)		\
+#define BFIELD(val, vmask, vshift)		\
 		(((val) & ((_AC(1, UL) << (vmask)) - 1)) << (vshift))
-#define FMASK(vmask, vshift)			\
+#define BFMASK(vmask, vshift)			\
 		(((_AC(1, UL) << (vmask)) - 1) << (vshift))
 
 /*
