@@ -4,6 +4,9 @@
 #include <linux/stringify.h>
 #include <arch/hwdef-copro.h>
 
+extern void setup_arch_cpuinfo(void);
+extern void setup_arch_memory(void);
+
 #define UC64_CPUID							\
 	({								\
 		unsigned long __val;					\

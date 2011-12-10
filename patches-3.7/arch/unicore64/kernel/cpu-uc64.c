@@ -1,6 +1,12 @@
 #include <linux/kernel.h>
 #include <linux/seq_file.h>
 
+void __init setup_arch_cpuinfo(void)
+{
+	/* FIXME */
+	BUG();
+}
+
 /**
  * cpu_uc64_show() - show the UniCore64 cpu information
  * @m:		sequence file to output

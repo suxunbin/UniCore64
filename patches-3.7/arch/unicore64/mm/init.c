@@ -17,3 +17,9 @@ void free_initmem(void)
 	/* FIXME */
 	BUG();
 }
+
+void __init setup_arch_memory(void)
+{
+	/* FIXME */
+	BUG();
+}
