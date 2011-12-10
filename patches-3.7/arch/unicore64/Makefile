@@ -38,6 +38,7 @@ all:	vmlinux
 
 DOC_DIR			:= Documentation/DocBook
 archdoc:
+	$(Q)$(MAKE) $(build)=scripts build_docproc
 	$(Q)$(MAKE) $(build)=$(DOC_DIR) DOCBOOKS=unicore64-kernel.xml pdfdocs
 
 define archhelp
