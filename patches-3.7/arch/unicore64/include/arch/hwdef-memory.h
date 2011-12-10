@@ -1,11 +1,15 @@
 #ifndef __UNICORE64_ARCH_HWDEF_MEMORY_H__
 #define __UNICORE64_ARCH_HWDEF_MEMORY_H__
 
+/**
+ * DOC: HWDEF_MEMORY_H
+ * This file defines memory layout for VM & PM.
+ */
 #include <arch/bitfield.h>
 #include <arch/hwdef-pgtable.h>
 
 /**
- * DOC: HWDEF_MEMORY_H
+ * DOC: HWDEF_MEMORY_H_VM
  * We have 39-bit vm address which means 512GB virtual space.
  * Use the 38:37 bits(the higher bits are extended the same as the
  * 38th bit) to divide it in 4 parts as below:
@@ -33,9 +37,10 @@
  * -            |               |      0x00000000_00000000
  * -            +---------------+
  * -
+ * \\\\lt:/programlisting\\\\gt:
+ *
  * In the Kernel space, the first 64GB(physical space is 64G) space
  * is Direct Mapping space.
- * \\\\lt:/programlisting\\\\gt:
  */
 
 /* virtual address of USER space */
@@ -53,7 +58,8 @@
 #define UC64_VM_VMALLOC_START		HEX64(00000001, 00000000)
 #define UC64_VM_VMALLOC_END		HEX64(00000002, 00000000)
 
-/*
+/**
+ * DOC: HWDEF_MEMORY_H_PM
  * We have 36-bit pm address which means 64GB physical space
  * as below:
  */
