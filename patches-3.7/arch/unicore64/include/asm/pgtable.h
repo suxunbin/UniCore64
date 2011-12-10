@@ -61,8 +61,8 @@ extern struct page *empty_zero_page;
 #define pud_bad(pud)		(!pud_val(pud))
 #define pmd_bad(pmd)		(!pmd_val(pmd))
 #define pud_present(pud)	(pud_val(pud))
-#define pmd_present(pmd)	(pmd_val(pmd) & PMD_EXIST)
-#define pte_present(pte)	(pte_val(pte) & PTE_EXIST)
+#define pmd_present(pmd)	(pmd_val(pmd) & UC64_PMD_EXIST)
+#define pte_present(pte)	(pte_val(pte) & UC64_PTE_EXIST)
 
 extern void set_pte(pte_t *ptep, pte_t pteval);
 #define set_pte_at(mm, addr, ptep, pteval)	set_pte(ptep, pteval)
@@ -77,17 +77,17 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
 #define pte_page(pte)		pfn_to_page(pte_pfn(pte))
 #define pmd_pgtable(pmd)	pmd_page(pmd)
 
-#define pte_write(pte)		(pte_val(pte) & PTE_WRITE)
-#define pte_dirty(pte)		(pte_val(pte) & PTE_DIRTY)
-#define pte_young(pte)		(pte_val(pte) & PTE_YOUNG)
+#define pte_write(pte)		(pte_val(pte) & UC64_PTE_WRITE)
+#define pte_dirty(pte)		(pte_val(pte) & UC64_PTE_DIRTY)
+#define pte_young(pte)		(pte_val(pte) & UC64_PTE_YOUNG)
 #define pte_special(pte)	(0)
 
-#define pte_wrprotect(pte)	(__pte(pte_val(pte) & ~PTE_WRITE))
-#define pte_mkwrite(pte)	(__pte(pte_val(pte) | PTE_WRITE))
-#define pte_mkclean(pte)	(__pte(pte_val(pte) & ~PTE_DIRTY))
-#define pte_mkdirty(pte)	(__pte(pte_val(pte) | PTE_DIRTY))
-#define pte_mkold(pte)		(__pte(pte_val(pte) & ~PTE_YOUNG))
-#define pte_mkyoung(pte)	(__pte(pte_val(pte) | PTE_YOUNG))
+#define pte_wrprotect(pte)	(__pte(pte_val(pte) & ~UC64_PTE_WRITE))
+#define pte_mkwrite(pte)	(__pte(pte_val(pte) | UC64_PTE_WRITE))
+#define pte_mkclean(pte)	(__pte(pte_val(pte) & ~UC64_PTE_DIRTY))
+#define pte_mkdirty(pte)	(__pte(pte_val(pte) | UC64_PTE_DIRTY))
+#define pte_mkold(pte)		(__pte(pte_val(pte) & ~UC64_PTE_YOUNG))
+#define pte_mkyoung(pte)	(__pte(pte_val(pte) | UC64_PTE_YOUNG))
 #define pte_mkspecial(pte)	(pte)
 
 #define pgtable_cache_init()		do { } while (0)
