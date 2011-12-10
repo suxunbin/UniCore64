@@ -11,6 +11,18 @@
 
 #define FIRST_USER_ADDRESS	(0)
 
+#define PGDIR_SHIFT		UC64_PGD_SHIFT
+#define PGDIR_SIZE		UC64_PGD_SIZE
+#define PGDIR_MASK		(~(PGDIR_SIZE-1))
+
+#define PMD_SHIFT		UC64_PMD_SHIFT
+#define PMD_SIZE		UC64_PMD_SIZE
+#define PMD_MASK		(~(PMD_SIZE-1))
+
+#define PTRS_PER_PGD		BFSIZE(UC64_PGD_BITS)
+#define PTRS_PER_PMD		BFSIZE(UC64_PMD_BITS)
+#define PTRS_PER_PTE		BFSIZE(UC64_PTE_BITS)
+
 extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 
 #define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
