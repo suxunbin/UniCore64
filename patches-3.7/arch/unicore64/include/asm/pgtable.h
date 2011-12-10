@@ -2,13 +2,12 @@
 #define __UNICORE64_ASM_PGTABLE_H__
 
 #include <asm/pgtable-prot.h>
+#include <asm/pgtable-swap.h>
 
 #include <arch/hwdef-pgtable.h>
 #include <arch/hwdef-memory.h>
 
 #include <asm-generic/pgtable-nopud.h>
-
-#define PTE_FILE		PTE_YOUNG	/* only when !PRESENT */
 
 #define VMALLOC_START		UC64_VM_VMALLOC_START
 #define VMALLOC_END		UC64_VM_VMALLOC_END
@@ -98,18 +97,6 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
 					__FILE__, __LINE__, pgd_val(pgd))
 #define pmd_ERROR(pmd)			pr_err("%s:%d: bad pmd %016lx.\n", \
 					__FILE__, __LINE__, pmd_val(pmd))
-
-#define __swp_type(x)			({BUG(); 0; })
-#define __swp_offset(x)			({BUG(); 0; })
-#define __swp_entry(type, offset)	((swp_entry_t){0}) /* FIXME */
-#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
-#define __swp_entry_to_pte(swp)		((pte_t) { (swp).val })
-
-#define pte_file(pte)			(pte_val(pte) & PTE_FILE)
-#define pte_to_pgoff(x)			({BUG(); 0; })
-#define pgoff_to_pte(x)			__pte({BUG(); 0; })
-
-#define PTE_FILE_MAX_BITS		36 /* FIXME */
 
 #include <asm-generic/pgtable.h>
 
