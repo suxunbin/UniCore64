@@ -1,35 +1,35 @@
 #ifndef __UNICORE64_ARCH_HWDEF_COPRO_H__
 #define __UNICORE64_ARCH_HWDEF_COPRO_H__
 
-#include <arch/bitfield.h>
-
 /**
  * DOC: HWDEF_COPRO_H
  *
  * This file defines coprocessor names and their register names.
+ */
+#include <arch/bitfield.h>
+
+/**
+ * DOC: HWDEF_COPRO_H_CP0
+ *
+ * CP0 is the control coprocesscor which helps the main processor
+ * with global control.
+ *
+ * Following CP0 register names are defined:
  *
  * \\\\lt:programlisting\\\\gt:
  * -
- * cp0 is the control coprocesscor which helps the main processor
- * with global control.
- * -
- * CP0 CR0:	register that stores CPU information, Cache information
- *		and processor ID
- * CP0 CR1:	control register of mmu and Cache
- * CP0 CR2:	register for Translation Table Base and Address Space
- *		Identifier
- * CP0 CR3:	register for status information of instruction
- *		and data abort
- * CP0 CR4:	register for virtual address of data abort
- * CP0 CR5:	register for TLB management
- * CP0 CR6:	register for DCache management
- * CP0 CR7:	register for ICache management
- * CP0 CR8:	register for Memory Region Attribute Register
- *		configuration
- * CP0 CR9:	register for interruption vector base
- * CP0 CR10:	register for timer interrupt and interrupt information
- *		such as	number, type and priority
- * CP0 CR11:	control register of Read/Write Margin
+ * CP0 CR0:	reg. that stores CPU information and cache information
+ * CP0 CR1:	control reg. of mmu and Cache
+ * CP0 CR2:	reg. for Translation Table Base and Address Space Identifier
+ * CP0 CR3:	reg. for status information of instruction and data abort
+ * CP0 CR4:	reg. for virtual address of data abort
+ * CP0 CR5:	reg. for TLB management
+ * CP0 CR6:	reg. for DCache management
+ * CP0 CR7:	reg. for ICache management
+ * CP0 CR8:	reg. for Memory Region Attribute Register configuration
+ * CP0 CR9:	reg. for interruption vector base
+ * CP0 CR10:	reg. for timer interrupt and interrupt information
+ * CP0 CR11:	control reg. of Read/Write Margin
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
@@ -47,15 +47,18 @@
 #define CP0_RWM			p0.c11
 
 /**
- * DOC: CP0 CR1 bits
+ * DOC: HWDEF_COPRO_H_CP0_CTRLREG
+ * Following bit field definitions for control register in CP0 are defined:
+ *
  * \\\\lt:programlisting\\\\gt:
- * CR1 bits (CP#0 CR1)
+ * -
  * CP0_CTRLREG_MMU:		MMU enable
  * CP0_CTRLREG_ALIGN:		Alignment abort enable
  * CP0_CTRLREG_DCACHE:		Dcache enable
  * CP0_CTRLREG_ICACHE:		Icache enable
  * CP0_CTRLREG_SAVEPOWER:	Save power enable
  * CP0_CTRLREG_WRITEBACK:	Dcache write mechanism: write back
+ * -
  * \\\\lt:/programlisting\\\\gt:
  */
 #define CP0_CTRLREG_MMU			BFIELD(1, 1, 0)
@@ -66,14 +69,18 @@
 #define CP0_CTRLREG_WRITEBACK		BFIELD(1, 1, 5)
 
 /**
- * DOC: CP0 CPUID information
+ * DOC: HWDEF_COPRO_H_CP0_CPUID
+ * Following cpu inforamtion macros in CP0 are defined:
+ *
  * \\\\lt:programlisting\\\\gt:
+ * -
  * CP0_CPUID_PARTNO_MASK:	mask for the cpuid partnumber
  * CP0_CPUID_PARTNO_PKUNITY:	the cpuid partnumber of PKUnity
  * CP0_CPUID_LAYOUT_MASK:	mask for the cpuid layout
  * CP0_CPUID_SERIES_MASK:	mask for the cpuid series
  * CP0_CPUID_DESIGNER_MASK:	mask for the cpuid designer
  * CP0_CPUID_DESIGNER_MPRC:	the symbol of MPRC for the cpu designer
+ * -
  * \\\\lt:/programlisting\\\\gt:
  */
 #define CP0_CPUID_PARTNO_MASK		BFMASK(16, 0)
