@@ -5,6 +5,12 @@
  * DOC: HWDEF_CPU_H
  * This file defines the bit pattern for the processor status registers
  * and the processor flag registers.
+ */
+#include <arch/bitfield.h>
+
+/**
+ * DOC: HWDEF_CPU_H_ASR
+ * Following ASR_* macros are defined:
  *
  * \\\\lt:programlisting\\\\gt:
  * -
@@ -24,17 +30,8 @@
  * ASR_INTR_DEV:	outer device interrupt
  * ASR_INTR_PFM:	performance monitor interrupt
  * -
- * AFR_MASK:		AFR flag bit mask
- * AFR_V_BIT:		overflow flag bit
- * AFR_C_BIT:		carry flag bit
- * AFR_Z_BIT:		zero flag bit
- * AFR_S_BIT:		negative flag bit
- * -
  * \\\\lt:/programlisting\\\\gt:
  */
-
-#include <arch/bitfield.h>
-
 #define ASR_MODE_MASK		BFMASK(3, 0)
 #define ASR_MODE_USER		BFIELD(1, 1, 0)
 #define ASR_MODE_PRIV		BFIELD(1, 1, 1)
@@ -51,6 +48,20 @@
 #define ASR_INTR_DEV		BFIELD(1, 1, 9)
 #define ASR_INTR_PFM		BFIELD(1, 1, 10)
 
+/**
+ * DOC: HWDEF_CPU_H_AFR
+ * Following AFR_* macros are defined:
+ *
+ * \\\\lt:programlisting\\\\gt:
+ * -
+ * AFR_MASK:		AFR flag bit mask
+ * AFR_V_BIT:		overflow flag bit
+ * AFR_C_BIT:		carry flag bit
+ * AFR_Z_BIT:		zero flag bit
+ * AFR_S_BIT:		negative flag bit
+ * -
+ * \\\\lt:/programlisting\\\\gt:
+ */
 #define AFR_MASK		BFMASK(4, 0)
 #define AFR_V_BIT		BFIELD(1, 1, 0)
 #define AFR_C_BIT		BFIELD(1, 1, 1)
