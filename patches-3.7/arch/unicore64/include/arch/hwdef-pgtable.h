@@ -5,7 +5,7 @@
 
 /* Hardware address translation and page table definitions. */
 #define UC64_PAGE_BITS		(12)
-#define UC64_PAGE_SIZE		(_AC(1, UL) << UC64_PAGE_BITS)
+#define UC64_PAGE_SIZE		BFSIZE(UC64_PAGE_BITS)
 #define UC64_PAGE_MASK		BFMASK(UC64_PAGE_BITS, 0)
 
 /* Level 1 descriptor (PGD) */

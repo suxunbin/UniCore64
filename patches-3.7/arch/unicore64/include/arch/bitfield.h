@@ -8,10 +8,10 @@
 
 #include <linux/const.h>
 
+#define BFSIZE(vbits)		(_AC(1, UL) << (vbits))
+#define BFMASK(vmask, vshift)	(((BFSIZE(vmask)) - 1) << (vshift))
 #define BFIELD(val, vmask, vshift)		\
-		(((val) & ((_AC(1, UL) << (vmask)) - 1)) << (vshift))
-#define BFMASK(vmask, vshift)			\
-		(((_AC(1, UL) << (vmask)) - 1) << (vshift))
+		(((val) << (vshift)) & BFMASK(vmask, vshift))
 
 /*
  * To define 64-bit addresses:
