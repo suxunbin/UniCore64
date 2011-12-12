@@ -58,6 +58,7 @@
  * CP0_CTRLREG_ICACHE:		Icache enable
  * CP0_CTRLREG_SAVEPOWER:	Save power enable
  * CP0_CTRLREG_WRITEBACK:	Dcache write mechanism: write back
+ * CP0_CTRLREG_DEFAULT:		MMU control register's default value
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
