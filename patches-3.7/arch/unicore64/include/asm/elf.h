@@ -12,7 +12,7 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 #define ELF_CLASS		ELFCLASS64
 #define ELF_DATA		ELFDATA2LSB
 #define ELF_ARCH		EM_UNICORE64
-#define ELF_PLATFORM		(NULL)
+#define ELF_PLATFORM		"uc64"
 #define ELF_EXEC_PAGESIZE	PAGE_SIZE
 
 #define FP_REGS_NUMBER		33

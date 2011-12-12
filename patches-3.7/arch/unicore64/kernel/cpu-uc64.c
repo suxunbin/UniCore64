@@ -1,11 +1,9 @@
 #include <linux/kernel.h>
 #include <linux/seq_file.h>
 
-void __init setup_arch_cpuinfo(void)
-{
-	/* FIXME */
-	BUG();
-}
+#include <asm/setup_arch.h>
+
+#include <arch/hwdef-copro.h>
 
 /**
  * cpu_uc64_show() - show the UniCore64 cpu information
@@ -89,3 +87,30 @@ const struct seq_operations cpuinfo_op = {
 	.stop	= cpu_uc64_stop,
 	.show	= cpu_uc64_show
 };
+
+/**
+ * setup_arch_cpuinfo() - show the cpu information
+ *
+ * show the cpu information in the screen.
+ * first, get the value in copro through the macro UC64_CPUID,
+ * then check the bit field. The value should be 0x4Duv0863. It represent
+ * that designer is 0x4D, series is 0xu, layout is 0xv, and
+ * part number is 0x0863. And the layout value is not checked here.
+ */
+void __init setup_arch_cpuinfo(void)
+{
+	unsigned long uc64_cpuid;
+
+	uc64_cpuid = UC64_CPUID;
+
+	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_MASK) !=
+			CP0_CPUID_PARTNO_PKUNITY);
+
+	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_MASK) !=
+			CP0_CPUID_DESIGNER_MPRC);
+
+	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity\n");
+	pr_info("revision: %ld, layout: %ld\n",
+		((uc64_cpuid & CP0_CPUID_SERIES_MASK) >> CP0_CPUID_SERIES_POS),
+		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
+}
