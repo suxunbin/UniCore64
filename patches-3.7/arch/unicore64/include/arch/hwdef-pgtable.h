@@ -33,7 +33,7 @@
 #define UC64_PGD_EXIST		BFIELD(1, 1, 2)
 
 /* Level 2 descriptor (PMD) */
-#define UC64_PMD_SUPER		BFIELD(1, 1, 0)
+#define UC64_PMD_SPAGE		BFIELD(1, 1, 0)
 #define UC64_PMD_USER		BFIELD(1, 1, 1)
 #define UC64_PMD_EXIST		BFIELD(1, 1, 2)
 #define UC64_PMD_YOUNG		BFIELD(1, 1, 3)
