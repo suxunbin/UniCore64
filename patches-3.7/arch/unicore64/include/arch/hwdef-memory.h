@@ -88,4 +88,7 @@
  */
 #define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
 
+/* The byte offset of zImage in RAM from the start of RAM. */
+#define UC64_PM_ZIMAGE_START		HEX64(00000000, 03000000)
+
 #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
