@@ -68,12 +68,24 @@
 
 #define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
 
-/* The byte offset of the kernel image in RAM from the start of RAM. */
+/*
+ * The byte offset of the kernel image in RAM from the start of RAM.
+ * We must make sure that UC64_VM_KIMAGE_START is correctly set.
+ * Currently, we expect the least significant 24 bits to be 0x408000.
+ */
 #define UC64_PM_KIMAGE_START		HEX64(00000000, 00408000)
 #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
 
-/* physical and virtual address of the initial page table */
+/*
+ * Physical and virtual address of the initial page table.
+ * We place the page tables 4K below UC64_VM_KIMAGE_START.
+ */
 #define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - UC64_PAGE_SIZE)
 #define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
+
+/*
+ * Physical address of the direct map pmd.
+ */
+#define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
 
 #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
