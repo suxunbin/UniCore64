@@ -4,6 +4,7 @@
 #include <linux/stringify.h>
 
 #define csub		cmpsub
+#define dcsub		dcmpsub
 
 /*
  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
