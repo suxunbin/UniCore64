@@ -89,17 +89,74 @@ const struct seq_operations cpuinfo_op = {
 };
 
 /**
- * setup_arch_cpuinfo() - show the cpu information
+ * setup_arch_cpuinfo() - show the cpu and cache information
  *
- * show the cpu information in the screen.
+ * show the cpu and cache information in the screen.
  * first, get the value in copro through the macro UC64_CPUID,
  * then check the bit field. The value should be 0x4Duv0863. It represent
  * that designer is 0x4D, series is 0xu, layout is 0xv, and
  * part number is 0x0863. And the layout value is not checked here.
+ * And then, get the cache information from the macro UC64_CACHETYPE,
+ * judge the strategy, such as I&D cache seperate, lockdown, write back
+ * and write throuth, if it was enabled. At last, print out the information
+ * of Instruct cache and Date cache.
  */
+#define CACHETYPE_SIZE(CT)						\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_MASK) {		\
+	case CP0_CPUID_##CT##CACHE_SIZE_512B:				\
+		pr_info("512B "); break;				\
+	case CP0_CPUID_##CT##CACHE_SIZE_1KB:				\
+		pr_info("1KB "); break;					\
+	case CP0_CPUID_##CT##CACHE_SIZE_2KB:				\
+		pr_info("2KB "); break;					\
+	case CP0_CPUID_##CT##CACHE_SIZE_4KB:				\
+		pr_info("4KB "); break;					\
+	case CP0_CPUID_##CT##CACHE_SIZE_8KB:				\
+		pr_info("8KB "); break;					\
+	case CP0_CPUID_##CT##CACHE_SIZE_16KB:				\
+		pr_info("16KB "); break;				\
+	case CP0_CPUID_##CT##CACHE_SIZE_32KB:				\
+		pr_info("32KB "); break;				\
+	case CP0_CPUID_##CT##CACHE_SIZE_64KB:				\
+		pr_info("64KB "); break;				\
+	}
+
+#define CACHETYPE_ASSOC(CT)						\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_MASK) {	\
+	case CP0_CPUID_##CT##CACHE_ASSOC_DMAP:				\
+		pr_info("DMAP "); break;				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_2WAY:				\
+		pr_info("2Way "); break;				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_4WAY:				\
+		pr_info("4Way "); break;				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_8WAY:				\
+		pr_info("8Way "); break;				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_16WAY:				\
+		pr_info("16Way "); break; 				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_32WAY:				\
+		pr_info("32Way "); break; 				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_64WAY:				\
+		pr_info("64Way "); break;				\
+	case CP0_CPUID_##CT##CACHE_ASSOC_128WAY:			\
+		pr_info("128Way "); break;				\
+	}
+
+#define CACHETYPE_LINE(CT)						\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_MASK) {		\
+	case CP0_CPUID_##CT##CACHE_LINE_8BYTE:				\
+		pr_info("L8B"); break;					\
+	case CP0_CPUID_##CT##CACHE_LINE_16BYTE:				\
+		pr_info("L16B"); break;					\
+	case CP0_CPUID_##CT##CACHE_LINE_32BYTE:				\
+		pr_info("L32B"); break;					\
+	case CP0_CPUID_##CT##CACHE_LINE_64BYTE:				\
+		pr_info("L64B"); break;					\
+	}
+
 void __init setup_arch_cpuinfo(void)
 {
 	unsigned long uc64_cpuid;
+	unsigned long uc64_cache;
 
 	uc64_cpuid = UC64_CPUID;
 
@@ -109,8 +166,33 @@ void __init setup_arch_cpuinfo(void)
 	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_MASK) !=
 			CP0_CPUID_DESIGNER_MPRC);
 
-	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity\n");
-	pr_info("revision: %ld, layout: %ld\n",
+	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity,");
+	pr_info(" revision: %ld, layout: %ld\n",
 		((uc64_cpuid & CP0_CPUID_SERIES_MASK) >> CP0_CPUID_SERIES_POS),
 		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
+
+	/* CACHE information */
+	uc64_cache = UC64_CACHETYPE;
+
+	BUG_ON(!(uc64_cache & CP0_CPUID_CACHE_SEPERATE));
+
+	pr_info("Cachetype: %s %s, ",
+		(uc64_cache & CP0_CPUID_CACHE_LOCKDOWN) ? "LD" : NULL,
+		(uc64_cache & CP0_CPUID_CACHE_WRITEBACK) ? "WB" : "WT");
+
+	pr_info("I$: ");
+	CACHETYPE_SIZE(I);
+	CACHETYPE_ASSOC(I);
+	CACHETYPE_LINE(I);
+
+	pr_info(", D$: ");
+	CACHETYPE_SIZE(D);
+	CACHETYPE_ASSOC(D);
+	CACHETYPE_LINE(D);
+
+	pr_info("\n");
 }
+
+#undef CACHETYPE_SIZE
+#undef CACHETYPE_ASSOC
+#undef CACHETYPE_LINE
