@@ -91,4 +91,8 @@
 /* The byte offset of zImage in RAM from the start of RAM. */
 #define UC64_PM_ZIMAGE_START		HEX64(00000000, 03000000)
 
+/* The address of stack and heap. */
+#define UC64_PM_ZIMAGE_SP		HEX64(00000000, 03e00000)
+#define UC64_PM_ZIMAGE_HEAP		HEX64(00000000, 04000000)
+
 #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
