@@ -1,13 +1,16 @@
 #ifndef __UNICORE64_ARCH_HWDEF_PGTABLE_H__
 #define __UNICORE64_ARCH_HWDEF_PGTABLE_H__
-
+/**
+ * DOC: HWDEF_PGTABLE_H
+ * This file make hardware address translation and page table definitions.
+ */
 #include <arch/bitfield.h>
 
-/* Hardware address translation and page table definitions. */
-/*
- * 3-level translation table walking: 9+9+9+12
- * UC64_PGTBL_ENTRY_BITS: the logarithm of the size of pagetable entry space,
- * which is the same for PGD/PMD/PTE, i.e., 8 bytes.
+/**
+ * DOC: HWDEF_PGTABLE_H_ADDR_TRANSLATION
+ * 3-level translation table walking: 9+9+9+12.
+ * UC64_PGTBL_ENTRY_BITS, the logarithm of the size of pagetable entry space,
+ * is the same for PGD/PMD/PTE, i.e., 8 bytes.
  */
 #define UC64_PGTBL_ENTRY_BITS	(3)
 
@@ -29,10 +32,43 @@
 #define UC64_PGD_SIZE		BFSIZE(UC64_PGD_SHIFT)
 #define UC64_PGD_MASK		BFMASK(UC64_PGD_BITS, UC64_PGD_SHIFT)
 
-/* Level 1 descriptor (PGD) */
+/**
+ * DOC: HWDEF_PGTABLE_H_PGD
+ * \\\\lt:programlisting\\\\gt:
+ * PGD flag bits defined as below:
+ * -
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * |   |   |   |   |   |   |   |   |   | E |   |   |
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * -
+ * \\\\lt:/programlisting\\\\gt:
+ * E: Exist bit
+ */
 #define UC64_PGD_EXIST		BFIELD(1, 1, 2)
 
-/* Level 2 descriptor (PMD) */
+/**
+ * DOC: HWDEF_PGTABLE_H_PMD
+ * \\\\lt:programlisting\\\\gt:
+ * PMD flag bits defined as below:
+ * -
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * | S |  MA   | G | R | W | X | M | A | E |U/S| PT|
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * -
+ * S: Share bit
+ * MA: Store type bit
+ * G: Global bit
+ * R: Read bit
+ * W: Write bit
+ * X: Execute bit
+ * M: Modified bit
+ * A: Accessed bit
+ * E: Exist bit
+ * U/S: User/Supervisor bit
+ * PT: Page type bit
+ * -
+ * \\\\lt:/programlisting\\\\gt:
+ */
 #define UC64_PMD_SPAGE		BFIELD(1, 1, 0)
 #define UC64_PMD_USER		BFIELD(1, 1, 1)
 #define UC64_PMD_EXIST		BFIELD(1, 1, 2)
@@ -49,7 +85,29 @@
 #define UC64_PMD_TYPE_CACHE	BFIELD(2, 2, 9)
 #define UC64_PMD_SHARE		BFIELD(1, 1, 11)
 
-/* Level 3 descriptor (PTE) */
+/**
+ * DOC: HWDEF_PGTABLE_H_PTE
+ * \\\\lt:programlisting\\\\gt:
+ * PTE flag bits defined as below:
+ * -
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * | S |  MA   | G | R | W | X | M | A | E |U/S|Res|
+ * +---+---+---+---+---+---+---+---+---+---+---+---+
+ * -
+ * S: Share bit
+ * MA: Store type bit
+ * G: Global bit
+ * R: Read bit
+ * W: Write bit
+ * X: Execute bit
+ * M: Modified bit
+ * A: Accessed bit
+ * E: Exist bit
+ * U/S: User/Supervisor bit
+ * Res: Reserved
+ * -
+ * \\\\lt:/programlisting\\\\gt:
+ */
 #define UC64_PTE_USER		BFIELD(1, 1, 1)
 #define UC64_PTE_EXIST		BFIELD(1, 1, 2)
 #define UC64_PTE_YOUNG		BFIELD(1, 1, 3)
