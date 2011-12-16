@@ -1,4 +1,3 @@
-#include <asm-generic/vmlinux.lds.h>
 #include <arch/hwdef-memory.h>
 
 OUTPUT_ARCH(unicore64)
