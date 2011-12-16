@@ -59,3 +59,6 @@ start:
 	 */
 	dmovl	r0, #UC64_VM_KIMAGE_START
 	jump	r0
+
+	.section .piggydata
+	.incbin "arch/unicore64/boot/piggy.bin"

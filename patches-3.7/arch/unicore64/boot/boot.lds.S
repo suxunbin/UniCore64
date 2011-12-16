@@ -24,7 +24,11 @@ SECTIONS
     *(.text)
     *(.rodata)
     *(.rodata.*)
-    *(.piggydata)
+
+		input_data = .;
+		*(.piggydata)
+		input_data_end = .;
+
     . = ALIGN(4);
   }
   _etext = .;

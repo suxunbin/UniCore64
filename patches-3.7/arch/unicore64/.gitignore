@@ -2,3 +2,9 @@
 # Generated ld script file
 #
 kernel/vmlinux.lds
+#
+# Generated files in boot
+#
+boot/boot.lds
+boot/Image
+boot/zImage

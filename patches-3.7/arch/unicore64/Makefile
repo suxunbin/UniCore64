@@ -34,7 +34,15 @@ core-y			+= arch/unicore64/mm/
 
 libs-y			+= arch/unicore64/lib/
 
-all:	vmlinux
+all:	zImage
+
+BOOT_DIR		:= arch/unicore64/boot/
+
+zImage: vmlinux
+	$(Q)$(MAKE) $(build)=$(BOOT_DIR) $(BOOT_DIR)/$@
+
+archclean:
+	$(Q)$(MAKE) $(clean)=$(BOOT_DIR)
 
 DOC_DIR			:= Documentation/DocBook
 archdoc:
@@ -44,4 +52,5 @@ archdoc:
 define archhelp
 	echo  '  defconfig     - Use arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
 	echo  '  archdoc       - Generate $(DOC_DIR)/unicore64-kernel.pdf'
+	echo  ' *zImage        - Compressed kernel image (arch/$(ARCH)/boot/zImage)'
 endef
