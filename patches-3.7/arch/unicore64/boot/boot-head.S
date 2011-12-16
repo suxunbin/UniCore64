@@ -5,7 +5,8 @@
 #include <arch/head-macros.S>
 
 	.section ".start"
-start:
+	.globl	_start
+_start:
 	/*
 	 * Initialize ASR and coprocessor 0.
 	 */

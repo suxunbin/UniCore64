@@ -18,7 +18,6 @@ SECTIONS
 	. = UC64_PM_ZIMAGE_START;
 
 	.text : {
-		_start = .;
 		*(.start)
 		*(.text)
 		*(.rodata)
