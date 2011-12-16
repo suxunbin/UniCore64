@@ -4,6 +4,9 @@ targets		:= Image piggy.bin boot.lds boot.bin zImage
 # Do not recognize built-in functions in uncompress.c
 EXTRA_CFLAGS	:= -fno-builtin
 
+# Only copy text segment from boot.bin to zImage
+OBJCOPYFLAGS	:= -O binary -S
+
 $(obj)/Image: vmlinux FORCE
 	$(call if_changed,objcopy)
 	@echo '  Kernel: $@ is ready'
