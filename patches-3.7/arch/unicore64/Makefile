@@ -18,23 +18,19 @@ endif
 
 # Provide the path to use for "make defconfig".
 KBUILD_DEFCONFIG	:= $(ARCH)_defconfig
-
-LDFLAGS_vmlinux		:= --no-undefined -X
-
 # Never use hard float in kernel
 KBUILD_CFLAGS		+= -msoft-float
+# LDFLAGS for vmlinux in srctree
+LDFLAGS_vmlinux		:= --no-undefined -X
 
-head-y			:= arch/unicore64/kernel/head.o
-#head-y			+= arch/unicore64/kernel/init_task.o
+BOOT_DIR		:= arch/unicore64/boot/
+DOC_DIR			:= Documentation/DocBook/
 
 core-y			+= arch/unicore64/kernel/
 core-y			+= arch/unicore64/mm/
-
 libs-y			+= arch/unicore64/lib/
 
 all:	zImage
-
-BOOT_DIR		:= arch/unicore64/boot/
 
 zImage: vmlinux
 	$(Q)$(MAKE) $(build)=$(BOOT_DIR) $(BOOT_DIR)/$@
@@ -42,7 +38,6 @@ zImage: vmlinux
 archclean:
 	$(Q)$(MAKE) $(clean)=$(BOOT_DIR)
 
-DOC_DIR			:= Documentation/DocBook
 archdoc:
 	$(Q)$(MAKE) $(build)=scripts build_docproc
 	$(Q)$(MAKE) $(build)=$(DOC_DIR) DOCBOOKS=unicore64-kernel.xml pdfdocs
@@ -50,5 +45,5 @@ archdoc:
 define archhelp
 	echo  '  defconfig     - Use arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
 	echo  '  archdoc       - Generate $(DOC_DIR)/unicore64-kernel.pdf'
-	echo  ' *zImage        - Compressed kernel image (arch/$(ARCH)/boot/zImage)'
+	echo  '* zImage        - Compressed kernel image (arch/$(ARCH)/boot/zImage)'
 endef
