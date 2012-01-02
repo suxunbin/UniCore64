@@ -1,0 +1,4 @@
+#ifndef __UNICORE64_ASM_MEMBLOCK_H__
+#define __UNICORE64_ASM_MEMBLOCK_H__
+
+#endif /* __UNICORE64_ASM_MEMBLOCK_H__ */

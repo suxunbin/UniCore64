@@ -6,6 +6,7 @@
 
 extern void setup_arch_cpuinfo(void);
 extern void setup_arch_memory(void);
+extern void setup_arch_devtree(char *cmdline);
 
 #define UC64_CPUID							\
 	({								\

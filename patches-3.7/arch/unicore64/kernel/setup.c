@@ -1,8 +1,12 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/notifier.h>
+#include <linux/string.h>
 
+#include <asm/setup.h>
 #include <asm/setup_arch.h>
+
+static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
 
 static int uc64_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
@@ -20,8 +24,17 @@ static struct notifier_block uc64_panic_block = {
 
 static void __init setup_arch_param(char **cmdline_p)
 {
-	/* FIXME */
-	BUG();
+#ifdef CONFIG_OF_EARLY_FLATTREE
+	setup_arch_devtree(boot_command_line);
+#endif
+
+	if (boot_command_line[0]) {
+		strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
+	}
+	strlcat(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+
+	strlcpy(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+	*cmdline_p = builtin_cmdline;
 }
 
 static void __init setup_arch_resource(void)

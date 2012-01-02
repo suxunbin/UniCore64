@@ -77,6 +77,14 @@
 #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
 
 /*
+ * The byte offset of the unicore64.dtb in RAM from the start of RAM.
+ * We must make sure that UC64_VM_DTB_START is correctly set.
+ * Currently, we expect the least significant 24 bits to be 0x401000.
+ */
+#define UC64_PM_DTB_START		HEX64(00000000, 00401000)
+#define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
+
+/*
  * Physical and virtual address of the initial page table.
  * We place the page tables 4K below UC64_VM_KIMAGE_START.
  */
