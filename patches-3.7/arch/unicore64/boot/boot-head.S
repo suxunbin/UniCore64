@@ -34,6 +34,16 @@ _start:
 	 */
 	__head_clear_bss
 
+#ifdef CONFIG_ARCH_FPGA
+	/*
+	 * Prepare early devtree for fpga board.
+	 */
+	dmovl	r0, #UC64_PM_DTB_START
+	adr	r1, dtb_data
+	dmovl	r2, #dtb_data_end - dtb_data
+	call	memcpy
+#endif /* CONFIG_ARCH_FPGA */
+
 	/*
 	 * Call decompress_kernel, and it's three parameters are:
 	 *   r0: output_start
@@ -60,6 +70,10 @@ _start:
 	 */
 	dmovl	r0, #UC64_VM_KIMAGE_START
 	jump	r0
+
+dtb_data:
+	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
+dtb_data_end:
 
 	.section .piggydata
 	.incbin "arch/unicore64/boot/piggy.bin"

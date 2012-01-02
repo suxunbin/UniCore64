@@ -5,6 +5,7 @@ kernel/vmlinux.lds
 #
 # Generated files in boot
 #
+boot/*.dtb
 boot/boot.lds
 boot/Image
 boot/zImage

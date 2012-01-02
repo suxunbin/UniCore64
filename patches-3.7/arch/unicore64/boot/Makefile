@@ -1,5 +1,5 @@
 # All targets during boot
-targets		:= Image piggy.bin boot.lds boot.bin zImage
+targets		:= Image piggy.bin boot.lds boot.bin zImage unicore64-fpga.dtb
 
 # Do not recognize built-in functions in uncompress.c
 EXTRA_CFLAGS	:= -fno-builtin
@@ -20,7 +20,10 @@ suffix_$(CONFIG_KERNEL_LZMA)	:= lzma
 $(obj)/piggy.bin: $(obj)/Image FORCE
 	$(call if_changed,$(suffix_y))
 
-$(obj)/boot-head.o: $(obj)/piggy.bin
+$(obj)/%.dtb: $(obj)/%.dts FORCE
+	$(call if_changed,dtc)
+
+$(obj)/boot-head.o: $(obj)/piggy.bin $(obj)/unicore64-fpga.dtb
 
 BOOT_OBJS	:= $(srctree)/arch/unicore64/lib/memcpy.o
 BOOT_OBJS	+= $(srctree)/arch/unicore64/lib/memset.o
