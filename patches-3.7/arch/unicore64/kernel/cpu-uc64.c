@@ -132,9 +132,9 @@ const struct seq_operations cpuinfo_op = {
 	case CP0_CPUID_##CT##CACHE_ASSOC_8WAY:				\
 		pr_info("8Way "); break;				\
 	case CP0_CPUID_##CT##CACHE_ASSOC_16WAY:				\
-		pr_info("16Way "); break; 				\
+		pr_info("16Way "); break;				\
 	case CP0_CPUID_##CT##CACHE_ASSOC_32WAY:				\
-		pr_info("32Way "); break; 				\
+		pr_info("32Way "); break;				\
 	case CP0_CPUID_##CT##CACHE_ASSOC_64WAY:				\
 		pr_info("64Way "); break;				\
 	case CP0_CPUID_##CT##CACHE_ASSOC_128WAY:			\
