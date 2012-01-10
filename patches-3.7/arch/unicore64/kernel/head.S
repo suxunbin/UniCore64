@@ -87,7 +87,8 @@ ENTRY(__head_pgtable_init)
 	std	r0, [r1]
 
 	/*
-	 * Step three: clear 4k level-two page table from first direct-mapped pmd
+	 * Step three: clear 4k level-two page table from first
+	 * direct-mapped pmd
 	 */
 	dmovl	r0, #UC64_PM_PGTABLE_DMAP_PMD
 	dmov	r1, #0
