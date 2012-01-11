@@ -63,6 +63,7 @@ __priv_sp:
  * it will map the first 64MB of kernel image
  */
 ENTRY(__head_pgtable_init)
+	push_lr
 	/*
 	 * Step one: clear 4k level-one page table for pgd
 	 */
@@ -116,5 +117,6 @@ ENTRY(__head_pgtable_init)
 	dmovl	r0, #UC64_PM_PGTABLE_PGD
 	uc64_set_pgd	r0
 
+	pop_lr
 	return
 ENDPROC(__head_pgtable_init)
