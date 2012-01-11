@@ -3,10 +3,12 @@
 
 #include <linux/stringify.h>
 
+#ifdef __ASSEMBLY__
 #define csub		cmpsub
 #define dcsub		dcmpsub
 #define push_lr		std.w	lr, [sp-], #8
 #define pop_lr		ldd.w	lr, [sp]+, #8
+#endif /* __ASSEMBLY__ */
 
 /*
  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
