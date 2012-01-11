@@ -28,9 +28,8 @@ static void __init setup_arch_param(char **cmdline_p)
 	setup_arch_devtree(boot_command_line);
 #endif
 
-	if (boot_command_line[0]) {
+	if (boot_command_line[0])
 		strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
-	}
 	strlcat(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
 
 	strlcpy(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
