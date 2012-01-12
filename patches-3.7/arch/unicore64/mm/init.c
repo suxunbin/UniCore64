@@ -2,6 +2,7 @@
 #include <linux/memblock.h>
 
 #include <asm/sections.h>
+#include <asm/setup_arch.h>
 
 /**
  * mem_init() -
@@ -32,6 +33,5 @@ void __init setup_arch_memory(void)
 	memblock_allow_resize();
 	memblock_dump_all();
 
-	/* FIXME */
-	BUG();
+	paging_init();
 }

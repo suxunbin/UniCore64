@@ -1,10 +1,37 @@
 #include <linux/mm.h>
+#include <linux/memblock.h>
+
+#include <asm/setup_arch.h>
 
 /*
  * empty_zero_page is a special page that is used for
  * zero-initialized data and COW.
  */
 struct page *empty_zero_page;
+
+static void __init *early_alloc(unsigned long sz)
+{
+	void *ptr = __va(memblock_alloc(sz, sz));
+	memset(ptr, 0, sz);
+	return ptr;
+}
+
+/*
+ * paging_init() sets up the page tables, initialises the zone memory
+ * maps, and sets up the zero page, bad page and bad page tables.
+ */
+void __init paging_init(void)
+{
+	void *zero_page;
+
+	/* allocate the zero page. */
+	zero_page = early_alloc(PAGE_SIZE);
+
+	empty_zero_page = virt_to_page(zero_page);
+
+	/* FIXME*/
+	BUG();
+}
 
 /**
  * update_mmu_cache() - checks the page table entry for validity
