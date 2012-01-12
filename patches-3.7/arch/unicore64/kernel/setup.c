@@ -24,9 +24,7 @@ static struct notifier_block uc64_panic_block = {
 
 static void __init setup_arch_param(char **cmdline_p)
 {
-#ifdef CONFIG_OF_EARLY_FLATTREE
 	setup_arch_devtree(boot_command_line);
-#endif
 
 	if (boot_command_line[0])
 		strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);

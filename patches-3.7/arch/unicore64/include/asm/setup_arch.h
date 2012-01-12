@@ -6,7 +6,12 @@
 
 extern void setup_arch_cpuinfo(void);
 extern void setup_arch_memory(void);
+
+#ifdef CONFIG_OF_EARLY_FLATTREE
 extern void setup_arch_devtree(char *cmdline);
+#else
+#define setup_arch_devtree(s)		do { } while (0)
+#endif /* CONFIG_OF_EARLY_FLATTREE */
 
 #define UC64_CPUID							\
 	({								\
