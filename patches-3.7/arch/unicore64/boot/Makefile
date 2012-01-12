@@ -2,7 +2,7 @@
 targets		:= Image piggy.bin boot.lds boot.bin zImage unicore64-fpga.dtb
 
 # Do not recognize built-in functions in uncompress.c
-EXTRA_CFLAGS	:= -fno-builtin
+ccflags-y	:= -fno-builtin
 
 # Only copy text segment from boot.bin to zImage
 OBJCOPYFLAGS	:= -O binary -S
