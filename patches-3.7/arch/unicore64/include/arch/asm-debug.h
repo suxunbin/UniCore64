@@ -12,4 +12,8 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rt;
 		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 
+#ifndef __ASSEMBLY__
+extern void uc64_debug_puts(const char *s);
+#endif /* __ASSEMBLY__ */
+
 #endif /* __UNICORE64_ARCH_ASM_DEBUG_H__ */
