@@ -1,4 +1,4 @@
-#include <arch/hwdef-copro.h>
+#include <arch/hwdef-cp0-sysctrl.h>
 #include <arch/hwdef-cpu.h>
 #include <arch/asm-common.h>
 

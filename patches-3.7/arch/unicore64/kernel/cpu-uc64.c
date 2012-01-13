@@ -3,7 +3,7 @@
 
 #include <asm/setup_arch.h>
 
-#include <arch/hwdef-copro.h>
+#include <arch/hwdef-cp0-sysctrl.h>
 
 /**
  * cpu_uc64_show() - show the UniCore64 cpu information
@@ -158,7 +158,7 @@ void __init setup_arch_cpuinfo(void)
 	unsigned long uc64_cpuid;
 	unsigned long uc64_cache;
 
-	uc64_cpuid = UC64_CPUID;
+	uc64_cpuid = read_cp_off(CP0_CPUID, 0);
 
 	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_MASK) !=
 			CP0_CPUID_PARTNO_PKUNITY);
@@ -172,7 +172,7 @@ void __init setup_arch_cpuinfo(void)
 		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
 
 	/* CACHE information */
-	uc64_cache = UC64_CACHETYPE;
+	uc64_cache = read_cp_off(CP0_CPUID, 1);
 
 	BUG_ON(!(uc64_cache & CP0_CPUID_CACHE_SEPERATE));
 
