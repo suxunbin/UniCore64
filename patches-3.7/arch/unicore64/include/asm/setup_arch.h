@@ -9,12 +9,6 @@ extern void setup_arch_memory(void);
 
 extern void paging_init(void);
 
-/*
- * Convert a physical address to a Page Frame Number and back
- */
-#define	__phys_to_pfn(paddr)	((paddr) >> PAGE_SHIFT)
-#define	__pfn_to_phys(pfn)	((pfn) << PAGE_SHIFT)
-
 #ifdef CONFIG_OF_EARLY_FLATTREE
 extern void setup_arch_devtree(char *cmdline);
 #else
