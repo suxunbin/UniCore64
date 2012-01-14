@@ -1,5 +1,6 @@
 #include <linux/mm.h>
 #include <linux/memblock.h>
+#include <linux/sched.h>
 
 #include <asm/setup_arch.h>
 
@@ -9,18 +10,46 @@
  */
 struct page *empty_zero_page;
 
+static void __init uc64_create_direct_mapping(phys_addr_t start,
+		unsigned long length)
+{
+	phys_addr_t phys;
+	pgprot_t prot_pud;
+	pud_t *pud;
+
+	/* ONLY SUPERPAGE supported */
+	if (start | length | UC64_PMD_MASK)
+		BUG();
+
+	prot_pud = __pgprot(UC64_PMD_TYPE_CACHE | UC64_PMD_EXIST
+			| UC64_PMD_SPAGE);
+	pud = pud_offset(pgd_offset_k(start), (unsigned long)__va(start));
+
+	for (phys = start; phys < (start + length); phys += UC64_PMD_SIZE) {
+		set_pud(pud, __pud(phys | pgprot_val(prot_pud)));
+		pud++;
+	}
+}
+
 /*
  * paging_init() sets up the page tables, initialises the zone memory
  * maps, and sets up the zero page, bad page and bad page tables.
  */
 void __init paging_init(void)
 {
+	struct memblock_region *reg;
+
+	/* First 1G for direct-mapped area has been cleared. */
+
+	/* Direct map all the memory banks. */
+	for_each_memblock(memory, reg) {
+		uc64_create_direct_mapping(reg->base, reg->size);
+	}
+
 	/* Initialize the zero page. */
 	memset((void *)UC64_VM_ZEROPAGE, 0, PAGE_SIZE);
 	empty_zero_page = virt_to_page(UC64_VM_ZEROPAGE);
 
-	/* FIXME*/
-	BUG();
 }
 
 /**
