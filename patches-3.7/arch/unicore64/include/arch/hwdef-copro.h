@@ -6,7 +6,7 @@
  *
  * This file defines coprocessor names and their register names.
  */
-#include <arch/bitfield.h>
+#include <linux/stringify.h>
 
 #define read_cp_op(reg, op_no)						\
 	({								\
