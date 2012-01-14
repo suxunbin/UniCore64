@@ -8,23 +8,23 @@
  */
 #include <arch/bitfield.h>
 
-#define read_cp_off(reg_name, reg_offset)				\
+#define read_cp_op(reg, op_no)						\
 	({								\
 		unsigned long __val;					\
-		asm("movc	%0, " __stringify(reg_name)		\
-				", #" __stringify(reg_offset)		\
+		asm("movc	%0, " __stringify(reg)			\
+				", #" __stringify(op_no)		\
 		    : "=r" (__val));					\
 		__val;							\
 	})
 
-#define write_cp_off(reg_value, reg_name, reg_offset)			\
+#define write_cp_op(reg_value, reg, op_no)				\
 	({								\
-		asm("movc	" __stringify(reg_name)			\
-			", %0, #" __stringify(reg_offset)		\
+		asm("movc	" __stringify(reg)			\
+			", %0, #" __stringify(op_no)			\
 		    : : "r" (reg_value));				\
 	})
 
-#define read_cp(rn)		read_cp_off(rn, 0)
-#define write_cp(v, rn)		write_cp_off(v, rn, 0)
+#define read_cp(rn)		read_cp_op(rn, 0)
+#define write_cp(v, rn)		write_cp_op(v, rn, 0)
 
 #endif /* __UNICORE64_ARCH_HWDEF_COPRO_H__ */
