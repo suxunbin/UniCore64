@@ -9,25 +9,15 @@
  */
 struct page *empty_zero_page;
 
-static void __init *early_alloc(unsigned long sz)
-{
-	void *ptr = __va(memblock_alloc(sz, sz));
-	memset(ptr, 0, sz);
-	return ptr;
-}
-
 /*
  * paging_init() sets up the page tables, initialises the zone memory
  * maps, and sets up the zero page, bad page and bad page tables.
  */
 void __init paging_init(void)
 {
-	void *zero_page;
-
-	/* allocate the zero page. */
-	zero_page = early_alloc(PAGE_SIZE);
-
-	empty_zero_page = virt_to_page(zero_page);
+	/* Initialize the zero page. */
+	memset((void *)UC64_VM_ZEROPAGE, 0, PAGE_SIZE);
+	empty_zero_page = virt_to_page(UC64_VM_ZEROPAGE);
 
 	/* FIXME*/
 	BUG();

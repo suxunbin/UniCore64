@@ -85,6 +85,12 @@
 #define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
 
 /*
+ * This page is reserved for zero page.
+ */
+#define UC64_PM_ZEROPAGE		HEX64(00000000, 00404000)
+#define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+
+/*
  * Physical and virtual address of the initial page table.
  * We place the page tables 4K below UC64_VM_KIMAGE_START.
  */
