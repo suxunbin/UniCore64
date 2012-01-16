@@ -2,13 +2,31 @@
 #include <arch/asm-common.h>
 
 	.macro	__priv_context_save
-	/* save all registers */
-	uc64_push	lr
+	/* save all gp registers */
+	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
+		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30
+	uc64_push	r\n
+	.endr
+
+	/* save bsr and bfr */
+	mov	bsr, r0
+	uc64_push	r0
+	mov	bfr, r0
+	uc64_push	r0
 	.endm
 
 	.macro __priv_context_restore
+	/* restore bfr and bsr registers */
+	uc64_pop	r0
+	mov	bfr, r0
+	uc64_pop	r0
+	mov	bsr, r0
+
 	/* restore all registers */
-	uc64_pop	lr
+	.irp	n, 30, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
+		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+	uc64_pop	r\n
+	.endr
 	.endm
 
 /**
