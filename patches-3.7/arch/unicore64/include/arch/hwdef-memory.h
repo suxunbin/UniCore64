@@ -62,51 +62,52 @@
  * DOC: HWDEF_MEMORY_H_PM
  * We have 36-bit pm address which means 64GB physical space
  * as below:
+ *
+ * ZIMAGE_START: The byte offset of zImage in RAM from the start of RAM.
+ * ZIMAGE_SP & ZIMAGE_HEAP: The address of stack and heap.
+ *
  */
 #define UC64_PM_START			__BC(00000000, 00000000)
 #define UC64_PM_END			__BC(0000000f, ffffffff)
 
-#define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
+#define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
+#define UC64_PM_ZIMAGE_SP		__BC(00000000, 03e00000)
+#define UC64_PM_ZIMAGE_HEAP		__BC(00000000, 04000000)
 
 /*
+ * Address space: 00400000 - 00408000
+ *
+ * KIMAGE_START:
  * The byte offset of the kernel image in RAM from the start of RAM.
  * We must make sure that UC64_VM_KIMAGE_START is correctly set.
  * Currently, we expect the least significant 24 bits to be 0x408000.
- */
-#define UC64_PM_KIMAGE_START		__BC(00000000, 00408000)
-#define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
-
-/*
+ *
+ * PGTABLE_PGD:
+ * Physical and virtual address of the initial page table.
+ * We place the page tables 4K below UC64_VM_KIMAGE_START.
+ *
+ * PGTABLE_DMAP_PMD:
+ * Physical address of the direct map pmd.
+ *
+ * ZEROPAGE:
+ * This page is reserved for zero page.
+ *
+ * DTB_START:
  * The byte offset of the unicore64.dtb in RAM from the start of RAM.
  * We must make sure that UC64_VM_DTB_START is correctly set.
  * Currently, we expect the least significant 24 bits to be 0x401000.
  */
-#define UC64_PM_DTB_START		__BC(00000000, 00401000)
-#define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
-
-/*
- * This page is reserved for zero page.
- */
+#define UC64_PM_KIMAGE_START		__BC(00000000, 00408000)
+#define UC64_PM_PGTABLE_PGD		__BC(00000000, 00407000)
+#define UC64_PM_PGTABLE_DMAP_PMD	__BC(00000000, 00406000)
 #define UC64_PM_ZEROPAGE		__BC(00000000, 00404000)
-#define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+#define UC64_PM_DTB_START		__BC(00000000, 00401000)
 
-/*
- * Physical and virtual address of the initial page table.
- * We place the page tables 4K below UC64_VM_KIMAGE_START.
- */
-#define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - UC64_PAGE_SIZE)
+#define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
+
+#define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
 #define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
-
-/*
- * Physical address of the direct map pmd.
- */
-#define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
-
-/* The byte offset of zImage in RAM from the start of RAM. */
-#define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
-
-/* The address of stack and heap. */
-#define UC64_PM_ZIMAGE_SP		__BC(00000000, 03e00000)
-#define UC64_PM_ZIMAGE_HEAP		__BC(00000000, 04000000)
+#define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+#define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
 
 #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
