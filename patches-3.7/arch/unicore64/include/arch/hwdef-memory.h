@@ -85,26 +85,29 @@
  * We must make sure that UC64_VM_KIMAGE_START is correctly set.
  * Currently, we expect the least significant 24 bits to be 0x408000.
  *
- * PGTABLE_PGD:
- * Physical and virtual address of the initial page table.
- * We place the page tables 4K below UC64_VM_KIMAGE_START.
- *
- * PGTABLE_DMAP_PMD:
- * Physical address of the direct map pmd.
- *
- * ZEROPAGE:
- * This page is reserved for zero page.
- *
  * DTB_START:
  * The byte offset of the unicore64.dtb in RAM from the start of RAM.
  * We must make sure that UC64_VM_DTB_START is correctly set.
  * Currently, we expect the least significant 24 bits to be 0x401000.
+ *
+ * ZEROPAGE:
+ * This page is reserved for zero page.
+ *
+ * PGTABLE_PGD:
+ * Physical and virtual address of the initial page table.
+ * We place the page tables 4K below UC64_VM_KIMAGE_START.
+ *
+ * PGTABLE_PMD_*:
+ * Physical address of the direct map pmd.
  */
 #define UC64_PM_KIMAGE_START		__BC(00000000, 00408000)
-#define UC64_PM_PGTABLE_PGD		__BC(00000000, 00407000)
-#define UC64_PM_PGTABLE_DMAP_PMD	__BC(00000000, 00406000)
-#define UC64_PM_ZEROPAGE		__BC(00000000, 00404000)
-#define UC64_PM_DTB_START		__BC(00000000, 00401000)
+#define UC64_PM_DTB_START		__BC(00000000, 00400000)
+#define UC64_PM_ZEROPAGE		__BC(00000000, 00402000)
+#define UC64_PM_PGTABLE_PGD		__BC(00000000, 00403000)
+#define UC64_PM_PGTABLE_PUD_DM00	__BC(00000000, 00404000)
+#define UC64_PM_PGTABLE_PUD_DM01	__BC(00000000, 00405000)
+#define UC64_PM_PGTABLE_PUD_IO00	__BC(00000000, 00406000)
+#define UC64_PM_PGTABLE_PUD_IO01	__BC(00000000, 00407000)
 
 #define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
 

@@ -85,7 +85,7 @@ ENTRY(__head_pgtable_init)
 	dand	r1, r1, r2
 	dmovl	r2, #UC64_PM_PGTABLE_PGD
 	dadd	r1, r1, r2
-	dmovl	r0, #UC64_PM_PGTABLE_DMAP_PMD
+	dmovl	r0, #UC64_PM_PGTABLE_PUD_DM00
 	dor	r0, r0, #UC64_PGD_EXIST
 	std	r0, [r1]
 
@@ -93,7 +93,7 @@ ENTRY(__head_pgtable_init)
 	 * Step three: clear 4k level-two page table from first
 	 * direct-mapped pmd
 	 */
-	dmovl	r0, #UC64_PM_PGTABLE_DMAP_PMD
+	dmovl	r0, #UC64_PM_PGTABLE_PUD_DM00
 	dmov	r1, #0
 	dmovl	r2, #UC64_PAGE_SIZE
 	call	memset
@@ -103,7 +103,7 @@ ENTRY(__head_pgtable_init)
 	 * Level two page table entry value = physcial frame number + offset
 	 * offset: S=0, MA=10, G=0, RWX=111, M=0, A=0, E=1, US=0, PT=1
 	 */
-	dmovl	r1, #UC64_PM_PGTABLE_DMAP_PMD
+	dmovl	r1, #UC64_PM_PGTABLE_PUD_DM00
 	dmovl	r0, UC64_PM_START
 	dor	r0, r0, #UC64_PMD_SPAGE | UC64_PMD_EXIST
 	dor	r0, r0, #UC64_PMD_TYPE_CACHE | UC64_PMD_RWX
