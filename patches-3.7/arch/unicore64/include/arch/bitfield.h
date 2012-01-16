@@ -8,8 +8,8 @@
 
 #include <linux/const.h>
 
-#define BFSIZE(vbits)			(_AC(1, UL) << (vbits))
-#define __BM(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+#define __BP(vbits)			(_AC(1, UL) << (vbits))
+#define __BM(vmask, vshift)		(((__BP(vmask)) - 1) << (vshift))
 #define __BS(vmask, vshift)	(~__BM(vmask, vshift))
 
 #define __BF(val, vmask, vshift)		\
