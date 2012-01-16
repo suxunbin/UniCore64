@@ -44,7 +44,7 @@
  * \\\\lt:/programlisting\\\\gt:
  * E: Exist bit
  */
-#define UC64_PGD_EXIST		BFIELD(1, 1, 2)
+#define UC64_PGD_EXIST		__BF(1, 1, 2)
 
 /**
  * DOC: HWDEF_PGTABLE_H_PMD
@@ -69,21 +69,21 @@
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
-#define UC64_PMD_SPAGE		BFIELD(1, 1, 0)
-#define UC64_PMD_USER		BFIELD(1, 1, 1)
-#define UC64_PMD_EXIST		BFIELD(1, 1, 2)
-#define UC64_PMD_YOUNG		BFIELD(1, 1, 3)
-#define UC64_PMD_DIRTY		BFIELD(1, 1, 4)
-#define UC64_PMD_EXEC		BFIELD(1, 1, 5)
-#define UC64_PMD_WRITE		BFIELD(1, 1, 6)
-#define UC64_PMD_READ		BFIELD(1, 1, 7)
+#define UC64_PMD_SPAGE		__BF(1, 1, 0)
+#define UC64_PMD_USER		__BF(1, 1, 1)
+#define UC64_PMD_EXIST		__BF(1, 1, 2)
+#define UC64_PMD_YOUNG		__BF(1, 1, 3)
+#define UC64_PMD_DIRTY		__BF(1, 1, 4)
+#define UC64_PMD_EXEC		__BF(1, 1, 5)
+#define UC64_PMD_WRITE		__BF(1, 1, 6)
+#define UC64_PMD_READ		__BF(1, 1, 7)
 #define UC64_PMD_RWX		BFMASK(3, 5)
-#define UC64_PMD_GLOBAL		BFIELD(1, 1, 8)
+#define UC64_PMD_GLOBAL		__BF(1, 1, 8)
 #define UC64_PMD_TYPE_MASK	BFMASK(2, 9)
-#define UC64_PMD_TYPE_IO	BFIELD(0, 2, 9)
-#define UC64_PMD_TYPE_NOCACHE	BFIELD(1, 2, 9)
-#define UC64_PMD_TYPE_CACHE	BFIELD(2, 2, 9)
-#define UC64_PMD_SHARE		BFIELD(1, 1, 11)
+#define UC64_PMD_TYPE_IO	__BF(0, 2, 9)
+#define UC64_PMD_TYPE_NOCACHE	__BF(1, 2, 9)
+#define UC64_PMD_TYPE_CACHE	__BF(2, 2, 9)
+#define UC64_PMD_SHARE		__BF(1, 1, 11)
 
 /**
  * DOC: HWDEF_PGTABLE_H_PTE
@@ -108,19 +108,19 @@
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
-#define UC64_PTE_USER		BFIELD(1, 1, 1)
-#define UC64_PTE_EXIST		BFIELD(1, 1, 2)
-#define UC64_PTE_YOUNG		BFIELD(1, 1, 3)
-#define UC64_PTE_DIRTY		BFIELD(1, 1, 4)
-#define UC64_PTE_EXEC		BFIELD(1, 1, 5)
-#define UC64_PTE_WRITE		BFIELD(1, 1, 6)
-#define UC64_PTE_READ		BFIELD(1, 1, 7)
+#define UC64_PTE_USER		__BF(1, 1, 1)
+#define UC64_PTE_EXIST		__BF(1, 1, 2)
+#define UC64_PTE_YOUNG		__BF(1, 1, 3)
+#define UC64_PTE_DIRTY		__BF(1, 1, 4)
+#define UC64_PTE_EXEC		__BF(1, 1, 5)
+#define UC64_PTE_WRITE		__BF(1, 1, 6)
+#define UC64_PTE_READ		__BF(1, 1, 7)
 #define UC64_PTE_RWX		BFMASK(3, 5)
-#define UC64_PTE_GLOBAL		BFIELD(1, 1, 8)
+#define UC64_PTE_GLOBAL		__BF(1, 1, 8)
 #define UC64_PTE_TYPE_MASK	BFMASK(2, 9)
-#define UC64_PTE_TYPE_IO	BFIELD(0, 2, 9)
-#define UC64_PTE_TYPE_NOCACHE	BFIELD(1, 2, 9)
-#define UC64_PTE_TYPE_CACHE	BFIELD(2, 2, 9)
-#define UC64_PTE_SHARE		BFIELD(1, 1, 11)
+#define UC64_PTE_TYPE_IO	__BF(0, 2, 9)
+#define UC64_PTE_TYPE_NOCACHE	__BF(1, 2, 9)
+#define UC64_PTE_TYPE_CACHE	__BF(2, 2, 9)
+#define UC64_PTE_SHARE		__BF(1, 1, 11)
 
 #endif /* __UNICORE64_ARCH_HWDEF_PGTABLE_H__ */

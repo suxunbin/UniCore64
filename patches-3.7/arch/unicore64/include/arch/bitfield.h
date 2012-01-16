@@ -12,7 +12,7 @@
 #define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
 #define BFMASK_NOT(vmask, vshift)	(~BFMASK(vmask, vshift))
 
-#define BFIELD(val, vmask, vshift)		\
+#define __BF(val, vmask, vshift)		\
 		(((val) << (vshift)) & BFMASK(vmask, vshift))
 
 /*
