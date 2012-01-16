@@ -36,6 +36,8 @@ ENDPROC(__vectors_table)
 ENTRY(__vec_int_ost)
 	__priv_context_save
 
+	call	uc64_inner_timer_irqhandler
+
 	__priv_context_restore
 	eret
 ENDPROC(__vec_int_ost)
