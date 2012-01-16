@@ -9,11 +9,11 @@
 #include <linux/const.h>
 
 #define BFSIZE(vbits)			(_AC(1, UL) << (vbits))
-#define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
-#define __BS(vmask, vshift)	(~BFMASK(vmask, vshift))
+#define __BM(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+#define __BS(vmask, vshift)	(~__BM(vmask, vshift))
 
 #define __BF(val, vmask, vshift)		\
-		(((val) << (vshift)) & BFMASK(vmask, vshift))
+		(((val) << (vshift)) & __BM(vmask, vshift))
 
 /*
  * To define 64-bit addresses:

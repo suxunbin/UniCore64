@@ -32,7 +32,7 @@
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
-#define ASR_MODE_MASK		BFMASK(3, 0)
+#define ASR_MODE_MASK		__BM(3, 0)
 #define ASR_MODE_USER		__BF(1, 1, 0)
 #define ASR_MODE_PRIV		__BF(1, 1, 1)
 #define ASR_MODE_DEBUG		__BF(1, 1, 2)
@@ -40,7 +40,7 @@
 #define ASR_T_BIT		__BF(1, 1, 3)
 #define ASR_D_BIT		__BF(1, 1, 4)
 
-#define ASR_INTR_MASK		BFMASK(6, 5)
+#define ASR_INTR_MASK		__BM(6, 5)
 #define ASR_INTR_SMP		__BF(1, 1, 5)
 #define ASR_INTR_LSU		__BF(1, 1, 6)
 #define ASR_INTR_ITM		__BF(1, 1, 7)
@@ -62,7 +62,7 @@
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
-#define AFR_MASK		BFMASK(4, 0)
+#define AFR_MASK		__BM(4, 0)
 #define AFR_V_BIT		__BF(1, 1, 0)
 #define AFR_C_BIT		__BF(1, 1, 1)
 #define AFR_Z_BIT		__BF(1, 1, 2)
