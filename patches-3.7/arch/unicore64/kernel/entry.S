@@ -3,12 +3,12 @@
 
 	.macro	__priv_context_save
 	/* save all registers */
-	push_lr
+	uc64_push	lr
 	.endm
 
 	.macro __priv_context_restore
 	/* restore all registers */
-	pop_lr
+	uc64_pop	lr
 	.endm
 
 /**

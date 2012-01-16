@@ -6,8 +6,6 @@
 #ifdef __ASSEMBLY__
 #define csub		cmpsub
 #define dcsub		dcmpsub
-#define push_lr		std.w	lr, [sp-], #8
-#define pop_lr		ldd.w	lr, [sp]+, #8
 #endif /* __ASSEMBLY__ */
 
 /*
@@ -19,5 +17,13 @@
 #else
 #define __ASMMACRO_WRAP(code...)	__asm__(__stringify(code));
 #endif /* __ASSEMBLY__ */
+
+__ASMMACRO_WRAP(.macro	uc64_push, rt;
+			std.w	&rt, [sp-], #8;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	uc64_pop, rt;
+			ldd.w	&rt, [sp]+, #8;
+		.endm)
 
 #endif /* __UNICORE64_ARCH_ASM_COMMON_H__ */
