@@ -20,9 +20,8 @@
 #define __BF(_val, _len, _sft)	(((_val) << (_sft)) & __BM(_len, _sft))
 
 /*
- * To define 64-bit addresses:
- *   HEX64(1f, ffffffff) means 0x1fffffffff
+ * __BC: concatenate _hi and _lo to define 64-bit addresses:
  */
-#define HEX64(hi, lo)		_AC(0x ## hi ## lo, UL)
+#define __BC(_hi, _lo)		_AC(0x ## _hi ## _lo, UL)
 
 #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
