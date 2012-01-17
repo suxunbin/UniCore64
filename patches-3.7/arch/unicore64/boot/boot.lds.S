@@ -4,6 +4,21 @@ OUTPUT_ARCH(unicore64)
 ENTRY(_start)
 SECTIONS
 {
+	. = UC64_PM_ZIMAGE_START;
+
+	.text : {
+		*(.start)
+		*(.text)
+		*(.rodata)
+		*(.rodata.*)
+	}
+
+	. = ALIGN(8);
+
+	__bss_start = .;
+	.bss : { *(.bss) }
+	_end = .;
+
 	/DISCARD/ : {
 		/*
 		 * Discard any r/w data -
@@ -14,20 +29,4 @@ SECTIONS
 		 */
 		*(.data)
 	}
-
-	. = UC64_PM_ZIMAGE_START;
-
-	.text : {
-		*(.start)
-		*(.text)
-		*(.rodata)
-		*(.rodata.*)
-
-		. = ALIGN(4);
-	}
-
-	__bss_start = .;
-	.bss : { *(.bss) }
-	_end = .;
-
 }
