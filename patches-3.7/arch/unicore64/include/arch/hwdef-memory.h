@@ -68,16 +68,17 @@
  * We have 36-bit pm address which means 64GB physical space
  * as below:
  *
- * ZIMAGE_START: The byte offset of zImage in RAM from the start of RAM.
- * ZIMAGE_SP & ZIMAGE_HEAP: The address of stack and heap.
+ * ZIMAGE_START: The byte offset of zImage in RAM from the start of RAM
+ * ZIMAGE_STACKTOP: sp value for uncompressing period
+ * ZIMAGE_HEAP_END: malloc space above stack
  *
  */
 #define UC64_PM_START			__BC(00000000, 00000000)
 #define UC64_PM_END			__BC(0000000f, ffffffff)
 
 #define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
-#define UC64_PM_ZIMAGE_SP		__BC(00000000, 03e00000)
-#define UC64_PM_ZIMAGE_HEAP		__BC(00000000, 04000000)
+#define UC64_PM_ZIMAGE_STACKTOP		__BC(00000000, 03e00000)
+#define UC64_PM_ZIMAGE_HEAP_END		__BC(00000000, 03f00000)
 
 /*
  * Address space: 00400000 - 00408000

@@ -27,7 +27,7 @@ _start:
 	/*
 	 * Set the sp register.
 	 */
-	dmovl	sp, #UC64_PM_ZIMAGE_SP
+	dmovl	sp, #UC64_PM_ZIMAGE_STACKTOP
 
 	/*
 	 * Clear BSS region.
@@ -51,8 +51,8 @@ _start:
 	 *   r2: free_mem_ptr_end_p
 	 */
 	dmovl	r0, #UC64_PM_KIMAGE_START
-	dmovl	r1, #UC64_PM_ZIMAGE_SP
-	dmovl	r2, #UC64_PM_ZIMAGE_HEAP
+	dmovl	r1, #UC64_PM_ZIMAGE_STACKTOP
+	dmovl	r2, #UC64_PM_ZIMAGE_HEAP_END
 	call	decompress_kernel
 
 	/*
