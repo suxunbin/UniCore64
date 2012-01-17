@@ -1,5 +1,6 @@
 #include <linux/linkage.h>
 #include <arch/asm-common.h>
+#include <arch/asm-debug.h>
 
 	.macro	__priv_context_save
 	/* save all gp registers */
@@ -37,19 +38,26 @@ ENTRY(__switch_to)
 ENDPROC(__switch_to)
 
 ENTRY(__vectors_table)
-	bkpt	0x00	/* 0x00: RESET */
-	bkpt	0x04	/* 0x04: EEXTN */
-	bkpt	0x08	/* 0x08: ESWI */
-	bkpt	0x0c	/* 0x0c: ITRAP */
-	bkpt	0x10	/* 0x10: DTRAP */
-	bkpt	0x14	/* 0x14: FPU_EXC */
-	bkpt	0x18	/* 0x18: INT_KERNEL */
-	bkpt	0x1c	/* 0x1c: INT_FAULT */
-	bkpt	0x20	/* 0x20: INT_TIMER */
-	bkpt	0x24	/* 0x24: INT_PE */
+	call	__vec_invalid	/* 0x00: RESET */
+	call	__vec_invalid	/* 0x04: EEXTN */
+	call	__vec_invalid	/* 0x08: ESWI */
+	call	__vec_invalid	/* 0x0c: ITRAP */
+	call	__vec_invalid	/* 0x10: DTRAP */
+	call	__vec_invalid	/* 0x14: FPU_EXC */
+	call	__vec_invalid	/* 0x18: INT_KERNEL */
+	call	__vec_invalid	/* 0x1c: INT_FAULT */
+	call	__vec_invalid	/* 0x20: INT_TIMER */
+	call	__vec_invalid	/* 0x24: INT_PE */
 	b	__vec_int_ost	/* 0x28: INT_OST */
-	bkpt	0x2c	/* 0x2c: INT_PM */
+	call	__vec_invalid	/* 0x2c: INT_PM */
 ENDPROC(__vectors_table)
+
+ENTRY(__vec_invalid)
+	dmovl			r0,  0xdeaddeaddeaddead
+	uc64_debug_putdata	r0, r14, r15
+	uc64_debug_putdata	lr, r14, r15
+	halt			/* no return */
+ENDPROC(__vec_invalid)
 
 ENTRY(__vec_int_ost)
 	__priv_context_save
