@@ -1,4 +1,5 @@
 #include <linux/linkage.h>
+#include <asm/cache.h>
 #include <arch/asm-common.h>
 #include <arch/asm-debug.h>
 
@@ -37,6 +38,7 @@ ENTRY(__switch_to)
 	/* FIXME: */
 ENDPROC(__switch_to)
 
+	.align	L1_CACHE_SHIFT
 ENTRY(__vectors_table)
 	call	__vec_invalid	/* 0x00: RESET */
 	call	__vec_invalid	/* 0x04: EEXTN */
