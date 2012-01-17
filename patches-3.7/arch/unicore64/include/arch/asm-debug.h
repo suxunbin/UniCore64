@@ -11,7 +11,7 @@
 __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
 			mov	&rt1, r0;
 			mov	&rt2, r1;
-			mov	r0, #0;
+			mov	r0, #1;
 			mov	r1, &rchar;
 			bkpt;
 			mov	r0, &rt1;
