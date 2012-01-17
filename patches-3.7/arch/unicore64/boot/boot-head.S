@@ -71,6 +71,7 @@ _start:
 	dmovl	r0, #UC64_VM_KIMAGE_START
 	jump	r0
 
+	__epip4d_align64
 dtb_data:
 	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
 dtb_data_end:
