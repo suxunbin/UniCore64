@@ -5,6 +5,7 @@
 
 /**
  * uc64_debug_putchar - prints a 8 bits char
+ * uc64_debug_putdata - prints a 64 bits data
  */
 #ifdef	CONFIG_DEBUG_OCD
 /* For OCD debug mode */
@@ -13,6 +14,16 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
 			mov	&rt2, r1;
 			mov	r0, #1;
 			mov	r1, &rchar;
+			bkpt;
+			mov	r0, &rt1;
+			mov	r1, &rt2;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	uc64_debug_putdata, rdata, rt1, rt2;
+			mov	&rt1, r0;
+			mov	&rt2, r1;
+			mov	r0, #0;
+			mov	r1, &rdata;
 			bkpt;
 			mov	r0, &rt1;
 			mov	r1, &rt2;
