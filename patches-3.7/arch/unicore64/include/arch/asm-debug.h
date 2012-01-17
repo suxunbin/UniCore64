@@ -4,11 +4,23 @@
 #include <arch/asm-common.h>
 
 /**
-  * uc64_debug_putchar - prints a 8 bits char
-  */
+ * uc64_debug_putchar - prints a 8 bits char
+ */
 #ifdef	CONFIG_DEBUG_OCD
-__ASMMACRO_WRAP(.macro	uc64_debug_putchar, rt;
-			movc	p6.c0, &rt, #1;
+/* For OCD debug mode */
+__ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
+			mov	&rt1, r0;
+			mov	&rt2, r1;
+			mov	r0, #0;
+			mov	r1, &rchar;
+			bkpt;
+			mov	r0, &rt1;
+			mov	r1, &rt2;
+		.endm)
+#else
+/* For RTL simulation environment */
+__ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
+			movc	p6.c0, &rchar, #1;
 		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 

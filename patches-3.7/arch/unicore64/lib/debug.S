@@ -16,7 +16,7 @@ ENTRY(uc64_debug_puts)
 	dcsub.a r2, #0
 	beq	1003f
 
-	uc64_debug_putchar	r2
+	uc64_debug_putchar	r2, r14, r15
 
 	dsub.a	r1, r1, #1
 	bsl	1002f
