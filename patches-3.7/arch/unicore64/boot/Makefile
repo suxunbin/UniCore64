@@ -26,9 +26,7 @@ $(obj)/%.dtb: $(obj)/%.dts FORCE
 
 $(obj)/boot-head.o: $(obj)/piggy.bin $(obj)/unicore64-fpga.dtb
 
-BOOT_OBJS	:= $(srctree)/arch/unicore64/lib/memcpy.o
-BOOT_OBJS	+= $(srctree)/arch/unicore64/lib/memset.o
-BOOT_OBJS	+= $(srctree)/arch/unicore64/lib/wordcopy.o
+BOOT_OBJS	:= $(srctree)/arch/unicore64/lib/string-simple.o
 BOOT_OBJS	+= $(srctree)/arch/unicore64/lib/debug.o
 BOOT_OBJS	+= $(obj)/uncompress.o
 
