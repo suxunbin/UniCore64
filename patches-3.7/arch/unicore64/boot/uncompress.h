@@ -1,9 +1,10 @@
 #ifndef __UNICORE64_BOOT_UNCOMPRESS_H__
 #define __UNICORE64_BOOT_UNCOMPRESS_H__
 
+#include <arch/asm-debug.h>
+
 extern char input_data[];
 extern char input_data_end[];
-extern void uc64_debug_puts(char *);
 
 #define STATIC static
 #define STATIC_RW_DATA	/* non-static please */
