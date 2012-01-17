@@ -26,4 +26,9 @@ __ASMMACRO_WRAP(.macro	uc64_pop, rt;
 			ldd.w	&rt, [sp]+, #8;
 		.endm)
 
+/* epip for debug: all should be removed definitely */
+#ifdef __ASSEMBLY__
+#define __epip4d_align64	.align 3
+#endif /* __ASSEMBLY__ */
+
 #endif /* __UNICORE64_ARCH_ASM_COMMON_H__ */

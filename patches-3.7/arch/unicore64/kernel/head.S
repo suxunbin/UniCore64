@@ -14,7 +14,6 @@
 #include <arch/hwdef-copro.h>
 #include <arch/asm-mmuops.h>
 #include <arch/head-macros.S>
-#include <arch/temp.h>
 
 /**
  * DOC: swapper_pg_dir
@@ -56,7 +55,7 @@ ENTRY(stext)
 	b	start_kernel
 ENDPROC(stext)
 
-	__temp_align64
+	__epip4d_align64
 __priv_sp:
 	.dword	init_thread_union + (THREAD_SIZE - 8)
 
