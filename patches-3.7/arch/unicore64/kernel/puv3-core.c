@@ -1,8 +1,8 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 
-#include <arch/hwdef-puv3.h>
-#include <arch/hwdef-irq.h>
+#include <arch/puv3-iomem.h>
+#include <arch/puv3-irq.h>
 
 static struct resource puv3_gpio_resources[] = {
 	[0] = {

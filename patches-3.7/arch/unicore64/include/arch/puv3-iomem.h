@@ -1,9 +1,9 @@
-#ifndef __UNICORE64_ARCH_HWDEF_PUV3_H__
-#define __UNICORE64_ARCH_HWDEF_PUV3_H__
+#ifndef __UNICORE64_ARCH_PUV3_IOMEM_H__
+#define __UNICORE64_ARCH_PUV3_IOMEM_H__
 
 #include <arch/hwdef-memory.h>
 
-#define PUV3_IOMEM_REGION	__BS(12, 0)
+#define PUV3_IOMEM_REGION		__BS(12, 0)
 
 /*
  * PUV3 System Bus Addresses (PCI): 0x80000000 - 0xBFFFFFFF (1GB)
@@ -60,4 +60,4 @@
 #define PUV3_PS2_BASE			(PUV3_APB_BASE + 0xB00000) /* APB-11 */
 #define PUV3_SDC_BASE			(PUV3_APB_BASE + 0xC00000) /* APB-12 */
 
-#endif  /* __UNICORE64_ARCH_HWDEF_PUV3_H__ */
+#endif  /* __UNICORE64_ARCH_PUV3_IOMEM_H__ */
