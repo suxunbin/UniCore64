@@ -3,6 +3,8 @@
 
 #include <arch/hwdef-memory.h>
 
+#define PUV3_IOMEM_REGION	__BS(12, 0)
+
 /*
  * PUV3 System Bus Addresses (PCI): 0x80000000 - 0xBFFFFFFF (1GB)
  * 0x80000000 - 0x8000000B 12B    PCI Configuration regs

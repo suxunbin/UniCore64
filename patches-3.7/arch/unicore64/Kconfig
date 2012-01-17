@@ -55,6 +55,10 @@ config ARCH_FPGA
 	  ONLY enabled this option when debugging and running in FPGA board.
 
 	  If unsure, say N.
+
+config ARCH_PUV3
+	def_bool y
+
 endmenu
 
 menu "Kernel Features"
