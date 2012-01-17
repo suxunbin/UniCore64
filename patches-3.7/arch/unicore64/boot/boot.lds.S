@@ -23,10 +23,6 @@ SECTIONS
 		*(.rodata)
 		*(.rodata.*)
 
-		input_data = .;
-		*(.piggydata)
-		input_data_end = .;
-
 		. = ALIGN(4);
 	}
 

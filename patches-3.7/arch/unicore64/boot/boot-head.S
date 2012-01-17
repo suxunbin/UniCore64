@@ -75,5 +75,9 @@ dtb_data:
 	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
 dtb_data_end:
 
-	.section .piggydata
+	__epip4d_align64
+	.globl	input_data
+input_data:
 	.incbin "arch/unicore64/boot/piggy.bin"
+	.globl	input_data_end
+input_data_end:
