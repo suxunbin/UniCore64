@@ -30,3 +30,16 @@ ENTRY(uc64_debug_puts)
 1004:
 	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
 ENDPROC(uc64_debug_puts)
+
+/**
+ * uc64_debug_putx - print a data in hex format
+ * r0: the data to be printed
+ */
+ENTRY(uc64_debug_putx)
+	uc64_debug_putdata	r0, r14, r15
+
+	mov	r0, #0x20
+	uc64_debug_putchar	r0, r14, r15
+
+	return
+ENDPROC(uc64_debug_putx)

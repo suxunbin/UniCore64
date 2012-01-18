@@ -25,9 +25,6 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putdata, rdata, rt1, rt2;
 			mov	r0, #0;
 			mov	r1, &rdata;
 			bkpt;
-			mov	r0, #1;
-			mov	r1, #0x20;
-			bkpt;
 			mov	r0, &rt1;
 			mov	r1, &rt2;
 		.endm)
@@ -40,6 +37,7 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
 
 #ifndef __ASSEMBLY__
 extern void uc64_debug_puts(const char *s);
+extern void uc64_debug_putx(unsigned long x);
 #endif /* __ASSEMBLY__ */
 
 #endif /* __UNICORE64_ARCH_ASM_DEBUG_H__ */
