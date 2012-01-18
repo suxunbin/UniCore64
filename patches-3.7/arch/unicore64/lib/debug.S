@@ -29,5 +29,4 @@ ENTRY(uc64_debug_puts)
 
 1004:
 	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
-	.align 4
 ENDPROC(uc64_debug_puts)

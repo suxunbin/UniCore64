@@ -38,7 +38,7 @@ ENTRY(__switch_to)
 	/* FIXME: */
 ENDPROC(__switch_to)
 
-	.align	L1_CACHE_SHIFT
+	.p2align	L1_CACHE_SHIFT
 ENTRY(__vectors_table)
 	call	__vec_invalid	/* 0x00: RESET */
 	call	__vec_invalid	/* 0x04: EEXTN */
