@@ -15,9 +15,9 @@ _start:
 	/*
 	 * Initialise TLB and Caches.
 	 */
-	uc64_invalidate_dcache	r0
-	uc64_invalidate_icache	r0
-	uc64_invalidate_tlb	r0
+	__invalid_dcache	r0
+	__invalid_icache	r0
+	__invalid_tlb		r0
 
 	/*
 	 * Turn on dcache and icache.
@@ -58,7 +58,7 @@ _start:
 	/*
 	 * Flush the cache to maintain consistency.
 	 */
-	uc64_flush_dcache	r0
+	__flush_dcache	r0
 
 	/*
 	 * Initialize ASR and coprocessor 0.

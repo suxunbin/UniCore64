@@ -29,18 +29,18 @@
  */
 	__HEAD
 ENTRY(stext)
-	__head_initialize		r0
+	__head_initialize	r0
 
 	/* Set sp for function discipline */
 	ldd	sp, __priv_sp
 
 	call	__head_pgtable_init
 
-	uc64_invalidate_tlb		r0
-	uc64_invalidate_dcache		r0
-	uc64_invalidate_icache		r0
+	__invalid_tlb		r0
+	__invalid_dcache	r0
+	__invalid_icache	r0
 
-	uc64_enable_cache		r0
+	uc64_enable_cache	r0
 
 	/*
 	 * Enable the MMU.  This completely changes the structure of the visible
@@ -116,7 +116,7 @@ ENTRY(__head_pgtable_init)
 	 * Step five: set pgd register in cp0
 	 */
 	dmovl	r0, #UC64_PM_PGTABLE_PGD
-	uc64_set_pgd	r0
+	__set_pgd	r0
 
 	__pop	lr
 	return

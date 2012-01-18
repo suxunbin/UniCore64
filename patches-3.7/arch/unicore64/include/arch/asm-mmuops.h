@@ -10,45 +10,45 @@
 
 /**
  * DOC: ASM_MMUOPS_H_INVALIDATE_DCACHE
- * uc64_invalidate_dcache - invalidate entire L1 dcache
+ * __invalid_dcache - invalidate entire L1 dcache
  */
-__ASMMACRO_WRAP(.macro	uc64_invalidate_dcache, rt;
+__ASMMACRO_WRAP(.macro	__invalid_dcache, rt;
 			dmovl	&rt, #0;
 			movc	p0.c6, &rt, #8;
 		.endm)
 
 /**
  * DOC: ASM_MMUOPS_H_FLUSH_DCACHE
- * uc64_flush_dcache - flush entire L1 dcache
+ * __flush_dcache - flush entire L1 dcache
  */
-__ASMMACRO_WRAP(.macro	uc64_flush_dcache, rt;
+__ASMMACRO_WRAP(.macro	__flush_dcache, rt;
 			dmovl	&rt, #0;
 			movc	p0.c6, &rt, #12;
 		.endm)
 
 /**
  * DOC: ASM_MMUOPS_H_INVALIDATE_ICACHE
- * uc64_invalidate_icache - invalidate entire icache
+ * __invalid_icache - invalidate entire icache
  */
-__ASMMACRO_WRAP(.macro	uc64_invalidate_icache, rt;
+__ASMMACRO_WRAP(.macro	__invalid_icache, rt;
 			dmovl	&rt, #0;
 			movc	p0.c7, &rt, #0;
 		.endm)
 
 /**
  * DOC: ASM_MMUOPS_H_INVALIDATE_TLB
- * uc64_invalidate_tlb - invalidate I&D tlb
+ * __invalid_tlb - invalidate I&D tlb
  */
-__ASMMACRO_WRAP(.macro	uc64_invalidate_tlb, rt;
+__ASMMACRO_WRAP(.macro	__invalid_tlb, rt;
 			dmovl	&rt, #0;
 			movc	p0.c5, &rt, #24;
 		.endm)
 
 /**
  * DOC: ASM_MMUOPS_H_SET_PGD
- * uc64_set_pgd -  set pgd address
+ * __set_pgd -  set pgd address
  */
-__ASMMACRO_WRAP(.macro	uc64_set_pgd, rpgd;
+__ASMMACRO_WRAP(.macro	__set_pgd, rpgd;
 			movc	p0.c2, &rpgd, #0;
 		.endm)
 
