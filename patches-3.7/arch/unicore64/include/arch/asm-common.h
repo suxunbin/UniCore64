@@ -18,11 +18,11 @@
 #define __ASMMACRO_WRAP(code...)	__asm__(__stringify(code));
 #endif /* __ASSEMBLY__ */
 
-__ASMMACRO_WRAP(.macro	uc64_push, rt;
+__ASMMACRO_WRAP(.macro	__push, rt;
 			std.w	&rt, [sp-], #8;
 		.endm)
 
-__ASMMACRO_WRAP(.macro	uc64_pop, rt;
+__ASMMACRO_WRAP(.macro	__pop, rt;
 			ldd.w	&rt, [sp]+, #8;
 		.endm)
 
