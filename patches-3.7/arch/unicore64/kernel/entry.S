@@ -55,10 +55,10 @@ ENTRY(__vectors_table)
 ENDPROC(__vectors_table)
 
 ENTRY(__vec_invalid)
-	dmovl			r0,  0xdeaddeaddeaddead
-	uc64_debug_putdata	r0, r14, r15
-	uc64_debug_putdata	lr, r14, r15
-	halt			/* no return */
+	dmovl		r0,  0xdeaddeaddeaddead
+	__putdata	r0, r14, r15
+	__putdata	lr, r14, r15
+	halt		/* no return */
 ENDPROC(__vec_invalid)
 
 ENTRY(__vec_int_ost)
