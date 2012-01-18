@@ -25,6 +25,9 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putdata, rdata, rt1, rt2;
 			mov	r0, #0;
 			mov	r1, &rdata;
 			bkpt;
+			mov	r0, #1;
+			mov	r1, #0x20;
+			bkpt;
 			mov	r0, &rt1;
 			mov	r1, &rt2;
 		.endm)
