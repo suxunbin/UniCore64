@@ -32,7 +32,7 @@ static struct resource puv3_ost_resources[] = {
 	},
 };
 
-int __init puv3_core_init(void)
+static int __init puv3_core_init(void)
 {
 	/* APB-5 */
 	platform_device_register_simple("PUV3-INTC", -1,
