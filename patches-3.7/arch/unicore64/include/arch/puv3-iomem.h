@@ -1,7 +1,16 @@
 #ifndef __UNICORE64_ARCH_PUV3_IOMEM_H__
 #define __UNICORE64_ARCH_PUV3_IOMEM_H__
 
+#include <linux/types.h>
 #include <arch/hwdef-memory.h>
+
+#ifndef __ASSEMBLY__
+#define PUV3_IOMEM(x)			(resource_size_t)(UC64_VM_IO_START + (x))
+#define PUV3_IOREG(x)			(void __iomem *)(x)
+#else
+#define PUV3_IOMEM(x)			(UC64_VM_IO_START + (x))
+#define PUV3_IOREG(x)			(x)
+#endif
 
 #define PUV3_IOMEM_REGION		__BS(12, 0)
 
@@ -13,7 +22,7 @@
  * 0x90000000 - 0x97FFFFFF 128MB  PCI AHB-PCI MEM-mapping
  * 0x98000000 - 0x9FFFFFFF 128MB  PCI PCI-AHB MEM-mapping
  */
-#define PUV3_PCI_BASE			UC64_IO2VM(0x00000000)
+#define PUV3_PCI_BASE			PUV3_IOMEM(0x00000000)
 #define PUV3_PCICFG_BASE		(PUV3_PCI_BASE + 0x0)
 #define PUV3_PCIBRI_BASE		(PUV3_PCI_BASE + 0x00010000)
 #define PUV3_PCILIO_BASE		(PUV3_PCI_BASE + 0x00030000)
@@ -23,7 +32,7 @@
 /*
  * PUV3 System Bus Addresses (AHB): 0xC0000000 - 0xEDFFFFFF (640MB)
  */
-#define PUV3_AHB_BASE			UC64_IO2VM(0x40000000)
+#define PUV3_AHB_BASE			PUV3_IOMEM(0x40000000)
 
 /* AHB-0 is DDR2 SDRAM */
 /* AHB-1 is PCI Space */
@@ -44,7 +53,7 @@
 /*
  * PUV3 Peripheral Bus Addresses (APB): 0xEE000000 - 0xEFFFFFFF (128MB)
  */
-#define PUV3_APB_BASE			UC64_IO2VM(0x6E000000)
+#define PUV3_APB_BASE			PUV3_IOMEM(0x6E000000)
 
 #define PUV3_UART0_BASE			(PUV3_APB_BASE + 0x000000) /* APB-0 */
 #define PUV3_UART1_BASE			(PUV3_APB_BASE + 0x100000) /* APB-1 */

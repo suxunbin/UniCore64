@@ -57,8 +57,6 @@
 #define UC64_VM_IO_START		__BC(ffffffef, 80000000)
 #define UC64_VM_IO_END			UC64_VM_DMAP_END
 
-#define UC64_IO2VM(ioaddr)		(UC64_VM_IO_START + (ioaddr))
-
 /* FIXME */
 #define UC64_VM_VMALLOC_START		__BC(00000001, 00000000)
 #define UC64_VM_VMALLOC_END		__BC(00000002, 00000000)
