@@ -1,5 +1,5 @@
-#ifndef __UNICORE64_ARCH_PUV3_INTC__
-#define __UNICORE64_ARCH_PUV3_INTC__
+#ifndef __UNICORE64_ARCH_PUV3_REGS_INTC__
+#define __UNICORE64_ARCH_PUV3_REGS_INTC__
 
 #include <arch/puv3-iomem.h>
 
@@ -20,4 +20,4 @@
 #define INTC_ICFP		PUV3_IOREG(PUV3_INTC_BASE + 0x0010)
 #define INTC_ICCR		PUV3_IOREG(PUV3_INTC_BASE + 0x0014)
 
-#endif /* __UNICORE64_ARCH_PUV3_INTC__ */
+#endif /* __UNICORE64_ARCH_PUV3_REGS_INTC__ */

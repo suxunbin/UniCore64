@@ -6,7 +6,7 @@
 #include <linux/platform_device.h>
 
 #include <arch/puv3-irq.h>
-#include <arch/puv3-intc.h>
+#include <arch/puv3-regs-intc.h>
 
 #define __puv3_intc_disable_all()	do {			\
 			writel(0, INTC_ICMR);			\
