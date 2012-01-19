@@ -1,5 +1,6 @@
 #include <linux/stddef.h>
 #include <asm/string.h>
+#include <arch/hwdef-memory.h>
 
 #include "uncompress.h"
 
@@ -46,15 +47,11 @@ static void error(char *x)
 /**
  * decompress_kernel() - Decompress the kernel image
  * @output_start: the address of kernel output
- * @free_mem_ptr_p: the pointer of free memory
- * @free_mem_ptr_end_p: the pointer of the end of free memory
  */
-void decompress_kernel(unsigned char *output_start,
-		unsigned long free_mem_ptr_p,
-		unsigned long free_mem_ptr_end_p)
+void decompress_kernel(unsigned char *output_start)
 {
-	free_mem_ptr		= free_mem_ptr_p;
-	free_mem_end_ptr	= free_mem_ptr_end_p;
+	free_mem_ptr = UC64_PM_ZIMAGE_STACKTOP;
+	free_mem_end_ptr = UC64_PM_ZIMAGE_HEAP_END;
 
 	arch_decomp_setup();
 

@@ -47,12 +47,8 @@ _start:
 	/*
 	 * Call decompress_kernel, and it's three parameters are:
 	 *   r0: output_start
-	 *   r1: free_mem_ptr_p
-	 *   r2: free_mem_ptr_end_p
 	 */
 	dmovl	r0, #UC64_PM_KIMAGE_START
-	dmovl	r1, #UC64_PM_ZIMAGE_STACKTOP
-	dmovl	r2, #UC64_PM_ZIMAGE_HEAP_END
 	call	decompress_kernel
 
 	/*
