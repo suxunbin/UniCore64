@@ -19,10 +19,7 @@ static void error(char *x)
 	arch_decomp_puts(x);
 	arch_decomp_puts("\n\n -- System halted");
 
-	arch_decomp_error(x);
-
-	for (;;)
-		;
+	arch_decomp_error();
 }
 
 /**

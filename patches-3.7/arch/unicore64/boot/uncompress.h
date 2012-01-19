@@ -20,7 +20,9 @@ extern char input_data_end[];
 #endif
 
 #ifndef ARCH_HAVE_DECOMP_ERROR
-#define arch_decomp_error(x)
+#define arch_decomp_error()
+#else
+#define arch_decomp_error()	__asm__("halt")
 #endif
 
 #ifndef ARCH_HAVE_DECOMP_SETUP
