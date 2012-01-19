@@ -49,7 +49,7 @@ ENTRY(__vectors_table)
 	call	__vec_invalid	/* 0x18: INT_KERNEL */
 	call	__vec_invalid	/* 0x1c: INT_FAULT */
 	call	__vec_invalid	/* 0x20: INT_TIMER */
-	call	__vec_invalid	/* 0x24: INT_PE */
+	call	__vec_int_puv3	/* 0x24: INT_PE */
 	b	__vec_int_ost	/* 0x28: INT_OST */
 	call	__vec_invalid	/* 0x2c: INT_PM */
 ENDPROC(__vectors_table)
@@ -60,6 +60,15 @@ ENTRY(__vec_invalid)
 	__putdata	lr, r14, r15
 	halt		/* no return */
 ENDPROC(__vec_invalid)
+
+ENTRY(__vec_int_puv3)
+	__priv_context_save
+
+	call	puv3_intc_handler
+
+	__priv_context_restore
+	eret
+ENDPROC(__vec_int_puv3)
 
 ENTRY(__vec_int_ost)
 	__priv_context_save

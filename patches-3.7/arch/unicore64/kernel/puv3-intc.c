@@ -1,4 +1,5 @@
 #include <linux/errno.h>
+#include <linux/hardirq.h>
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/ioport.h>
@@ -81,3 +82,22 @@ static int __init puv3_intc_init(void)
 	return ret;
 }
 arch_initcall(puv3_intc_init);
+
+/*
+ * This function handles all puv3 hardware interrupts.
+ */
+void puv3_intc_handler(void)
+{
+	unsigned int irqs, irq;
+
+	for (;;) {
+		irqs = readl(INTC_ICIP) & readl(INTC_ICMR);
+		if (irqs == 0)
+			return;
+
+		irq = ffs(irqs);
+		irq_enter();
+		generic_handle_irq(irq);
+		irq_exit();
+	}
+}
