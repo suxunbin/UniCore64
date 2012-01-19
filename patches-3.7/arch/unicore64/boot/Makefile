@@ -15,7 +15,7 @@ $(obj)/Image: vmlinux FORCE
 
 # Step two: compress Image to piggy.bin
 suffix_$(CONFIG_KERNEL_GZIP)	:= gzip
-suffix_$(CONFIG_KERNEL_BZIP2)	:= bz2
+suffix_$(CONFIG_KERNEL_BZIP2)	:= bzip2
 suffix_$(CONFIG_KERNEL_LZO)	:= lzo
 suffix_$(CONFIG_KERNEL_LZMA)	:= lzma
 
