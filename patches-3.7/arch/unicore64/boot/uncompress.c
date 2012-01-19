@@ -1,3 +1,6 @@
+#include <linux/stddef.h>
+#include <asm/string.h>
+
 #include "uncompress.h"
 
 unsigned long free_mem_ptr;
