@@ -13,7 +13,7 @@ ENTRY(uc64_debug_puts)
 	dmov	r1, #UC64_DEBUG_PUTS_MAX
 
 1001:	ldb.w	r2, [r0]+, #1
-	dcsub.a r2, #0
+	dcmpsub.a	r2, #0
 	beq	1003f
 
 	__putchar	r2, r14, r15

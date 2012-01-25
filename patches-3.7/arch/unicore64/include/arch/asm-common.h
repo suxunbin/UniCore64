@@ -3,11 +3,6 @@
 
 #include <linux/stringify.h>
 
-#ifdef __ASSEMBLY__
-#define csub		cmpsub
-#define dcsub		dcmpsub
-#endif /* __ASSEMBLY__ */
-
 /*
  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
  * Then this macro could be used in both assembly files and c files.
