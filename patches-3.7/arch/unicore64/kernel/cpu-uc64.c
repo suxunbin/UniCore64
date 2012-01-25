@@ -102,7 +102,7 @@ const struct seq_operations cpuinfo_op = {
  * of Instruct cache and Date cache.
  */
 #define CACHETYPE_SIZE(CT)						\
-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_MASK) {		\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_SIZE_512B:				\
 		pr_info("512B "); break;				\
 	case CP0_CPUID_##CT##CACHE_SIZE_1KB:				\
@@ -122,7 +122,7 @@ const struct seq_operations cpuinfo_op = {
 	}
 
 #define CACHETYPE_ASSOC(CT)						\
-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_MASK) {	\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_ASSOC_DMAP:				\
 		pr_info("DMAP "); break;				\
 	case CP0_CPUID_##CT##CACHE_ASSOC_2WAY:				\
@@ -142,7 +142,7 @@ const struct seq_operations cpuinfo_op = {
 	}
 
 #define CACHETYPE_LINE(CT)						\
-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_MASK) {		\
+	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_LINE_8BYTE:				\
 		pr_info("L8B"); break;					\
 	case CP0_CPUID_##CT##CACHE_LINE_16BYTE:				\
@@ -160,16 +160,16 @@ void __init setup_arch_cpuinfo(void)
 
 	uc64_cpuid = read_cp_op(CP0_CPUID, 0);
 
-	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_MASK) !=
+	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_SELECT) !=
 			CP0_CPUID_PARTNO_PKUNITY);
 
-	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_MASK) !=
+	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_SELECT) !=
 			CP0_CPUID_DESIGNER_MPRC);
 
 	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity,");
 	pr_info(" revision: %ld, layout: %ld\n",
-		((uc64_cpuid & CP0_CPUID_SERIES_MASK) >> CP0_CPUID_SERIES_POS),
-		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
+		((uc64_cpuid & CP0_CPUID_SERIES_SELECT) >> CP0_CPUID_SERIES_POS),
+		((uc64_cpuid & CP0_CPUID_LAYOUT_SELECT) >> CP0_CPUID_LAYOUT_POS));
 
 	/* CACHE information */
 	uc64_cache = read_cp_op(CP0_CPUID, 1);

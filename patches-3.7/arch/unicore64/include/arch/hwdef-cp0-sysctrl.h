@@ -71,35 +71,35 @@
  *
  * \\\\lt:programlisting\\\\gt:
  * -
- * CP0_CPUID_PARTNO_MASK:	mask for the cpuid partnumber
+ * CP0_CPUID_PARTNO_SELECT:	mask for the cpuid partnumber
  * CP0_CPUID_PARTNO_PKUNITY:	the cpuid partnumber of PKUnity
- * CP0_CPUID_LAYOUT_MASK:	mask for the cpuid layout
- * CP0_CPUID_SERIES_MASK:	mask for the cpuid series
- * CP0_CPUID_DESIGNER_MASK:	mask for the cpuid designer
+ * CP0_CPUID_LAYOUT_SELECT:	mask for the cpuid layout
+ * CP0_CPUID_SERIES_SELECT:	mask for the cpuid series
+ * CP0_CPUID_DESIGNER_SELECT:	mask for the cpuid designer
  * CP0_CPUID_DESIGNER_MPRC:	the symbol of MPRC for the cpu designer
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
-#define CP0_CPUID_PARTNO_MASK		__BS(16, 0)
+#define CP0_CPUID_PARTNO_SELECT		__BS(16, 0)
 #define CP0_CPUID_PARTNO_PKUNITY	__BF(0x863, 12, 0)
 #define CP0_CPUID_LAYOUT_POS		(16)
-#define CP0_CPUID_LAYOUT_MASK		__BS(4, CP0_CPUID_LAYOUT_POS)
+#define CP0_CPUID_LAYOUT_SELECT		__BS(4, CP0_CPUID_LAYOUT_POS)
 #define CP0_CPUID_SERIES_POS		(20)
-#define CP0_CPUID_SERIES_MASK		__BS(4, CP0_CPUID_SERIES_POS)
-#define CP0_CPUID_DESIGNER_MASK		__BS(8, 24)
+#define CP0_CPUID_SERIES_SELECT		__BS(4, CP0_CPUID_SERIES_POS)
+#define CP0_CPUID_DESIGNER_SELECT	__BS(8, 24)
 #define CP0_CPUID_DESIGNER_MPRC		__BF(0x4D, 8, 24)
 
 /**
  * DOC: HWDEF_COPRO_H_CP0_CACHE
  * Following cache inforamtion macros in CP0 are defined.
  */
-#define CP0_CPUID_ICACHE_LINE_MASK		__BS(2, 0)
+#define CP0_CPUID_ICACHE_LINE_SELECT		__BS(2, 0)
 #define CP0_CPUID_ICACHE_LINE_8BYTE		__BF(0, 2, 0)
 #define CP0_CPUID_ICACHE_LINE_16BYTE		__BF(1, 2, 0)
 #define CP0_CPUID_ICACHE_LINE_32BYTE		__BF(2, 2, 0)
 #define CP0_CPUID_ICACHE_LINE_64BYTE		__BF(3, 2, 0)
 
-#define CP0_CPUID_ICACHE_ASSOC_MASK		__BS(3, 3)
+#define CP0_CPUID_ICACHE_ASSOC_SELECT		__BS(3, 3)
 #define CP0_CPUID_ICACHE_ASSOC_DMAP		__BF(0, 3, 3)
 #define CP0_CPUID_ICACHE_ASSOC_2WAY		__BF(1, 3, 3)
 #define CP0_CPUID_ICACHE_ASSOC_4WAY		__BF(2, 3, 3)
@@ -109,7 +109,7 @@
 #define CP0_CPUID_ICACHE_ASSOC_64WAY		__BF(6, 3, 3)
 #define CP0_CPUID_ICACHE_ASSOC_128WAY		__BF(7, 3, 3)
 
-#define CP0_CPUID_ICACHE_SIZE_MASK		__BS(3, 6)
+#define CP0_CPUID_ICACHE_SIZE_SELECT		__BS(3, 6)
 #define CP0_CPUID_ICACHE_SIZE_512B		__BF(0, 3, 6)
 #define CP0_CPUID_ICACHE_SIZE_1KB		__BF(1, 3, 6)
 #define CP0_CPUID_ICACHE_SIZE_2KB		__BF(2, 3, 6)
@@ -119,13 +119,13 @@
 #define CP0_CPUID_ICACHE_SIZE_32KB		__BF(6, 3, 6)
 #define CP0_CPUID_ICACHE_SIZE_64KB		__BF(7, 3, 6)
 
-#define CP0_CPUID_DCACHE_LINE_MASK		__BS(2, 12)
+#define CP0_CPUID_DCACHE_LINE_SELECT		__BS(2, 12)
 #define CP0_CPUID_DCACHE_LINE_8BYTE		__BF(0, 2, 12)
 #define CP0_CPUID_DCACHE_LINE_16BYTE		__BF(1, 2, 12)
 #define CP0_CPUID_DCACHE_LINE_32BYTE		__BF(2, 2, 12)
 #define CP0_CPUID_DCACHE_LINE_64BYTE		__BF(3, 2, 12)
 
-#define CP0_CPUID_DCACHE_ASSOC_MASK		__BS(3, 15)
+#define CP0_CPUID_DCACHE_ASSOC_SELECT		__BS(3, 15)
 #define CP0_CPUID_DCACHE_ASSOC_DMAP		__BF(0, 3, 15)
 #define CP0_CPUID_DCACHE_ASSOC_2WAY		__BF(1, 3, 15)
 #define CP0_CPUID_DCACHE_ASSOC_4WAY		__BF(2, 3, 15)
@@ -135,7 +135,7 @@
 #define CP0_CPUID_DCACHE_ASSOC_64WAY		__BF(6, 3, 15)
 #define CP0_CPUID_DCACHE_ASSOC_128WAY		__BF(7, 3, 15)
 
-#define CP0_CPUID_DCACHE_SIZE_MASK		__BS(3, 18)
+#define CP0_CPUID_DCACHE_SIZE_SELECT		__BS(3, 18)
 #define CP0_CPUID_DCACHE_SIZE_512B		__BF(0, 3, 18)
 #define CP0_CPUID_DCACHE_SIZE_1KB		__BF(1, 3, 18)
 #define CP0_CPUID_DCACHE_SIZE_2KB		__BF(2, 3, 18)
