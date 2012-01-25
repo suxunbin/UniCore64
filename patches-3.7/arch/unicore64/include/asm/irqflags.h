@@ -21,7 +21,7 @@
 
 #include <arch/hwdef-cpu.h>
 
-#define ARCH_IRQ_DISABLED	ASR_INTR_MASK
+#define ARCH_IRQ_DISABLED	ASR_INTR_SELECT
 #define ARCH_IRQ_ENABLED	0x0
 
 /**
@@ -36,7 +36,7 @@ static inline unsigned long arch_local_save_flags(void)
 
 	asm volatile("dmov %0, asr" : "=r" (temp));
 
-	return temp & ASR_INTR_MASK;
+	return temp & ASR_INTR_SELECT;
 }
 
 /**
@@ -53,7 +53,7 @@ static inline void arch_local_irq_restore(unsigned long flags)
 		"dor	%0, %0, %1\n"
 		"dmov	asr, %0"
 		: "=&r" (temp)
-		: "r" (flags), "i" (ASR_INTR_MASK));
+		: "r" (flags), "i" (ASR_INTR_SELECT));
 }
 
 #include <asm-generic/irqflags.h>

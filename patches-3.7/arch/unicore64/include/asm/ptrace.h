@@ -50,7 +50,7 @@ struct pt_regs {
 #include <arch/hwdef-cpu.h>
 
 #define user_mode(regs)			\
-	(((regs)->UC64_ASR & ASR_MODE_MASK) == ASR_MODE_USER)
+	(((regs)->UC64_ASR & ASR_MODE_SELECT) == ASR_MODE_USER)
 
 #endif /* __KERNEL__ */
 
