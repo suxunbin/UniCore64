@@ -12,6 +12,7 @@
 #define PUV3_IOREG(x)			(x)
 #endif
 
+/* Assume the region for every ip in puv3 having 4K iomem */
 #define PUV3_IOMEM_REGION		__BS(12, 0)
 
 /*
