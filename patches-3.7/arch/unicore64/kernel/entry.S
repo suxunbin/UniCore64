@@ -2,6 +2,7 @@
 #include <asm/cache.h>
 #include <arch/asm-common.h>
 #include <arch/asm-debug.h>
+#include <arch/asm-mmuops.h>
 
 	.macro	__priv_context_save
 	/* save all gp registers */
@@ -45,6 +46,37 @@ ENTRY(__vec_invalid)
 	halt		/* no return */
 ENDPROC(__vec_invalid)
 
+ENTRY(__vec_itrap)
+	__priv_context_save
+
+	dmovl		r0,  0xdeaddeaddead000c
+	__putdata	r0, r14, r15
+
+	__itrap_status	r0
+	__putdata	r0, r14, r15
+
+	__putdata	lr, r14, r15
+
+	__priv_context_restore
+	eret
+ENDPROC(__vec_itrap)
+
+ENTRY(__vec_dtrap)
+	__priv_context_save
+
+	dmovl		r0,  0xdeaddeaddead0010
+	__putdata	r0, r14, r15
+
+	__dtrap_status	r0
+	__putdata	r0, r14, r15
+
+	__dtrap_addr	r0
+	__putdata	r0, r14, r15
+
+	__priv_context_restore
+	eret
+ENDPROC(__vec_dtrap)
+
 ENTRY(__vec_int_puv3)
 	__priv_context_save
 
@@ -68,8 +100,8 @@ ENTRY(__vectors_table)
 	call	__vec_invalid	/* 0x00: RESET */
 	call	__vec_invalid	/* 0x04: EEXTN */
 	call	__vec_invalid	/* 0x08: ESWI */
-	call	__vec_invalid	/* 0x0c: ITRAP */
-	call	__vec_invalid	/* 0x10: DTRAP */
+	b	__vec_itrap	/* 0x0c: ITRAP */
+	b	__vec_dtrap	/* 0x10: DTRAP */
 	call	__vec_invalid	/* 0x14: FPU_EXC */
 	call	__vec_invalid	/* 0x18: INT_KERNEL */
 	call	__vec_invalid	/* 0x1c: INT_FAULT */
