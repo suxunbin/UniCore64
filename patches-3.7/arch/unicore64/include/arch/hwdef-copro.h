@@ -11,7 +11,7 @@
 #define read_cp_op(reg, op_no)						\
 	({								\
 		unsigned long __val;					\
-		asm("movc	%0, " __stringify(reg)			\
+		__asm__("movc	%0, " __stringify(reg)			\
 				", #" __stringify(op_no)		\
 		    : "=r" (__val));					\
 		__val;							\
@@ -19,7 +19,7 @@
 
 #define write_cp_op(reg_value, reg, op_no)				\
 	({								\
-		asm("movc	" __stringify(reg)			\
+		__asm__("movc	" __stringify(reg)			\
 			", %0, #" __stringify(op_no)			\
 		    : : "r" (reg_value));				\
 	})

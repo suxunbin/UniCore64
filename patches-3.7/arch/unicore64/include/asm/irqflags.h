@@ -34,7 +34,7 @@ static inline unsigned long arch_local_save_flags(void)
 {
 	unsigned long temp;
 
-	asm volatile("dmov %0, asr" : "=r" (temp));
+	__asm__("dmov %0, asr" : "=r" (temp));
 
 	return temp & ASR_INTR_SELECT;
 }
@@ -47,7 +47,7 @@ static inline void arch_local_irq_restore(unsigned long flags)
 {
 	unsigned long temp;
 
-	asm volatile(
+	__asm__(
 		"dmov	%0, asr\n"
 		"dandn	%0, %0, %2\n"
 		"dor	%0, %0, %1\n"
