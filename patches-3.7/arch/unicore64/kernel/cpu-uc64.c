@@ -198,7 +198,7 @@ void __init setup_arch_cpuinfo(void)
 #undef CACHETYPE_ASSOC
 #undef CACHETYPE_LINE
 
-void show_uc64_info(void)
+void __show_uc64_regs(void)
 {
 	pr_emerg("\nUniCore64 Information:\n");
 	pr_emerg(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
