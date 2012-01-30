@@ -39,7 +39,7 @@
 #define CP0_MRAR		p0.c8
 #define CP0_INTR_VECBASE	p0.c9
 #define CP0_INTR_STAT		p0.c10
-#define CP0_RWM			p0.c11
+#define CP0_RWMARGIN		p0.c11
 
 /**
  * DOC: HWDEF_COPRO_H_CP0_CTRLREG

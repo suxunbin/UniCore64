@@ -12,6 +12,7 @@ static int uc64_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
 {
 	__show_uc64_regs();
+	__show_cp0_regs();
 
 	return NOTIFY_DONE;
 }

@@ -204,3 +204,42 @@ void __show_uc64_regs(void)
 	pr_emerg(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
 	pr_emerg(" AFR BFR: %16lx %16lx\n", __read_uc64(afr), __read_uc64(bfr));
 }
+
+void __show_cp0_regs(void)
+{
+	pr_emerg("\nCP0 (System Control) Information:\n");
+	pr_emerg(" CPUID: %16lx", __read_cp_op(CP0_CPUID, 0));
+	pr_emerg(" CACHE: %16lx\n", __read_cp_op(CP0_CPUID, 1));
+	pr_emerg(" CTRLREG: %16lx", __read_cp(CP0_CTRLREG));
+	pr_emerg(" TTB/ASID: %16lx\n", __read_cp(CP0_TTB_ASID));
+	pr_emerg(" ITRAP_STAT: %16lx", __read_cp_op(CP0_TRAP_STAT, 0));
+	pr_emerg(" DTRAP_STAT: %16lx", __read_cp_op(CP0_TRAP_STAT, 1));
+	pr_emerg(" DTRAP_VADDR: %16lx\n", __read_cp(CP0_DTRAP_VADDR));
+
+	pr_emerg(" MRAR_BASE: %16lx %16lx %16lx %16lx\n",
+			__read_cp_op(CP0_MRAR, 0),
+			__read_cp_op(CP0_MRAR, 1),
+			__read_cp_op(CP0_MRAR, 2),
+			__read_cp_op(CP0_MRAR, 3));
+	pr_emerg(" (Total 8): %16lx %16lx %16lx %16lx\n",
+			__read_cp_op(CP0_MRAR, 4),
+			__read_cp_op(CP0_MRAR, 5),
+			__read_cp_op(CP0_MRAR, 6),
+			__read_cp_op(CP0_MRAR, 7));
+	pr_emerg(" MRAR_MASK: %16lx %16lx %16lx %16lx\n",
+			__read_cp_op(CP0_MRAR, 8),
+			__read_cp_op(CP0_MRAR, 9),
+			__read_cp_op(CP0_MRAR, 10),
+			__read_cp_op(CP0_MRAR, 11));
+	pr_emerg(" (Total 8): %16lx %16lx %16lx %16lx\n",
+			__read_cp_op(CP0_MRAR, 12),
+			__read_cp_op(CP0_MRAR, 13),
+			__read_cp_op(CP0_MRAR, 14),
+			__read_cp_op(CP0_MRAR, 15));
+
+	pr_emerg(" INTR_VECBASE: %16lx", __read_cp(CP0_INTR_VECBASE));
+	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR_STAT, 0));
+	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR_STAT, 7));
+
+	pr_emerg(" R/W Margin: %16lx", __read_cp(CP0_RWMARGIN));
+}

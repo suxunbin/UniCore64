@@ -15,4 +15,6 @@ extern void setup_arch_devtree(char *cmdline);
 extern char __vectors_table[];
 
 extern void __show_uc64_regs(void);
+extern void __show_cp0_regs(void);
+
 #endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
