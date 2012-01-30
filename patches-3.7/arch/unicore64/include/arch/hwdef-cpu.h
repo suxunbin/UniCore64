@@ -6,6 +6,7 @@
  * This file defines the bit pattern for the processor status registers
  * and the processor flag registers.
  */
+#include <linux/stringify.h>
 #include <arch/bitfield.h>
 
 /**

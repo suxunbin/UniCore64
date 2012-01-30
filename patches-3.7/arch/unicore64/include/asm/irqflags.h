@@ -32,11 +32,7 @@
  */
 static inline unsigned long arch_local_save_flags(void)
 {
-	unsigned long temp;
-
-	__asm__("dmov %0, asr" : "=r" (temp));
-
-	return temp & ASR_INTR_SELECT;
+	return __read_uc64(asr) & ASR_INTR_SELECT;
 }
 
 /**
@@ -45,15 +41,7 @@ static inline unsigned long arch_local_save_flags(void)
  */
 static inline void arch_local_irq_restore(unsigned long flags)
 {
-	unsigned long temp;
-
-	__asm__(
-		"dmov	%0, asr\n"
-		"dandn	%0, %0, %2\n"
-		"dor	%0, %0, %1\n"
-		"dmov	asr, %0"
-		: "=&r" (temp)
-		: "r" (flags), "i" (ASR_INTR_SELECT));
+	__write_uc64((__read_uc64(asr) & ~ASR_INTR_SELECT) | (flags), asr);
 }
 
 #include <asm-generic/irqflags.h>
