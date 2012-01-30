@@ -13,22 +13,22 @@
 #define INNER_TIMER_IRQENABLE		p1.c3
 
 #define uc64_inner_timer_irq_enable()					\
-		write_cp(read_cp(INNER_TIMER_IRQENABLE) | 1,		\
+		__write_cp(__read_cp(INNER_TIMER_IRQENABLE) | 1,	\
 				INNER_TIMER_IRQENABLE)
 
 #define uc64_inner_timer_irq_disable()					\
-		write_cp(read_cp(INNER_TIMER_IRQENABLE) & ~1,		\
+		__write_cp(__read_cp(INNER_TIMER_IRQENABLE) & ~1,	\
 				INNER_TIMER_IRQENABLE)
 
 #define uc64_inner_timer_status_clear()					\
-		write_cp(read_cp(INNER_TIMER_STATUS) & ~1,		\
+		__write_cp(__read_cp(INNER_TIMER_STATUS) & ~1,		\
 				INNER_TIMER_STATUS)
 
 #define MIN_COUNTER_DELTA			(2)
 
 static cycle_t uc64_inner_timer_read(struct clocksource *cs)
 {
-	return	read_cp(INNER_TIMER_COUNTER);
+	return	__read_cp(INNER_TIMER_COUNTER);
 }
 
 static int uc64_inner_timer_set_next_event(unsigned long delta,
@@ -38,9 +38,9 @@ static int uc64_inner_timer_set_next_event(unsigned long delta,
 
 	uc64_inner_timer_irq_enable();
 
-	next = read_cp(INNER_TIMER_COUNTER) + delta;
-	write_cp(next, INNER_TIMER_MATCHREG);
-	count = read_cp(INNER_TIMER_COUNTER);
+	next = __read_cp(INNER_TIMER_COUNTER) + delta;
+	__write_cp(next, INNER_TIMER_MATCHREG);
+	count = __read_cp(INNER_TIMER_COUNTER);
 
 	return (signed)(next - count) <= MIN_COUNTER_DELTA ? -ETIME : 0;
 }

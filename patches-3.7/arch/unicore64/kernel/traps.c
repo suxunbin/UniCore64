@@ -10,7 +10,7 @@
  */
 void __init trap_init(void)
 {
-	write_cp(__vectors_table, CP0_INTR_VECBASE);
+	__write_cp(__vectors_table, CP0_INTR_VECBASE);
 }
 
 /**
