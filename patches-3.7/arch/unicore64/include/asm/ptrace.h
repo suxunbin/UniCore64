@@ -7,7 +7,7 @@
  * has to be a multiple of 8.
  */
 struct pt_regs {
-	__u64 uc64_regs[34];
+	unsigned long uc64_regs[34];
 };
 
 #define UC64_R00		uc64_regs[0]
@@ -51,6 +51,12 @@ struct pt_regs {
 
 #define user_mode(regs)			\
 	(((regs)->UC64_ASR & ASR_MODE_SELECT) == ASR_MODE_USER)
+
+#define GET_IP(regs)		((regs)->UC64_R31)
+#define GET_USP(regs)		((regs)->UC64_R29)
+#define GET_FP(regs)		((regs)->UC64_R27)
+
+#include <asm-generic/ptrace.h>
 
 #endif /* __KERNEL__ */
 

@@ -1,11 +1,43 @@
 #include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/ptrace.h>
+#include <linux/uaccess.h>
+
 #include <arch/hwdef-cp0-sysctrl.h>
+
+static void __fixup_exception(struct pt_regs *regs)
+{
+	const struct exception_table_entry *fixup;
+
+	fixup = search_exception_tables(GET_IP(regs));
+
+	if (fixup)
+		SET_IP(regs, fixup->fixup);
+	else
+		BUG();
+}
+
+static void __do_pagefault(unsigned long addr, struct pt_regs *regs)
+{
+	struct task_struct *tsk;
+	struct mm_struct *mm;
+
+	tsk = current;
+	mm = tsk->mm;
+
+	if (!mm)
+		/* If we have no user context, we must not take the fault.. */
+		__fixup_exception(regs);
+
+	/* FIXME */
+	BUG();
+}
 
 #define __itrap_stat()	__read_cp_op(CP0_TRAP_STAT, 0)
 #define __dtrap_stat()	__read_cp_op(CP0_TRAP_STAT, 1)
 
 struct __trap_info {
-	int (*fn) (unsigned long addr);
+	void (*fn) (unsigned long addr, struct pt_regs *);
 	const char *name;
 };
 
@@ -14,7 +46,7 @@ static struct __trap_info __itrap_info[] = {
 	{ NULL,	"1: access debug-specific area"		},
 	{ NULL,	"2: 2nd level pagetable non-exist"	},
 	{ NULL,	"3: 3rd level pagetable non-exist"	},
-	{ NULL,	"4: page non-exist"			},
+	{ __do_pagefault,	"4: page non-exist"	},
 	{ NULL,	"5: superpage non-exist"		},
 	{ NULL,	"6: non-executable instruction"		},
 	{ NULL,	"7: access US=0 page in user mode"	},
@@ -33,7 +65,7 @@ static struct __trap_info __dtrap_info[] = {
 	{ NULL,	"1: access debug-specific area"		},
 	{ NULL,	"2: 2nd level pagetable non-exist"	},
 	{ NULL,	"3: 3rd level pagetable non-exist"	},
-	{ NULL,	"4: page non-exist"			},
+	{ __do_pagefault,	"4: page non-exist"	},
 	{ NULL,	"5: superpage non-exist"		},
 	{ NULL,	"6: read unreadable address"		},
 	{ NULL,	"7: write unwritable address"		},
@@ -47,12 +79,12 @@ static struct __trap_info __dtrap_info[] = {
 	{ NULL,	"f: unknown dtrap fault"		},
 };
 
-void __do_itrap(unsigned long addr)
+void __do_itrap(unsigned long addr, struct pt_regs *regs)
 {
 	struct __trap_info *info = __itrap_info + __itrap_stat();
 
 	if (info->fn) {
-		info->fn(addr);
+		info->fn(addr, regs);
 		return;
 	}
 
@@ -61,12 +93,12 @@ void __do_itrap(unsigned long addr)
 	BUG();
 }
 
-void __do_dtrap(unsigned long addr)
+void __do_dtrap(unsigned long addr, struct pt_regs *regs)
 {
 	struct __trap_info *info = __dtrap_info + __dtrap_stat();
 
 	if (info->fn) {
-		info->fn(addr);
+		info->fn(addr, regs);
 		return;
 	}
 
