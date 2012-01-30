@@ -49,13 +49,7 @@ ENDPROC(__vec_invalid)
 ENTRY(__vec_itrap)
 	__priv_context_save
 
-	dmovl		r0,  0xdeaddeaddead000c
-	__putdata	r0, r14, r15
-
-	__itrap_status	r0
-	__putdata	r0, r14, r15
-
-	__putdata	lr, r14, r15
+	call	__do_itrap
 
 	__priv_context_restore
 	eret
@@ -64,14 +58,7 @@ ENDPROC(__vec_itrap)
 ENTRY(__vec_dtrap)
 	__priv_context_save
 
-	dmovl		r0,  0xdeaddeaddead0010
-	__putdata	r0, r14, r15
-
-	__dtrap_status	r0
-	__putdata	r0, r14, r15
-
-	__dtrap_addr	r0
-	__putdata	r0, r14, r15
+	call	__do_dtrap
 
 	__priv_context_restore
 	eret
