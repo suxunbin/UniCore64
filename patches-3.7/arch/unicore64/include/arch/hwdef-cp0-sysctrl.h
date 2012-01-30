@@ -31,8 +31,8 @@
 #define CP0_CPUID		p0.c0
 #define CP0_CTRLREG		p0.c1
 #define CP0_TTB_ASID		p0.c2
-#define CP0_ABORT_STAT		p0.c3
-#define CP0_DABORT_VADDR	p0.c4
+#define CP0_TRAP_STAT		p0.c3
+#define CP0_DTRAP_VADDR		p0.c4
 #define CP0_TLB			p0.c5
 #define CP0_DCACHE		p0.c6
 #define CP0_ICACHE		p0.c7
