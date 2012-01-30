@@ -38,8 +38,16 @@
 #define CP0_ICACHE		p0.c7
 #define CP0_MRAR		p0.c8
 #define CP0_INTR_VECBASE	p0.c9
-#define CP0_INTR_STAT		p0.c10
+#define CP0_INTR		p0.c10
 #define CP0_RWMARGIN		p0.c11
+
+#define CP0_INTR_ITM			__BF(1, 1, 7)
+#define CP0_INTR_LSU			__BF(1, 1, 8)
+#define CP0_INTR_IK1			__BF(1, 1, 9)
+#define CP0_INTR_IK2			__BF(1, 1, 10)
+#define CP0_INTR_IK3			__BF(1, 1, 11)
+#define CP0_INTR_IK4			__BF(1, 1, 12)
+#define CP0_INTR_IPM			__BF(1, 1, 13)
 
 /**
  * DOC: HWDEF_COPRO_H_CP0_CTRLREG
