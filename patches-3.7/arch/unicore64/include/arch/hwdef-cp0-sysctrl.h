@@ -37,7 +37,7 @@
 #define CP0_DCACHE		p0.c6
 #define CP0_ICACHE		p0.c7
 #define CP0_MRAR		p0.c8
-#define CP0_INTR_VECBASE	p0.c9
+#define CP0_VECBASE		p0.c9
 #define CP0_INTR		p0.c10
 #define CP0_RWMARGIN		p0.c11
 

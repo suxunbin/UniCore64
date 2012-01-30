@@ -237,7 +237,7 @@ void __show_cp0_regs(void)
 			__read_cp_op(CP0_MRAR, 14),
 			__read_cp_op(CP0_MRAR, 15));
 
-	pr_emerg(" INTR_VECBASE: %16lx", __read_cp(CP0_INTR_VECBASE));
+	pr_emerg(" VECBASE: %16lx", __read_cp(CP0_VECBASE));
 	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR, 0));
 	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR, 7));
 
