@@ -68,4 +68,19 @@
 #define AFR_Z_BIT		__BF(1, 1, 2)
 #define AFR_S_BIT		__BF(1, 1, 3)
 
+/* To read asr, afr, bsr, and bsr */
+#define __read_uc64(reg)					\
+	({							\
+		unsigned long __val;				\
+		__asm__("dmov	%0, " __stringify(reg)		\
+		    : "=r" (__val));				\
+		__val;						\
+	})
+
+#define __write_uc64(reg_value, reg)				\
+	({							\
+		__asm__("dmov	" __stringify(reg) ", %0"	\
+		    : : "r" (reg_value));			\
+	})
+
 #endif /* __UNICORE64_ARCH_HWDEF_CPU_H__ */

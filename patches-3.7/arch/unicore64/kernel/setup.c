@@ -11,8 +11,8 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
 static int uc64_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
 {
-	/* FIXME */
-	pr_emerg("Kernel OOPS in %s", __func__);
+	show_uc64_info();
+
 	return NOTIFY_DONE;
 }
 

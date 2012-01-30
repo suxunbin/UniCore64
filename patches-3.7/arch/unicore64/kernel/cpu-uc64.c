@@ -3,6 +3,7 @@
 
 #include <asm/setup_arch.h>
 
+#include <arch/hwdef-cpu.h>
 #include <arch/hwdef-cp0-sysctrl.h>
 
 /**
@@ -196,3 +197,10 @@ void __init setup_arch_cpuinfo(void)
 #undef CACHETYPE_SIZE
 #undef CACHETYPE_ASSOC
 #undef CACHETYPE_LINE
+
+void show_uc64_info(void)
+{
+	pr_emerg("\nUniCore64 Information:\n");
+	pr_emerg(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
+	pr_emerg(" AFR BFR: %16lx %16lx\n", __read_uc64(afr), __read_uc64(bfr));
+}
