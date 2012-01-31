@@ -27,9 +27,12 @@ __ASMMACRO_WRAP(.macro	__halt;
 
 #define __halt()			__asm__("__halt")
 
-/* epip for debug: all should be removed definitely */
+/*
+ * We use "____" prefix(4 '_') only for debug:
+ *  All definitions here should be removed definitely and completely.
+ */
 #ifdef __ASSEMBLY__
-#define __epip4d_align64	.p2align 3
+#define ____align64			.p2align 3
 #endif /* __ASSEMBLY__ */
 
 #endif /* __UNICORE64_ARCH_ASM_COMMON_H__ */

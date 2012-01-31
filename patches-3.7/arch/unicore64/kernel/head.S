@@ -55,7 +55,7 @@ ENTRY(stext)
 	b	start_kernel
 ENDPROC(stext)
 
-	__epip4d_align64
+	____align64
 __priv_sp:
 	.dword	init_thread_union + (THREAD_SIZE - 8)
 

@@ -68,13 +68,13 @@ _start:
 	jump	r0
 
 	.section .rodata.dtb
-	__epip4d_align64
+	____align64
 dtb_data:
 	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
 dtb_data_end:
 
 	.section .rodata.piggy
-	__epip4d_align64
+	____align64
 	.globl	input_data
 input_data:
 	.incbin "arch/unicore64/boot/piggy.bin"

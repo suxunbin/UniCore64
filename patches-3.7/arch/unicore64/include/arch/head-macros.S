@@ -33,7 +33,7 @@
 	adr	lr, 1002f
 	b	memset
 
-	__epip4d_align64
+	____align64
 1001:
 	.dword	__bss_start
 	.dword	_end
