@@ -22,7 +22,7 @@ extern char input_data_end[];
 #ifndef ARCH_HAVE_DECOMP_ERROR
 #define arch_decomp_error()
 #else
-#define arch_decomp_error()	__asm__("halt")
+#define arch_decomp_error()	__halt()
 #endif
 
 #ifndef ARCH_HAVE_DECOMP_SETUP

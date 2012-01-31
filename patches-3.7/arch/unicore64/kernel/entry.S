@@ -43,7 +43,7 @@ ENTRY(__vec_invalid)
 	dmovl		r0,  0xdeaddeaddeaddead
 	__putdata	r0, r14, r15
 	__putdata	lr, r14, r15
-	halt		/* no return */
+	__halt		/* no return */
 ENDPROC(__vec_invalid)
 
 ENTRY(__vec_itrap)

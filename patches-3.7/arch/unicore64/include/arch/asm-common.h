@@ -21,6 +21,12 @@ __ASMMACRO_WRAP(.macro	__pop, rt;
 			ldd.w	&rt, [sp]+, #8;
 		.endm)
 
+__ASMMACRO_WRAP(.macro	__halt;
+			halt;
+		.endm)
+
+#define __halt()			__asm__("__halt")
+
 /* epip for debug: all should be removed definitely */
 #ifdef __ASSEMBLY__
 #define __epip4d_align64	.p2align 3

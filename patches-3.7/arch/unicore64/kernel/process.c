@@ -1,6 +1,8 @@
 #include <linux/kernel.h>
 #include <linux/elfcore.h>
 
+#include <arch/asm-common.h>
+
 /**
  * kernel_thread() - Create a kernel thread
  * @fn:
@@ -54,8 +56,7 @@ void machine_restart(char *cmd)
  */
 void machine_halt(void)
 {
-	/* FIXME */
-	BUG();
+	__halt();
 }
 
 /**
