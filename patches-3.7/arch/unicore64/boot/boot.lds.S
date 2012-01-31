@@ -15,7 +15,7 @@ SECTIONS
 
 	. = ALIGN(8);
 
-	/* epip4d: trick to clear bss */
+	/* ____bss_temp_handler: a trick to clear bss */
 	. = UC64_PM_ZIMAGE_HEAP_END;
 	__bss_start = UC64_PM_ZIMAGE_HEAP_END;
 	.bss : { *(.bss) }
