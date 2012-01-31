@@ -7,7 +7,7 @@
  * has to be a multiple of 8.
  */
 struct pt_regs {
-	unsigned long uc64_regs[34];
+	unsigned long uc64_regs[35];
 };
 
 #define UC64_R00		uc64_regs[0]
@@ -43,7 +43,8 @@ struct pt_regs {
 #define UC64_R30		uc64_regs[30]
 #define UC64_R31		uc64_regs[31]
 #define UC64_ASR		uc64_regs[32]
-#define UC64_O00		uc64_regs[33] /* Orig R00 */
+#define UC64_AFR		uc64_regs[33]
+#define UC64_O00		uc64_regs[34] /* Orig R00 */
 
 #ifdef __KERNEL__
 
