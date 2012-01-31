@@ -84,16 +84,16 @@ ENDPROC(__vec_int_itimer)
 
 	.p2align	L1_CACHE_SHIFT
 ENTRY(__vectors_table)
-	call	__vec_invalid	/* 0x00: RESET */
-	call	__vec_invalid	/* 0x04: EEXTN */
-	call	__vec_invalid	/* 0x08: ESWI */
-	b	__vec_itrap	/* 0x0c: ITRAP */
-	b	__vec_dtrap	/* 0x10: DTRAP */
-	call	__vec_invalid	/* 0x14: FPU_EXC */
-	call	__vec_invalid	/* 0x18: INT_KERNEL */
-	call	__vec_invalid	/* 0x1c: INT_FAULT */
+	call	__vec_invalid		/* 0x00: RESET */
+	call	__vec_invalid		/* 0x04: EEXTN */
+	call	__vec_invalid		/* 0x08: ESWI */
+	b	__vec_itrap		/* 0x0c: ITRAP */
+	b	__vec_dtrap		/* 0x10: DTRAP */
+	call	__vec_invalid		/* 0x14: FPU_EXC */
+	call	__vec_invalid		/* 0x18: INT_KERNEL */
+	call	__vec_invalid		/* 0x1c: INT_FAULT */
 	b	__vec_int_itimer	/* 0x20: INT_TIMER */
-	b	__vec_int_puv3	/* 0x24: INT_PE */
-	call	__vec_invalid	/* 0x28: INT_OST */
-	call	__vec_invalid	/* 0x2c: INT_PM */
+	b	__vec_int_puv3		/* 0x24: INT_PE */
+	call	__vec_invalid		/* 0x28: INT_OST */
+	call	__vec_invalid		/* 0x2c: INT_PM */
 ENDPROC(__vectors_table)
