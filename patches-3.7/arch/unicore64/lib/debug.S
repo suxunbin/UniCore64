@@ -38,6 +38,7 @@ ENDPROC(uc64_debug_puts)
 ENTRY(uc64_debug_putx)
 	__putdata	r0, r14, r15
 
+	/* ____debug_putx: we add a blank after data */
 	mov	r0, #0x20
 	__putchar	r0, r14, r15
 
