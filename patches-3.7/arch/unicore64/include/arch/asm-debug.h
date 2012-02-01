@@ -28,11 +28,6 @@ __ASMMACRO_WRAP(.macro	__putdata, rdata, rt1, rt2;
 			mov	r0, &rt1;
 			mov	r1, &rt2;
 		.endm)
-#else
-/* For RTL simulation environment */
-__ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
-			movc	p6.c0, &rchar, #1;
-		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 
 #ifndef __ASSEMBLY__
