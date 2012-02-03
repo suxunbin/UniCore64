@@ -13,16 +13,9 @@ _start:
 	__head_initialize	r0
 
 	/*
-	 * Initialise TLB and Caches.
+	 * Initialize dcache and icache.
 	 */
-	__invalid_dcache	r0
-	__invalid_icache	r0
-	__invalid_tlb		r0
-
-	/*
-	 * Turn on dcache and icache.
-	 */
-	uc64_enable_cache	r0
+	__cache_initialize	r0
 
 	/*
 	 * Set the sp register.

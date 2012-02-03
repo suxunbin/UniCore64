@@ -31,21 +31,19 @@
 ENTRY(stext)
 	__head_initialize	r0
 
+	__cache_initialize	r0
+
 	/* Set sp for function discipline */
 	ldd	sp, __priv_sp
 
 	call	__head_pgtable_init
 
-	__invalid_tlb		r0
-	__invalid_dcache	r0
-	__invalid_icache	r0
-
-	uc64_enable_cache	r0
-
 	/*
 	 * Enable the MMU.  This completely changes the structure of the visible
 	 * memory space.  You will not be able to trace execution through this.
 	 */
+	__invalid_tlb		r0
+
 	movc	r0, CP0_CTRLREG, #0
 	dor	r0, r0, #CP0_CTRLREG_MMU
 	movc	CP0_CTRLREG, r0, #0

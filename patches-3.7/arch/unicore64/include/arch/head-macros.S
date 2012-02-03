@@ -41,9 +41,12 @@
 .endm
 
 /*
- * uc64_enable_cache - enable entire icache and dcache
+ * __cache_initialize - invalid and enable icache and dcache
  */
-.macro	uc64_enable_cache, rt
+.macro	__cache_initialize, rt
+	__invalid_dcache	&rt
+	__invalid_icache	&rt
+
 	movc	&rt, p0.c1, #0;
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	dor	&rt, &rt, #4;
