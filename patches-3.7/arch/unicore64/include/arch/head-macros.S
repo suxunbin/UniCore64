@@ -22,7 +22,7 @@
 /*
  * __head_clear_bss - Clear bss region
  *
- * r0, r1 and r2 will be used in this macro.
+ * All GP registers will be destroyed in this macro.
  */
 .macro	__head_clear_bss
 	adr	r1, 1001f
