@@ -32,12 +32,11 @@ ENTRY(stext)
 	__head_initialize	r0
 	__cache_initialize	r0
 
-	ldd	sp, __priv_sp
-
 	/*
 	 * Enable the MMU.  This completely changes the structure of the visible
 	 * memory space.  You will not be able to trace execution through this.
 	 */
+	dmovl	sp, #UC64_PM_ZIMAGE_STACKTOP
 	call	__head_pgtable_init
 
 	__invalid_tlb		r0
@@ -45,6 +44,8 @@ ENTRY(stext)
 	movc	r0, CP0_CTRLREG, #0
 	dor	r0, r0, #CP0_CTRLREG_MMU
 	movc	CP0_CTRLREG, r0, #0
+
+	ldd	sp, __priv_sp
 
 	__head_clear_bss
 
