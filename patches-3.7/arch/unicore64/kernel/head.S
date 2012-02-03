@@ -30,18 +30,16 @@
 	__HEAD
 ENTRY(stext)
 	__head_initialize	r0
-
 	__cache_initialize	r0
 
-	/* Set sp for function discipline */
 	ldd	sp, __priv_sp
-
-	call	__head_pgtable_init
 
 	/*
 	 * Enable the MMU.  This completely changes the structure of the visible
 	 * memory space.  You will not be able to trace execution through this.
 	 */
+	call	__head_pgtable_init
+
 	__invalid_tlb		r0
 
 	movc	r0, CP0_CTRLREG, #0

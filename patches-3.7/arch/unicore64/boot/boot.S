@@ -7,24 +7,11 @@
 	.section ".start"
 	.globl	_start
 _start:
-	/*
-	 * Initialize ASR and coprocessor 0.
-	 */
 	__head_initialize	r0
-
-	/*
-	 * Initialize dcache and icache.
-	 */
 	__cache_initialize	r0
 
-	/*
-	 * Set the sp register.
-	 */
 	dmovl	sp, #UC64_PM_ZIMAGE_STACKTOP
 
-	/*
-	 * Clear BSS region.
-	 */
 	__head_clear_bss
 
 #ifdef CONFIG_ARCH_FPGA
@@ -37,21 +24,11 @@ _start:
 	call	memcpy
 #endif /* CONFIG_ARCH_FPGA */
 
-	/*
-	 * Call decompress_kernel, and it's three parameters are:
-	 *   r0: output_start
-	 */
 	dmovl	r0, #UC64_PM_KIMAGE_START
 	call	decompress_kernel
 
-	/*
-	 * Flush the cache to maintain consistency.
-	 */
-	__flush_dcache	r0
-
-	/*
-	 * Initialize ASR and coprocessor 0.
-	 */
+	/* Re-initialize to system default status */
+	__flush_dcache		r0
 	__head_initialize	r0
 
 	/*
