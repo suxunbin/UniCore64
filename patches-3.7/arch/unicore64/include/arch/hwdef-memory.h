@@ -11,7 +11,7 @@
 /**
  * DOC: HWDEF_MEMORY_H_VM
  * We have 39-bit vm address which means 512GB virtual space.
- * Use the 38:37 bits(the higher bits are extended the same as the
+ * Use the [38:37] bits(the higher bits are extended the same as the
  * 38th bit) to divide it in 4 parts as below:
  *
  * \\\\lt:programlisting\\\\gt:
@@ -39,7 +39,7 @@
  * -
  * \\\\lt:/programlisting\\\\gt:
  *
- * In the Kernel space, the first 64GB(physical space is 64G) space
+ * In the Kernel space, the last 64GB(physical space is 64G) space
  * is Direct Mapping space.
  */
 
@@ -51,10 +51,10 @@
 #define UC64_VM_KERNEL_END		__BC(ffffffff, ffffffff)
 
 /* virtual address of direct mapping space */
-#define UC64_VM_DMAP_START		UC64_VM_KERNEL_START
-#define UC64_VM_DMAP_END		__BC(ffffffef, ffffffff)
+#define UC64_VM_DMAP_START		__BC(fffffff0, 00000000)
+#define UC64_VM_DMAP_END		__BC(ffffffff, ffffffff)
 
-#define UC64_VM_IO_START		__BC(ffffffef, 80000000)
+#define UC64_VM_IO_START		__BC(ffffffff, 80000000)
 #define UC64_VM_IO_END			UC64_VM_DMAP_END
 
 /* FIXME */
