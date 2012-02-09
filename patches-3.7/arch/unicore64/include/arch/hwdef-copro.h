@@ -8,7 +8,7 @@
  */
 #include <linux/stringify.h>
 
-#define __read_cp_op(reg, op_no)						\
+#define __read_cp_op(reg, op_no)					\
 	({								\
 		unsigned long __val;					\
 		__asm__("movc	%0, " __stringify(reg)			\
