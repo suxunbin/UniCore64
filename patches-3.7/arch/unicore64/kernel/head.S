@@ -77,7 +77,7 @@ ENTRY(__head_pgtable_init)
 	dmovl	r1, #UC64_VM_KERNEL_START
 	dasr	r1, r1, #UC64_PGD_SHIFT
 	dlsl	r1, r1, #UC64_PGTBL_ENTRY_BITS
-	dmovl	r2, #UC64_PAGE_MASK
+	dmovl	r2, #UC64_PAGE_SELECT
 	dand	r1, r1, r2
 	dmovl	r2, #UC64_PM_PGTABLE_PGD
 	dadd	r1, r1, r2
