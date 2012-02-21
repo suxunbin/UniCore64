@@ -34,7 +34,7 @@ _start:
 	/*
 	 * Jump to the start address of kernel image.
 	 */
-	dmovl	r0, #UC64_VM_KIMAGE_START
+	dmovl	r0, #UC64_PM_KIMAGE_START
 	jump	r0
 
 	.section .rodata.dtb

@@ -85,6 +85,11 @@ ENTRY(__head_pgtable_init)
 	dor	r0, r0, #UC64_PGD_EXIST
 	std	r0, [r1]
 
+	dmovl	r1, #UC64_PM_PGTABLE_PGD
+	dmovl	r0, #UC64_PM_PGTABLE_PUD_DM00
+	dor	r0, r0, #UC64_PGD_EXIST
+	std	r0, [r1]
+
 	/*
 	 * Step three: clear 4k level-two page table from first
 	 * direct-mapped pmd
