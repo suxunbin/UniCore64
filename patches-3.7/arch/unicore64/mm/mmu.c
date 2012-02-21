@@ -19,7 +19,7 @@ static void __init uc64_create_direct_mapping(phys_addr_t start,
 	pmd_t *pmd;
 
 	/* ONLY SUPERPAGE supported */
-	if ((start | length) & ~UC64_PMD_MASK)
+	if ((start | length) & UC64_SPAGE_SELECT)
 		BUG();
 
 	/* the first pud has been written in head.S */
