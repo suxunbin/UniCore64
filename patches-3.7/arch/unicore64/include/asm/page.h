@@ -5,7 +5,7 @@
 #include <arch/hwdef-pgtable.h>
 
 /* Virtual start address of the first bank of RAM */
-#define PAGE_OFFSET		UC64_VM_KERNEL_START
+#define PAGE_OFFSET		UC64_VM_DMAP_START
 
 /* PAGE_SHIFT determines the page size */
 #define PAGE_SHIFT		UC64_PAGE_BITS

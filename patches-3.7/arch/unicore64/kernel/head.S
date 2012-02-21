@@ -74,7 +74,7 @@ ENTRY(__head_pgtable_init)
 	 * Step two: write level-one page table
 	 * Level one page table entry value = level two page table base + offset
 	 */
-	dmovl	r1, #UC64_VM_KERNEL_START
+	dmovl	r1, #UC64_VM_DMAP_START
 	dasr	r1, r1, #UC64_PGD_SHIFT
 	dlsl	r1, r1, #UC64_PGTBL_ENTRY_BITS
 	dmovl	r2, #UC64_PAGE_SELECT
