@@ -1,6 +1,7 @@
 include include/asm-generic/Kbuild.asm
 
 generic-y += auxvec.h
+generic-y += bitops.h
 generic-y += bug.h
 generic-y += bugs.h
 generic-y += cache.h
