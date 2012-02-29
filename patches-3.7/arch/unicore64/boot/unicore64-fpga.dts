@@ -1,6 +1,8 @@
 /dts-v1/;
 / {
 	model = "unicore64";
+	#address-cells = <1>;
+	#size-cells = <1>;
 
 	/*
 	 * Memory node.
