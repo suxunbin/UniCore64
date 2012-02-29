@@ -19,7 +19,7 @@ _start:
 	 * Prepare early devtree for fpga board.
 	 */
 	dmovl	r0, #UC64_PM_DTB_START
-	adr	r1, dtb_data
+	ldd	r1, =dtb_data
 	dmovl	r2, #dtb_data_end - dtb_data
 	call	memcpy
 #endif /* CONFIG_ARCH_FPGA */
