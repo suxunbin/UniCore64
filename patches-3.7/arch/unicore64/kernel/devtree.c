@@ -33,6 +33,4 @@ void __init setup_arch_devtree(char *cmdline)
 	of_scan_flat_dt(early_init_dt_scan_chosen, cmdline);
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-
-	unflatten_device_tree();
 }

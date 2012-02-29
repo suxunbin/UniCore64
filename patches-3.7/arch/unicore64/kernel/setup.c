@@ -2,6 +2,7 @@
 #include <linux/init.h>
 #include <linux/notifier.h>
 #include <linux/string.h>
+#include <linux/of_fdt.h>
 
 #include <asm/setup.h>
 #include <asm/setup_arch.h>
@@ -54,5 +55,6 @@ void __init setup_arch(char **cmdline_p)
 	setup_arch_cpuinfo();
 	setup_arch_param(cmdline_p);
 	setup_arch_memory();
+	unflatten_device_tree();
 	setup_arch_resource();
 }
