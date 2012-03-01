@@ -20,7 +20,8 @@ _start:
 	 */
 	dmovl	r0, #UC64_PM_DTB_START
 	ldd	r1, =dtb_data
-	dmovl	r2, #dtb_data_end - dtb_data
+	ldd	r2, =dtb_data_end
+	dsub	r2, r2, r1
 	call	memcpy
 #endif /* CONFIG_ARCH_FPGA */
 
