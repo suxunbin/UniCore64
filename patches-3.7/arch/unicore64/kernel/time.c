@@ -11,9 +11,9 @@
 #define __itimer_write_counter(cnt)	__write_cp_op(cnt, CP0_INTR, 1)
 
 #define __itimer_irq_enable()					\
-	__write_uc64(__read_uc64(asr) | ASR_INTR_ITM, asr)
-#define __itimer_irq_disable()					\
 	__write_uc64(__read_uc64(asr) & ~ASR_INTR_ITM, asr)
+#define __itimer_irq_disable()					\
+	__write_uc64(__read_uc64(asr) | ASR_INTR_ITM, asr)
 #define __itimer_irq_clear()					\
 	__write_cp(__read_cp(CP0_INTR) & ~CP0_INTR_ITM, CP0_INTR)
 
