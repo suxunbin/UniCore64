@@ -2,7 +2,7 @@
 #define __UNICORE64_ARCH_ASM_COMMON_H__
 
 #include <linux/stringify.h>
-
+#include <arch/hwdef-cpu.h>
 /*
  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
  * Then this macro could be used in both assembly files and c files.
@@ -23,6 +23,18 @@ __ASMMACRO_WRAP(.macro	__pop, rt;
 
 __ASMMACRO_WRAP(.macro	__halt;
 			halt;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	disable_irq, rt;
+			dmov	&rt, asr;
+			dor	&rt, &rt, #ASR_INTR_SELECT;
+			dmov	asr, &rt;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	enable_irq, rt;
+			dmov	&rt, asr;
+			dand	&rt, &rt, #(~ASR_INTR_SELECT);
+			dmov	asr, &rt;
 		.endm)
 
 #define __halt()			__asm__("__halt")
