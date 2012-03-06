@@ -20,13 +20,13 @@ __ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
 		.endm)
 
 __ASMMACRO_WRAP(.macro	__putdata, rdata, rt1, rt2;
-			mov	&rt1, r0;
-			mov	&rt2, r1;
-			mov	r1, &rdata;
-			mov	r0, #0;
+			dmov	&rt1, r0;
+			dmov	&rt2, r1;
+			dmov	r1, &rdata;
+			dmov	r0, #0;
 			bkpt;
-			mov	r0, &rt1;
-			mov	r1, &rt2;
+			dmov	r0, &rt1;
+			dmov	r1, &rt2;
 		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 
