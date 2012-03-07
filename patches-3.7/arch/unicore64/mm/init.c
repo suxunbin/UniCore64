@@ -6,12 +6,14 @@
 #include <asm/setup_arch.h>
 
 /**
- * mem_init() -
+ * mem_init() - release free pages to the buddy allocator
+ * Returns the number of pages actually released.
  */
 void __init mem_init(void)
 {
-	/* FIXME */
-	BUG();
+	max_mapnr = pfn_to_page(max_pfn) - mem_map;
+
+	totalram_pages += free_all_bootmem();
 }
 
 /**
