@@ -16,7 +16,7 @@ ENTRY(uc64_debug_puts)
 	dcmpsub.a	r2, #0
 	beq	1003f
 
-	__putchar	r2, r14, r15
+	__putchar	r2
 
 	dsub.a	r1, r1, #1
 	bsl	1002f
@@ -36,11 +36,11 @@ ENDPROC(uc64_debug_puts)
  * r0: the data to be printed
  */
 ENTRY(uc64_debug_putx)
-	__putdata	r0, r14, r15
+	__putdata	r0
 
 	/* ____debug_putx: we add a blank after data */
 	mov	r0, #0x20
-	__putchar	r0, r14, r15
+	__putchar	r0
 
 	return
 ENDPROC(uc64_debug_putx)

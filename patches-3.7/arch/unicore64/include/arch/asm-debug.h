@@ -9,24 +9,20 @@
  */
 #ifdef	CONFIG_DEBUG_OCD
 /* For OCD debug mode */
-__ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
-			mov	&rt1, r0;
-			mov	&rt2, r1;
-			mov	r1, &rchar;
-			mov	r0, #1;
+__ASMMACRO_WRAP(.macro	__putchar, rchar;
+			movc	p0.c12, &rchar, #7;
+			dmov	&rchar, #1;
+			movc	p0.c12, &rchar, #6;
 			bkpt;
-			mov	r0, &rt1;
-			mov	r1, &rt2;
+			movc	&rchar, p0.c12, #7;
 		.endm)
 
-__ASMMACRO_WRAP(.macro	__putdata, rdata, rt1, rt2;
-			dmov	&rt1, r0;
-			dmov	&rt2, r1;
-			dmov	r1, &rdata;
-			dmov	r0, #0;
+__ASMMACRO_WRAP(.macro	__putdata, rdata;
+			movc	p0.c12, &rdata, #7;
+			dmov	&rdata, #0;
+			movc	p0.c12, &rdata, #6;
 			bkpt;
-			dmov	r0, &rt1;
-			dmov	r1, &rt2;
+			movc	&rdata, p0.c12, #7;
 		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 

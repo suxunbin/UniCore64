@@ -41,8 +41,8 @@ ENDPROC(__switch_to)
 
 ENTRY(__vec_invalid)
 	dmovl		r0,  0xdeaddeaddeaddead
-	__putdata	r0, r14, r15
-	__putdata	lr, r14, r15
+	__putdata	r0
+	__putdata	lr
 	__halt		/* no return */
 ENDPROC(__vec_invalid)
 
