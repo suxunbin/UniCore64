@@ -52,14 +52,22 @@ static void __init memblock_init(void)
 static void __init max_pfn_init(void)
 {
 	struct memblock_region *reg;
-	unsigned long last_pfn;
+	unsigned long start_pfn, last_pfn;
 
-	/* Find the PFN for the last page in the system. */
+	/*
+	 * Find the first and last PFN for low memory, and
+	 * the PFN for the last page in the system.
+	 */
+	min_low_pfn = -1UL;
 	for_each_memblock(memory, reg) {
+		start_pfn = memblock_region_memory_base_pfn(reg);
 		last_pfn = memblock_region_memory_end_pfn(reg);
-		if (max_pfn < last_pfn)
-			max_pfn = last_pfn;
+		if (min_low_pfn > start_pfn)
+			min_low_pfn = start_pfn;
+		if (max_low_pfn < last_pfn)
+			max_low_pfn = last_pfn;
 	}
+	max_pfn = max_low_pfn;
 }
 
 void __init setup_arch_memory(void)
