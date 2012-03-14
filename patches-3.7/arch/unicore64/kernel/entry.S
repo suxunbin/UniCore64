@@ -15,7 +15,7 @@
 	__push	r0				/* bfr */
 	dmov	r0, bsr
 	__push	r0				/* bsr */
-	movc	r0, CP0_DTRAP_VADDR, #1
+	movc	r0, CP0_EPC, #1
 	__push	r0				/* pc */
 	__push	lr				/* lr */
 	movc	r0, p0.c12, #1
@@ -37,7 +37,7 @@
 	__pop	lr				/* lr */
 	movc	p0.c12, lr, #0			/* save lr for temp use */
 	__pop	lr				/* pc */
-	movc	CP0_DTRAP_VADDR, lr, #1
+	movc	CP0_EPC, lr, #1
 	__pop	lr				/* bsr */
 	mov	bsr, lr
 	__pop	lr				/* bfr */

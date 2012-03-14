@@ -17,7 +17,7 @@
  * CP0 CR1:	control reg. of mmu and Cache
  * CP0 CR2:	reg. for Translation Table Base and Address Space Identifier
  * CP0 CR3:	reg. for status information of instruction and data abort
- * CP0 CR4:	reg. for virtual address of data abort
+ * CP0 CR4:	reg. for return address of exceptions
  * CP0 CR5:	reg. for TLB management
  * CP0 CR6:	reg. for DCache management
  * CP0 CR7:	reg. for ICache management
@@ -32,7 +32,7 @@
 #define CP0_CTRLREG		p0.c1
 #define CP0_TTB_ASID		p0.c2
 #define CP0_TRAP_STAT		p0.c3
-#define CP0_DTRAP_VADDR		p0.c4
+#define CP0_EPC			p0.c4
 #define CP0_TLB			p0.c5
 #define CP0_DCACHE		p0.c6
 #define CP0_ICACHE		p0.c7
