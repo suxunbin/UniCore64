@@ -3,33 +3,49 @@
 #include <arch/asm-common.h>
 #include <arch/asm-debug.h>
 #include <arch/asm-mmuops.h>
+#include <arch/hwdef-cp0-sysctrl.h>
 
 	.macro	__priv_context_save
-	/* save all gp registers */
-	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
-		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30
-	__push	r\n
-	.endr
+	movc	p0.c12, r0, #0			/* save r0 for temp use */
+	movc	p0.c12, sp, #1			/* save sp for context save */
 
-	/* save bsr and bfr */
-	mov	bsr, r0
-	__push	r0
-	mov	bfr, r0
-	__push	r0
+	dmov	r0, #-1
+	__push	r0				/* return value */
+	dmov	r0, bfr
+	__push	r0				/* bfr */
+	dmov	r0, bsr
+	__push	r0				/* bsr */
+	movc	r0, CP0_DTRAP_VADDR, #1
+	__push	r0				/* pc */
+	__push	lr				/* lr */
+	movc	r0, p0.c12, #1
+	__push	r0				/* sp */
+	movc	r0, p0.c12, #0			/* restore r0 */
+	.irp	n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
+		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+	__push	r\n				/* save r28-r0 regs */
+	.endr
 	.endm
 
 	.macro __priv_context_restore
-	/* restore bfr and bsr registers */
-	__pop	r0
-	mov	bfr, r0
-	__pop	r0
-	mov	bsr, r0
-
-	/* restore all registers */
-	.irp	n, 30, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
-		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-	__pop	r\n
+	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
+		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28
+	__pop	r\n				/* restore r0-r28 regs */
 	.endr
+	__pop	lr				/* sp */
+	movc	p0.c12, lr, #1
+	__pop	lr				/* lr */
+	movc	p0.c12, lr, #0			/* save lr for temp use */
+	__pop	lr				/* pc */
+	movc	CP0_DTRAP_VADDR, lr, #1
+	__pop	lr				/* bsr */
+	mov	bsr, lr
+	__pop	lr				/* bfr */
+	mov	bfr, lr
+
+	movc	lr, p0.c12, #0			/* restore lr */
+	movc	sp, p0.c12, #1			/* restore sp */
+	eret
 	.endm
 
 /**
