@@ -6,8 +6,8 @@
 #include <arch/hwdef-cp0-sysctrl.h>
 
 	.macro	__priv_context_save
-	movc	p0.c12, r0, #0			/* save r0 for temp use */
-	movc	p0.c12, sp, #1			/* save sp for context save */
+	movc	CP0_SWR, r0, #0			/* save r0 for temp use */
+	movc	CP0_SWR, sp, #1			/* save sp for context save */
 
 	dmov	r0, #-1
 	__push	r0				/* return value */
@@ -18,9 +18,9 @@
 	movc	r0, CP0_EPC, #1
 	__push	r0				/* pc */
 	__push	lr				/* lr */
-	movc	r0, p0.c12, #1
+	movc	r0, CP0_SWR, #1
 	__push	r0				/* sp */
-	movc	r0, p0.c12, #0			/* restore r0 */
+	movc	r0, CP0_SWR, #0			/* restore r0 */
 	.irp	n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
 		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 	__push	r\n				/* save r28-r0 regs */
@@ -33,9 +33,9 @@
 	__pop	r\n				/* restore r0-r28 regs */
 	.endr
 	__pop	lr				/* sp */
-	movc	p0.c12, lr, #1
+	movc	CP0_SWR, lr, #1
 	__pop	lr				/* lr */
-	movc	p0.c12, lr, #0			/* save lr for temp use */
+	movc	CP0_SWR, lr, #0			/* save lr for temp use */
 	__pop	lr				/* pc */
 	movc	CP0_EPC, lr, #1
 	__pop	lr				/* bsr */
@@ -43,8 +43,8 @@
 	__pop	lr				/* bfr */
 	mov	bfr, lr
 
-	movc	lr, p0.c12, #0			/* restore lr */
-	movc	sp, p0.c12, #1			/* restore sp */
+	movc	lr, CP0_SWR, #0			/* restore lr */
+	movc	sp, CP0_SWR, #1			/* restore sp */
 	eret
 	.endm
 

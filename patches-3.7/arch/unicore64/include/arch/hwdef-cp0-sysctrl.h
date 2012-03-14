@@ -25,6 +25,7 @@
  * CP0 CR9:	reg. for interruption vector base
  * CP0 CR10:	reg. for timer interrupt and interrupt information
  * CP0 CR11:	control reg. of Read/Write Margin
+ * CP0 CR12:	reg. of software usage
  * -
  * \\\\lt:/programlisting\\\\gt:
  */
@@ -40,6 +41,7 @@
 #define CP0_VECBASE		p0.c9
 #define CP0_INTR		p0.c10
 #define CP0_RWMARGIN		p0.c11
+#define CP0_SWR			p0.c12
 
 #define CP0_INTR_ITM			__BF(1, 1, 7)
 #define CP0_INTR_LSU			__BF(1, 1, 8)
