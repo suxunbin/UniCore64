@@ -3,17 +3,34 @@
 
 #include <arch/asm-common.h>
 
+static void __noreturn kernel_thread_helper(void *unused,
+		int (*fn)(void *), void *arg)
+{
+	fn(arg);
+	do_exit(-1); /* Should never be called. */
+}
+
 /**
  * kernel_thread() - Create a kernel thread
  * @fn:
  * @arg:
  * @flags:
  */
-int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
+int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 {
-	/* FIXME */
-	BUG();
-	return 0;
+	struct pt_regs regs;
+
+	memset(&regs, 0, sizeof(regs));
+
+	/* Don't use r0 since that is set to 0 in copy_thread. */
+	regs.UC64_R01 = (unsigned long)fn;
+	regs.UC64_R02 = (unsigned long)arg;
+	regs.UC64_R31 = (unsigned long)kernel_thread_helper;
+	regs.UC64_ASR = ASR_MODE_PRIV;
+
+	/* Create the new process. */
+	return do_fork(flags | CLONE_VM | CLONE_UNTRACED,
+			0, &regs, 0, NULL, NULL);
 }
 
 /**
