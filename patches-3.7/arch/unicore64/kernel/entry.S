@@ -65,10 +65,28 @@ ENDPROC(__vec_invalid)
 ENTRY(__vec_itrap)
 	__priv_context_save
 
+	@
+	@ set args, then call itrap main handler
+	@
+	@ r0 - address of faulting instruction
+	@ r1 - pointer to registers on stack
+	@
+	movc	r0, CP0_EPC, #1
+	dmov	r1, sp
+
+	@
+	@ enable interrupts by a temporary register r5
+	@
+	enable_irq r5
+
 	call	__do_itrap
 
+	@
+	@ disable interrupts before pulling preserved data off the stack
+	@
+	disable_irq r5
+
 	__priv_context_restore
-	eret
 ENDPROC(__vec_itrap)
 
 ENTRY(__vec_dtrap)
