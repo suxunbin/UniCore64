@@ -6,9 +6,11 @@
 #include <arch/hwdef-cp0-sysctrl.h>
 
 	.macro	__priv_context_save
-	movc	CP0_SWR, r0, #4			@ save r0 for temp use
-	movc	CP0_SWR, sp, #5			@ save sp for context save
+	@ step 1: save r0 and sp to keep their original values
+	movc	CP0_SWR, r0, #4
+	movc	CP0_SWR, sp, #5
 
+	@ step 2: push special registers into stack, see struct pt_regs
 	dmov	r0, #-1
 	__push	r0				@ push return value
 	dmov	r0, bfr
@@ -21,19 +23,30 @@
 	movc	r0, CP0_SWR, #5
 	__push	r0				@ push r29(sp)
 
+	@ step 3: push general registers into stack, see struct pt_regs
 	movc	r0, CP0_SWR, #4			@ restore original r0 value
 	.irp	n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
 		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-	__push	r\n				@ push r28-r0 regs
+	__push	r\n
 	.endr
 
+	@ step 4: push only-kernel-awared registers into stack
+	movc	r16, CP0_SWR, #0		@ push swr #0
+	__push	r16
 	.endm
 
 	.macro __priv_context_restore
+	@ step 1: pop only-kernel-awared registers from stack
+	__pop	r16
+	movc	CP0_SWR, r16, #0		@ pop swr #0
+
+	@ step 2: pop general registers from stack, see struct pt_regs
 	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
 		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28
 	__pop	r\n				@ pop r0-r28 regs
 	.endr
+
+	@ step 3: pop special registers from stack, see struct pt_regs
 	__pop	lr				@ pop r29(sp)
 	movc	CP0_SWR, lr, #5			@ saved in temp reg
 	__pop	lr				@ pop r30(lr)
@@ -45,6 +58,7 @@
 	__pop	lr				@ pop bfr
 	mov	bfr, lr
 
+	@ step 4: restore the original values of lr and sp
 	movc	lr, CP0_SWR, #4			@ restore r30(lr) value
 	movc	sp, CP0_SWR, #5			@ restore r29(sp) value
 	eret
@@ -76,17 +90,11 @@ ENTRY(__vec_itrap)
 	movc	r0, CP0_EPC, #1
 	dmov	r1, sp
 
-	@
-	@ enable interrupts by a temporary register r5
-	@
-	enable_irq r5
+	enable_irq
 
 	call	__do_itrap
 
-	@
-	@ disable interrupts before pulling preserved data off the stack
-	@
-	disable_irq r5
+	disable_irq
 
 	__priv_context_restore
 ENDPROC(__vec_itrap)
@@ -103,17 +111,11 @@ ENTRY(__vec_dtrap)
 	movc	r0, CP0_EPC, #0
 	dmov	r1, sp
 
-	@
-	@ enable interrupts by a temporary register r5
-	@
-	enable_irq r5
+	enable_irq
 
 	call	__do_dtrap
 
-	@
-	@ disable interrupts before pulling preserved data off the stack
-	@
-	disable_irq r5
+	disable_irq
 
 	__priv_context_restore
 ENDPROC(__vec_dtrap)

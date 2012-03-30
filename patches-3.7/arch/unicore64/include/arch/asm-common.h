@@ -25,16 +25,20 @@ __ASMMACRO_WRAP(.macro	__halt;
 			halt;
 		.endm)
 
-__ASMMACRO_WRAP(.macro	disable_irq, rt;
-			dmov	&rt, asr;
-			dor	&rt, &rt, #ASR_INTR_SELECT;
-			dmov	asr, &rt;
+__ASMMACRO_WRAP(.macro	disable_irq;
+			movc	p0.c12, r16, #0;
+			dmov	r16, asr;
+			dor	r16, r16, #ASR_INTR_SELECT;
+			dmov	asr, r16;
+			movc	r16, p0.c12, #0;
 		.endm)
 
-__ASMMACRO_WRAP(.macro	enable_irq, rt;
-			dmov	&rt, asr;
-			dand	&rt, &rt, #(~ASR_INTR_SELECT);
-			dmov	asr, &rt;
+__ASMMACRO_WRAP(.macro	enable_irq;
+			movc	p0.c12, r16, #0;
+			dmov	r16, asr;
+			dand	r16, r16, #(~ASR_INTR_SELECT);
+			dmov	asr, r16;
+			movc	r16, p0.c12, #0;
 		.endm)
 
 #define __halt()			__asm__("__halt")

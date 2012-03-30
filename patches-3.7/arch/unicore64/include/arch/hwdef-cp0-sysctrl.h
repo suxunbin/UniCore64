@@ -26,6 +26,7 @@
  * CP0 CR10:	reg. for timer interrupt and interrupt information
  * CP0 CR11:	control reg. of Read/Write Margin
  * CP0 CR12:	reg. of software usage
+ *   #0: for atomic operation, saved/restored when context switch
  *   #4: for temperary usage, perhaps destroyed when context switch
  *   #5: for temperary usage, perhaps destroyed when context switch
  *   #6: reserved for ocd
