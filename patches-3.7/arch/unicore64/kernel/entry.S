@@ -93,12 +93,12 @@ ENTRY(__vec_dtrap)
 	__priv_context_save
 
 	@
-	@ set args, then call itrap main handler
+	@ set args, then call dtrap main handler
 	@
-	@ r0 - address of faulting instruction
+	@ r0 - address of faulting address
 	@ r1 - pointer to registers on stack
 	@
-	movc	r0, CP0_EPC, #1
+	movc	r0, CP0_EPC, #0
 	dmov	r1, sp
 
 	@
