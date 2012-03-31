@@ -36,12 +36,6 @@ static void __init setup_arch_param(char **cmdline_p)
 	*cmdline_p = builtin_cmdline;
 }
 
-static void __init setup_arch_resource(void)
-{
-	/* FIXME */
-	BUG();
-}
-
 /**
  * setup_arch() - Architecture-specific boot-time initializations
  * @cmdline_p:
@@ -56,5 +50,4 @@ void __init setup_arch(char **cmdline_p)
 	setup_arch_param(cmdline_p);
 	setup_arch_memory();
 	unflatten_device_tree();
-	setup_arch_resource();
 }
