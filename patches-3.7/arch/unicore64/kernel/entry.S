@@ -65,6 +65,14 @@
 	.endm
 
 /**
+ * ret_from_fork - This is how we return from a fork.
+ */
+ENTRY(ret_from_fork)
+	call	schedule_tail
+	/* TODO */
+ENDPROC(ret_from_fork)
+
+/**
  * __switch_to - Register switch for UniCore3 processors
  */
 ENTRY(__switch_to)

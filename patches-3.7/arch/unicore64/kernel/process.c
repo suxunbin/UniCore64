@@ -33,6 +33,8 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 			0, &regs, 0, NULL, NULL);
 }
 
+asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
+
 /**
  * copy_thread() - Copy a thread
  * @clone_flags:
@@ -44,8 +46,15 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	    unsigned long stk_sz, struct task_struct *p, struct pt_regs *regs)
 {
-	/* FIXME */
-	BUG();
+	struct pt_regs *childregs = task_pt_regs(p);
+
+	*childregs = *regs;
+	childregs->UC64_R00 = 0;
+
+	p->thread.usp = stack_start;
+	p->thread.ksp = (unsigned long)childregs;
+	p->thread.pc = (unsigned long)ret_from_fork;
+
 	return 0;
 }
 
