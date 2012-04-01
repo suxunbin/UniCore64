@@ -13,6 +13,8 @@
 	@ step 2: push special registers into stack, see struct pt_regs
 	dmov	r0, #-1
 	__push	r0				@ push return value
+	movc	r0, CP0_SWR, #0
+	__push	r0				@ push swr #0
 	dmov	r0, bfr
 	__push	r0				@ push bfr
 	dmov	r0, bsr
@@ -30,15 +32,10 @@
 	__push	r\n
 	.endr
 
-	@ step 4: push only-kernel-awared registers into stack
-	movc	r16, CP0_SWR, #0		@ push swr #0
-	__push	r16
 	.endm
 
 	.macro __priv_context_restore
 	@ step 1: pop only-kernel-awared registers from stack
-	__pop	r16
-	movc	CP0_SWR, r16, #0		@ pop swr #0
 
 	@ step 2: pop general registers from stack, see struct pt_regs
 	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
@@ -54,14 +51,15 @@
 	__pop	lr				@ pop r31(pc)
 	movc	CP0_EPC, lr, #1			@ saved in epc reg
 	__pop	lr				@ pop bsr
-	mov	bsr, lr
+	dmov	bsr, lr
 	__pop	lr				@ pop bfr
-	mov	bfr, lr
+	dmov	bfr, lr
+	__pop	lr				@ pop swr #0
+	movc	CP0_SWR, lr, #0
 
 	@ step 4: restore the original values of lr and sp
 	movc	lr, CP0_SWR, #4			@ restore r30(lr) value
 	movc	sp, CP0_SWR, #5			@ restore r29(sp) value
-	eret
 	.endm
 
 /**
@@ -105,6 +103,7 @@ ENTRY(__vec_itrap)
 	disable_irq
 
 	__priv_context_restore
+	eret
 ENDPROC(__vec_itrap)
 
 ENTRY(__vec_dtrap)
@@ -126,6 +125,7 @@ ENTRY(__vec_dtrap)
 	disable_irq
 
 	__priv_context_restore
+	eret
 ENDPROC(__vec_dtrap)
 
 ENTRY(__vec_int_puv3)
