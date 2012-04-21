@@ -11,7 +11,7 @@
 #define __read_cp_op(reg, op_no)					\
 	({								\
 		unsigned long __val;					\
-		__asm__("movc	%0, " __stringify(reg)			\
+		__asm__ __volatile__("movc	%0, " __stringify(reg)	\
 				", #" __stringify(op_no)		\
 		    : "=r" (__val));					\
 		__val;							\
