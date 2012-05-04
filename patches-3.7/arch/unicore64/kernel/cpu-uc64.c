@@ -240,8 +240,9 @@ void __show_cp0_regs(void)
 
 	pr_emerg(" VECBASE: %16lx", __read_cp(CP0_VECBASE));
 	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR, 0));
-	pr_emerg(" INNER_TIMER: %16lx", __read_cp_op(CP0_INTR, 1));
 	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR, 7));
+	pr_emerg(" INNER_TIMER_COUNTER: %16lx", __read_cp_op(CP0_INTR, 9));
+	pr_emerg(" INNER_TIMER_MATCH: %16lx", __read_cp_op(CP0_INTR, 10));
 
 	pr_emerg(" R/W Margin: %16lx", __read_cp(CP0_RWMARGIN));
 }
