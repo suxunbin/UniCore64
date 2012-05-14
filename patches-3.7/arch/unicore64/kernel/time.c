@@ -7,8 +7,8 @@
 
 #include <arch/hwdef-cp0-sysctrl.h>
 
-#define __itimer_read_counter()		__read_cp_op(CP0_INTR, 1)
-#define __itimer_write_counter(cnt)	__write_cp_op(cnt, CP0_INTR, 1)
+#define __itimer_read_counter()		__read_cp_op(CP0_INTR, 9)
+#define __itimer_write_match(cnt)	__write_cp_op(cnt, CP0_INTR, 10)
 
 #define __itimer_irq_enable()					\
 	__write_uc64(__read_uc64(asr) & ~ASR_INTR_ITM, asr)
@@ -29,10 +29,8 @@ static int __itimer_set_next_event(unsigned long delta,
 {
 	unsigned long next, count;
 
-	__itimer_irq_enable();
-
 	next = __itimer_read_counter() + delta;
-	__itimer_write_counter(next);
+	__itimer_write_match(next);
 	count = __itimer_read_counter();
 
 	return (signed)(next - count) <= MIN_COUNTER_DELTA ? -ETIME : 0;
@@ -64,6 +62,7 @@ static struct clock_event_device __itimer_ce = {
 
 static struct clocksource __itimer_cs = {
 	.name		= "uc64-inner-timer-clocksource",
+	.rating		= 200,
 	.read		= __itimer_read,
 	.mask		= CLOCKSOURCE_MASK(64),
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
@@ -88,5 +87,12 @@ void __init time_init(void)
 	__itimer_irq_clear();
 
 	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_TICK_RATE, 5);
+
+	__itimer_ce.max_delta_ns =
+		clockevent_delta2ns(CLOCK_TICK_RATE, &__itimer_ce);
+	__itimer_ce.min_delta_ns =
+		clockevent_delta2ns(MIN_COUNTER_DELTA * 2, &__itimer_ce) + 1;
+
 	clocksource_register_hz(&__itimer_cs, CLOCK_TICK_RATE);
+	clockevents_register_device(&__itimer_ce);
 }
