@@ -17,7 +17,8 @@
 #define __itimer_irq_clear()					\
 	__write_cp(__read_cp(CP0_INTR) & ~CP0_INTR_ITM, CP0_INTR)
 
-#define MIN_COUNTER_DELTA			(2)
+#define MIN_COUNTER_DELTA		(USEC_PER_SEC / CONFIG_HZ)
+#define MAX_COUNTER_DELTA		(NSEC_PER_SEC / CONFIG_HZ)
 
 static cycle_t __itimer_read(struct clocksource *cs)
 {
@@ -89,9 +90,9 @@ void __init time_init(void)
 	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_TICK_RATE, 5);
 
 	__itimer_ce.max_delta_ns =
-		clockevent_delta2ns(CLOCK_TICK_RATE, &__itimer_ce);
+		clockevent_delta2ns(MAX_COUNTER_DELTA, &__itimer_ce);
 	__itimer_ce.min_delta_ns =
-		clockevent_delta2ns(MIN_COUNTER_DELTA * 2, &__itimer_ce) + 1;
+		clockevent_delta2ns(MIN_COUNTER_DELTA, &__itimer_ce);
 
 	clocksource_register_hz(&__itimer_cs, CLOCK_TICK_RATE);
 	clockevents_register_device(&__itimer_ce);
