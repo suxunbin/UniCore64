@@ -49,7 +49,9 @@ ENTRY(stext)
 
 	__head_clear_bss
 
-	b	start_kernel
+	/* We must get the VA of start_kernel, and avoid using RA. */
+	ldd	r0, =start_kernel
+	jump	r0
 ENDPROC(stext)
 
 	____align64
