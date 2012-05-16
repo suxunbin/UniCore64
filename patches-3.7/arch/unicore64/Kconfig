@@ -57,7 +57,7 @@ config ARCH_FPGA
 	  If unsure, say N.
 
 config ARCH_PUV3
-	def_bool y
+	def_bool n
 
 endmenu
 

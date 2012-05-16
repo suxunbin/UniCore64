@@ -130,9 +130,9 @@ ENDPROC(__vec_dtrap)
 
 ENTRY(__vec_int_puv3)
 	__priv_context_save
-
+#ifdef CONFIG_ARCH_PUV3
 	call	puv3_intc_handler
-
+#endif
 	__priv_context_restore
 	eret
 ENDPROC(__vec_int_puv3)
