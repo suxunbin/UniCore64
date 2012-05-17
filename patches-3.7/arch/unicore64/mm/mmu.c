@@ -25,7 +25,7 @@ static void __init uc64_create_direct_mapping(phys_addr_t start,
 	/* the first pud has been written in head.S */
 	prot_pmd = __pgprot(UC64_PMD_TYPE_CACHE | UC64_PMD_EXIST
 			| UC64_PMD_RWX | UC64_PMD_SPAGE);
-	pmd = (pmd_t *)(phys_pud + pmd_index((unsigned long)__va(start)));
+	pmd = (pmd_t *)(phys_pud) + pmd_index((unsigned long)__va(start));
 
 	for (phys = start; phys < (start + length); phys += UC64_PMD_SIZE) {
 		set_pmd(pmd, __pmd(phys | pgprot_val(prot_pmd)));
