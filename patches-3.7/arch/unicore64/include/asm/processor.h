@@ -25,6 +25,7 @@ struct thread_struct {
 
 #define thread_saved_pc(tsk)	((tsk)->thread.pc)
 
+/* ____epip: prepare_to_copy will be removed when tip tree merged */
 #define prepare_to_copy(tsk)	do { } while (0)
 #define release_thread(tsk)	do { } while (0)
 
