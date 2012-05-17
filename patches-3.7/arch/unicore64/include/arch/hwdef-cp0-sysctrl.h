@@ -4,7 +4,7 @@
 #include <arch/hwdef-copro.h>
 
 /**
- * DOC: HWDEF_COPRO_H_CP0
+ * DOC: HWDEF_CP0_SYSCTRL_H_CP0
  *
  * CP0 is the control coprocesscor which helps the main processor
  * with global control.
@@ -57,7 +57,7 @@
 #define CP0_INTR_IPM			__BF(1, 1, 13)
 
 /**
- * DOC: HWDEF_COPRO_H_CP0_CTRLREG
+ * DOC: HWDEF_CP0_SYSCTRL_H_CP0_CTRLREG
  * Following bit field definitions for control register in CP0 are defined:
  *
  * \\\\lt:programlisting\\\\gt:
@@ -81,7 +81,7 @@
 #define CP0_CTRLREG_DEFAULT		CP0_CTRLREG_WRITEBACK
 
 /**
- * DOC: HWDEF_COPRO_H_CP0_CPUID
+ * DOC: HWDEF_CP0_SYSCTRL_H_CP0_CPUID
  * Following cpu inforamtion macros in CP0 are defined:
  *
  * \\\\lt:programlisting\\\\gt:
@@ -105,7 +105,7 @@
 #define CP0_CPUID_DESIGNER_MPRC		__BF(0x4D, 8, 24)
 
 /**
- * DOC: HWDEF_COPRO_H_CP0_CACHE
+ * DOC: HWDEF_CP0_SYSCTRL_H_CP0_CACHE
  * Following cache inforamtion macros in CP0 are defined.
  */
 #define CP0_CPUID_ICACHE_LINE_SELECT		__BS(2, 0)
