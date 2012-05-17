@@ -37,6 +37,7 @@ zImage: vmlinux
 
 archclean:
 	$(Q)$(MAKE) $(clean)=$(BOOT_DIR)
+	$(Q)$(MAKE) $(clean)=$(DOC_DIR)
 
 archdoc:
 	$(Q)$(MAKE) $(build)=scripts build_docproc
