@@ -70,13 +70,6 @@ ENTRY(ret_from_fork)
 	/* TODO */
 ENDPROC(ret_from_fork)
 
-/**
- * __switch_to - Register switch for UniCore3 processors
- */
-ENTRY(__switch_to)
-	/* FIXME: */
-ENDPROC(__switch_to)
-
 ENTRY(__vec_invalid)
 	dmovl		r0, 0xdeaddeaddeaddead
 	__putdata	r0

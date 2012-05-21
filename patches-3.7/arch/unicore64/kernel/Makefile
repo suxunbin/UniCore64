@@ -1,7 +1,7 @@
 #
 # Makefile for the arch/unicore64/kernel.
 #
-obj-y			:= head.o entry.o
+obj-y			:= head.o entry.o switch_to.o
 obj-y			+= init_task.o irq.o
 obj-y			+= process.o ptrace.o
 obj-y			+= setup.o sys.o

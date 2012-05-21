@@ -11,10 +11,17 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+#include <linux/sched.h>
 #include <linux/kbuild.h>
 
 int main(void)
 {
+	OFFSET(TASK_THREAD,		task_struct, thread);
 	BLANK();
+
+	OFFSET(THREAD_PC,		thread_struct, pc);
+	OFFSET(THREAD_KSP,		thread_struct, ksp);
+	BLANK();
+
 	return 0;
 }
