@@ -1,3 +1,8 @@
+/**
+ * DOC: TIME_C
+ *
+ * This file defines structures and functions that support itimer.
+ */
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/errno.h>
@@ -20,11 +25,29 @@
 #define MIN_COUNTER_DELTA		(USEC_PER_SEC / CONFIG_HZ)
 #define MAX_COUNTER_DELTA		(NSEC_PER_SEC / CONFIG_HZ)
 
+/**
+ * __itimer_read() - read itimer counter register
+ * @cs:		pointer to clocksource __timer_cs
+ *
+ * Return code:
+ * Return itimer counter
+ */
 static cycle_t __itimer_read(struct clocksource *cs)
 {
 	return	__itimer_read_counter();
 }
 
+/**
+ * __itimer_set_next_event() - set itimer match register
+ * @delta:	specify how many itimer cycles till next itimer irq
+ * @c:		pointer to clock_event_device __itimer_ce
+ *
+ * Return code:
+ * Return 0 on success, -ETIME when the event is in the past.
+ *
+ * This function sets itimer match register. When itimer counter equals
+ * the value we set, we have next itimer irq.
+ */
 static int __itimer_set_next_event(unsigned long delta,
 		struct clock_event_device *c)
 {
@@ -37,6 +60,11 @@ static int __itimer_set_next_event(unsigned long delta,
 	return (signed)(next - count) <= MIN_COUNTER_DELTA ? -ETIME : 0;
 }
 
+/**
+ * __itimer_set_mode() - set the operating mode of itimer
+ * @mode:	new mode
+ * @c:		pointer to clock_event_device __itimer_ce
+ */
 static void __itimer_set_mode(enum clock_event_mode mode,
 		struct clock_event_device *c)
 {
@@ -69,6 +97,12 @@ static struct clocksource __itimer_cs = {
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
+/**
+ * __itimer_irqhandler() - handler for itimer irq
+ *
+ * Clear corresponding bit of itimer irq in asr and call
+ * architecture-independent handler.
+ */
 void __itimer_irqhandler(void)
 {
 	/* Disarm the compare/match, signal the event. */
@@ -79,7 +113,10 @@ void __itimer_irqhandler(void)
 }
 
 /**
- * time_init() -
+ * time_init() - initialize itimer
+ *
+ * Register clocksource and clock_event_device for itimer and configure
+ * some parameters.
  */
 void __init time_init(void)
 {
