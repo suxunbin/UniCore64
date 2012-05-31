@@ -44,7 +44,7 @@ ENTRY(uc64_debug_putx)
 	__putdata	r0
 
 	/* ____debug_putx: we add a blank after data */
-	mov	r0, #0x20
+	mov		r0, #0x20
 	__putchar	r0
 
 	return
