@@ -20,14 +20,15 @@ ENTRY(uc64_debug_puts)
 
 	adr		r0, 1003f
 
-1001:	ldb.w		r2, [r0]+, #1
+1001:	dsub.a		r1, r1, #1
+	bsl		1002f
+
+	ldb.w		r2, [r0]+, #1
 	dcmpsub.a	r2, #0
 	beq		1002f
 
 	__putchar	r2
 
-	dsub.a		r1, r1, #1
-	beq		1002f
 	b		1001b
 
 1002:	return
