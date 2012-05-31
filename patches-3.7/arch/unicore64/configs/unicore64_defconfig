@@ -15,4 +15,4 @@ CONFIG_DEBUG_KERNEL=y
 CONFIG_DEBUG_OCD=y
 
 ### Boot options
-CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel"
+CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"

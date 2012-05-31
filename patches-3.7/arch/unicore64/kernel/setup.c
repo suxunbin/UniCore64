@@ -3,6 +3,7 @@
 #include <linux/notifier.h>
 #include <linux/string.h>
 #include <linux/of_fdt.h>
+#include <linux/console.h>
 
 #include <asm/setup.h>
 #include <asm/setup_arch.h>
@@ -50,4 +51,11 @@ void __init setup_arch(char **cmdline_p)
 	setup_arch_param(cmdline_p);
 	setup_arch_memory();
 	unflatten_device_tree();
+
+	/* Set default console for virtual terminal */
+#if defined(CONFIG_OCD_CONSOLE)
+	conswitchp = &ocd_con;
+#elif defined(CONFIG_DUMMY_CONSOLE)
+	conswitchp = &dummy_con;
+#endif
 }

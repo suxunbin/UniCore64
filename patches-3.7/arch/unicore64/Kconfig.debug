@@ -19,4 +19,10 @@ config EARLY_PRINTK
 	  it is not recommended because it looks ugly and doesn't cooperate
 	  with klogd/syslogd or the X server. You should normally N here,
 	  unless you want to debug such a crash.
+
+config OCD_CONSOLE
+	bool
+	depends on VGA_CONSOLE!=y && FRAMEBUFFER_CONSOLE!=y && DEBUG_OCD
+	default y
+
 endmenu

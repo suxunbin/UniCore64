@@ -17,4 +17,8 @@ extern char __vectors_table[];
 extern void __show_uc64_regs(void);
 extern void __show_cp0_regs(void);
 
+#ifdef CONFIG_OCD_CONSOLE
+extern const struct consw ocd_con;	/* OCD console */
+#endif
+
 #endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
