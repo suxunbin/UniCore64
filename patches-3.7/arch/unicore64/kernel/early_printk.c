@@ -5,7 +5,7 @@
 
 static void early_ocd_write(struct console *con, const char *s, unsigned n)
 {
-	uc64_debug_puts(s);
+	uc64_debug_puts(s, n);
 }
 
 static struct console early_ocd_console = {

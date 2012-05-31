@@ -2,33 +2,37 @@
 #include <arch/asm-common.h>
 #include <arch/asm-debug.h>
 
-#define UC64_DEBUG_PUTS_MAX	256
-
 /**
- * uc64_debug_puts - print a string less than 256.
+ * uc64_debug_puts - print a string
  * r0: the address of the string
- * r1: the max length of the string
+ * r1: the length of the string
+ *
+ * The pseudo-logic of this function is:
+ *	if (r1 > maxlen)	print error infomation;
+ *	while (*r0 && r1-- > 0) {
+ *		__putchar(*r0);
+ *		r0++;
+ *	}
  */
 ENTRY(uc64_debug_puts)
-	dmov	r1, #UC64_DEBUG_PUTS_MAX
+	dcmpsub.a	r1, #UC64_DEBUG_PUTS_MAXLEN
+	beb		1001f
 
-1001:	ldb.w	r2, [r0]+, #1
+	adr		r0, 1003f
+
+1001:	ldb.w		r2, [r0]+, #1
 	dcmpsub.a	r2, #0
-	beq	1003f
+	beq		1002f
 
 	__putchar	r2
 
-	dsub.a	r1, r1, #1
-	bsl	1002f
-	b	1001b
+	dsub.a		r1, r1, #1
+	beq		1002f
+	b		1001b
 
-1002:	adr	r0, 1004f
-	b	uc64_debug_puts
+1002:	return
 
-1003:	return
-
-1004:
-	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
+1003:	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
 ENDPROC(uc64_debug_puts)
 
 /**

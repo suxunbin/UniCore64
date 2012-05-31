@@ -16,7 +16,7 @@ extern char input_data_end[];
 #ifndef ARCH_HAVE_DECOMP_PUTS
 #define arch_decomp_puts(p)
 #else
-#define arch_decomp_puts(p)	uc64_debug_puts(p)
+#define arch_decomp_puts(p)	uc64_debug_puts(p, UC64_DEBUG_PUTS_MAXLEN)
 #endif
 
 #ifndef ARCH_HAVE_DECOMP_ERROR

@@ -26,8 +26,10 @@ __ASMMACRO_WRAP(.macro	__putdata, rdata;
 		.endm)
 #endif /* CONFIG_DEBUG_OCD */
 
+#define UC64_DEBUG_PUTS_MAXLEN		256
+
 #ifndef __ASSEMBLY__
-extern void uc64_debug_puts(const char *s);
+extern void uc64_debug_puts(const char *s, unsigned len);
 extern void uc64_debug_putx(unsigned long x);
 #endif /* __ASSEMBLY__ */
 
