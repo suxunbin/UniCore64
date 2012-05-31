@@ -3,7 +3,7 @@
 #include <arch/asm-common.h>
 
 /*
- * __head_initialize - Initialize asr and coprocessor0.
+ * __head_init - Initialize asr and coprocessor0.
  *
  * Initialize ASR which is in PRIV mode and keep INTR off
  *
@@ -12,26 +12,26 @@
  * .... .... ..BS IDAM
  * .... .... ..10 0000
  */
-.macro	__head_initialize, rt
-	dmovl	&rt, #ASR_MODE_PRIV | ASR_INTR_SELECT
-	dmov	asr, &rt
-	dmov	&rt, #CP0_CTRLREG_DEFAULT
-	movc	CP0_CTRLREG, &rt, #0
+.macro	__head_init, rt
+	dmovl		&rt, #ASR_MODE_PRIV | ASR_INTR_SELECT
+	dmov		asr, &rt
+	dmov		&rt, #CP0_CTRLREG_DEFAULT
+	movc		CP0_CTRLREG, &rt, #0
 .endm
 
 /*
- * __head_clear_bss - Clear bss region
+ * __clear_bss - Clear bss region
  *
  * All GP registers will be destroyed in this macro.
  */
-.macro	__head_clear_bss
-	adr	r1, 1001f
-	ldd	r0, [r1+], #0
-	ldd	r2, [r1+], #8
-	dsub	r2, r2, r0
-	dmov	r1, #0
-	adr	lr, 1002f
-	b	memset
+.macro	__clear_bss
+	adr		r1, 1001f
+	ldd		r0, [r1+], #0
+	ldd		r2, [r1+], #8
+	dsub		r2, r2, r0
+	dmov		r1, #0
+	adr		lr, 1002f
+	b		memset
 
 	____align64
 1001:
@@ -41,18 +41,18 @@
 .endm
 
 /*
- * __cache_initialize - invalid and enable icache and dcache
+ * __cache_init - invalid and enable icache and dcache
  */
-.macro	__cache_initialize, rt
+.macro	__cache_init, rt
 	__invalid_dcache	&rt
 	__invalid_icache	&rt
 
-	movc	&rt, p0.c1, #0;
+	movc		&rt, p0.c1, #0;
 #ifndef CONFIG_CPU_DCACHE_DISABLE
-	dor	&rt, &rt, #4;
+	dor		&rt, &rt, #4;
 #endif
 #ifndef CONFIG_CPU_ICACHE_DISABLE
-	dor	&rt, &rt, #8;
+	dor		&rt, &rt, #8;
 #endif
-	movc	p0.c1, &rt, #0;
+	movc		p0.c1, &rt, #0;
 .endm
