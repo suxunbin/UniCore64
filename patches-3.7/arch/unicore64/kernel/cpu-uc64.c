@@ -105,53 +105,53 @@ const struct seq_operations cpuinfo_op = {
 #define CACHETYPE_SIZE(CT)						\
 	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_SIZE_512B:				\
-		pr_info("512B "); break;				\
+		printk(KERN_CONT "512B "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_1KB:				\
-		pr_info("1KB "); break;					\
+		printk(KERN_CONT "1KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_2KB:				\
-		pr_info("2KB "); break;					\
+		printk(KERN_CONT "2KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_4KB:				\
-		pr_info("4KB "); break;					\
+		printk(KERN_CONT "4KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_8KB:				\
-		pr_info("8KB "); break;					\
+		printk(KERN_CONT "8KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_16KB:				\
-		pr_info("16KB "); break;				\
+		printk(KERN_CONT "16KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_32KB:				\
-		pr_info("32KB "); break;				\
+		printk(KERN_CONT "32KB "); break;			\
 	case CP0_CPUID_##CT##CACHE_SIZE_64KB:				\
-		pr_info("64KB "); break;				\
+		printk(KERN_CONT "64KB "); break;			\
 	}
 
 #define CACHETYPE_ASSOC(CT)						\
 	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_ASSOC_DMAP:				\
-		pr_info("DMAP "); break;				\
+		printk(KERN_CONT "DMAP "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_2WAY:				\
-		pr_info("2Way "); break;				\
+		printk(KERN_CONT "2Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_4WAY:				\
-		pr_info("4Way "); break;				\
+		printk(KERN_CONT "4Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_8WAY:				\
-		pr_info("8Way "); break;				\
+		printk(KERN_CONT "8Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_16WAY:				\
-		pr_info("16Way "); break;				\
+		printk(KERN_CONT "16Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_32WAY:				\
-		pr_info("32Way "); break;				\
+		printk(KERN_CONT "32Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_64WAY:				\
-		pr_info("64Way "); break;				\
+		printk(KERN_CONT "64Way "); break;			\
 	case CP0_CPUID_##CT##CACHE_ASSOC_128WAY:			\
-		pr_info("128Way "); break;				\
+		printk(KERN_CONT "128Way "); break;			\
 	}
 
 #define CACHETYPE_LINE(CT)						\
 	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_SELECT) {	\
 	case CP0_CPUID_##CT##CACHE_LINE_8BYTE:				\
-		pr_info("L8B"); break;					\
+		printk(KERN_CONT "L8B"); break;					\
 	case CP0_CPUID_##CT##CACHE_LINE_16BYTE:				\
-		pr_info("L16B"); break;					\
+		printk(KERN_CONT "L16B"); break;					\
 	case CP0_CPUID_##CT##CACHE_LINE_32BYTE:				\
-		pr_info("L32B"); break;					\
+		printk(KERN_CONT "L32B"); break;					\
 	case CP0_CPUID_##CT##CACHE_LINE_64BYTE:				\
-		pr_info("L64B"); break;					\
+		printk(KERN_CONT "L64B"); break;					\
 	}
 
 void __init setup_arch_cpuinfo(void)
@@ -168,7 +168,7 @@ void __init setup_arch_cpuinfo(void)
 			CP0_CPUID_DESIGNER_MPRC);
 
 	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity,");
-	pr_info(" revision: %ld, layout: %ld\n",
+	printk(KERN_CONT " revision: %ld, layout: %ld\n",
 		((uc64_cpuid & CP0_CPUID_SERIES_SELECT) >> CP0_CPUID_SERIES_POS),
 		((uc64_cpuid & CP0_CPUID_LAYOUT_SELECT) >> CP0_CPUID_LAYOUT_POS));
 
@@ -190,8 +190,6 @@ void __init setup_arch_cpuinfo(void)
 	CACHETYPE_SIZE(D);
 	CACHETYPE_ASSOC(D);
 	CACHETYPE_LINE(D);
-
-	pr_info("\n");
 }
 
 #undef CACHETYPE_SIZE
