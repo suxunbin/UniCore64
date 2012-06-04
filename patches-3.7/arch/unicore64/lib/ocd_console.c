@@ -37,7 +37,13 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
 	static int ypos_last;
 	char c = '\n';
 
-	uc64_debug_puts((char *)s, n);
+	/* For each element in *s (16bit in an unsigned short type):
+	 * High 8-bit is background color, low 8-bit is foreground char */
+	while (*s && (n > 0)) {
+		uc64_debug_puts((char *)s, 1);
+		s++;
+		n--;
+	}
 
 	if (ypos != ypos_last) {
 		uc64_debug_puts(&c, 1);
