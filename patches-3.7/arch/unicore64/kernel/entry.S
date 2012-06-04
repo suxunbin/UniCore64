@@ -12,7 +12,7 @@
 	dlsl		&rd, sp, #13
 	.endm
 
-	.macro		__priv_context_save
+	.macro		__priv_entry
 	@ step 1: save r0 and sp to keep their original values
 	movc		CP0_SWR, r0, #4
 	movc		CP0_SWR, sp, #5
@@ -41,7 +41,7 @@
 
 	.endm
 
-	.macro __priv_context_restore
+	.macro		__priv_exit
 	@ step 1: pop only-kernel-awared registers from stack
 
 	@ step 2: pop general registers from stack, see struct pt_regs
@@ -83,7 +83,7 @@ ENTRY(ret_from_fork)
 	bne		schedule		@ return to 1001b
 	cmpsub.a	r18, #0
 	bne		__vec_invalid		@ print error information
-	__priv_context_restore
+	__priv_exit
 	eret
 ENDPROC(ret_from_fork)
 
@@ -95,7 +95,7 @@ ENTRY(__vec_invalid)
 ENDPROC(__vec_invalid)
 
 ENTRY(__vec_itrap)
-	__priv_context_save
+	__priv_entry
 
 	@
 	@ set args, then call itrap main handler
@@ -112,12 +112,12 @@ ENTRY(__vec_itrap)
 
 	__irq_disable
 
-	__priv_context_restore
+	__priv_exit
 	eret
 ENDPROC(__vec_itrap)
 
 ENTRY(__vec_dtrap)
-	__priv_context_save
+	__priv_entry
 
 	@
 	@ set args, then call dtrap main handler
@@ -134,25 +134,25 @@ ENTRY(__vec_dtrap)
 
 	__irq_disable
 
-	__priv_context_restore
+	__priv_exit
 	eret
 ENDPROC(__vec_dtrap)
 
 ENTRY(__vec_int_puv3)
-	__priv_context_save
+	__priv_entry
 #ifdef CONFIG_ARCH_PUV3
 	call		puv3_intc_handler
 #endif
-	__priv_context_restore
+	__priv_exit
 	eret
 ENDPROC(__vec_int_puv3)
 
 ENTRY(__vec_int_itimer)
-	__priv_context_save
+	__priv_entry
 
 	call		__itimer_irqhandler
 
-	__priv_context_restore
+	__priv_exit
 	eret
 ENDPROC(__vec_int_itimer)
 
