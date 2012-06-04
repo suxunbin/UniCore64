@@ -11,8 +11,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#include <linux/sched.h>
 #include <linux/kbuild.h>
+#include <linux/sched.h>
 
 int main(void)
 {
@@ -23,5 +23,6 @@ int main(void)
 	OFFSET(THREAD_KSP,		thread_struct, ksp);
 	BLANK();
 
+	OFFSET(THREAD_INFO_FLAGS,	thread_info, flags);
 	return 0;
 }

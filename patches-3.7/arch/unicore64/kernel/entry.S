@@ -1,9 +1,16 @@
 #include <linux/linkage.h>
+#include <generated/asm-offsets.h>
+#include <asm/thread_info.h>
 #include <asm/cache.h>
 #include <arch/asm-common.h>
 #include <arch/asm-debug.h>
 #include <arch/asm-mmuops.h>
 #include <arch/hwdef-cp0-sysctrl.h>
+
+	.macro	__thread_info, rd
+	dasr		&rd, sp, #13
+	dlsl		&rd, sp, #13
+	.endm
 
 	.macro	__priv_context_save
 	@ step 1: save r0 and sp to keep their original values
@@ -66,8 +73,18 @@
  * ret_from_fork - This is how we return from a fork.
  */
 ENTRY(ret_from_fork)
-	call	schedule_tail
-	/* TODO */
+	call		schedule_tail
+1001:	disable_irq
+	__thread_info	r17
+	ldw		r18, [r17+], #THREAD_INFO_FLAGS
+	and		r0, r18, #TIF_NEED_RESCHED
+	cmpsub.a	r0, #0
+	adr		lr, 1001b
+	bne		schedule		@ return to 1001b
+	cmpsub.a	r18, #0
+	bne		__vec_invalid		@ print error information
+	__priv_context_restore
+	eret
 ENDPROC(ret_from_fork)
 
 ENTRY(__vec_invalid)
