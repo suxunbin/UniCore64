@@ -74,7 +74,7 @@
  */
 ENTRY(ret_from_fork)
 	call		schedule_tail
-1001:	disable_irq
+1001:	__irq_disable
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
 	and		r0, r18, #TIF_NEED_RESCHED
@@ -106,11 +106,11 @@ ENTRY(__vec_itrap)
 	movc		r0, CP0_EPC, #1
 	dmov		r1, sp
 
-	enable_irq
+	__irq_enable
 
 	call		__do_itrap
 
-	disable_irq
+	__irq_disable
 
 	__priv_context_restore
 	eret
@@ -128,11 +128,11 @@ ENTRY(__vec_dtrap)
 	movc		r0, CP0_EPC, #0
 	dmov		r1, sp
 
-	enable_irq
+	__irq_enable
 
 	call		__do_dtrap
 
-	disable_irq
+	__irq_disable
 
 	__priv_context_restore
 	eret
