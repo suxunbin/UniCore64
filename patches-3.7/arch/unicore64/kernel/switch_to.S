@@ -16,7 +16,7 @@ ENTRY(__switch_to)
 	@ Save stack pointer and return address
 	dadd	ip, r0, #TASK_THREAD + THREAD_PC
 	std	lr, [ip]
-	dadd	ip, r0, #TASK_THREAD + THREAD_KSP
+	dadd	ip, r0, #TASK_THREAD + THREAD_SP
 	std	sp, [ip]
 
 	@ Now, switch to another thread
@@ -24,7 +24,7 @@ ENTRY(__switch_to)
 	@ Restore stack pointer and return address
 	dadd	ip, r1, #TASK_THREAD + THREAD_PC
 	ldd	lr, [ip]
-	dadd	ip, r1, #TASK_THREAD + THREAD_KSP
+	dadd	ip, r1, #TASK_THREAD + THREAD_SP
 	ldd	sp, [ip]
 
 	@ Restore all callee-saved registers, from r16 to r27

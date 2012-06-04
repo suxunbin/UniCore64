@@ -20,7 +20,7 @@ int main(void)
 	BLANK();
 
 	OFFSET(THREAD_PC,		thread_struct, pc);
-	OFFSET(THREAD_KSP,		thread_struct, ksp);
+	OFFSET(THREAD_SP,		thread_struct, sp);
 	BLANK();
 
 	OFFSET(THREAD_INFO_FLAGS,	thread_info, flags);

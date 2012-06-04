@@ -17,8 +17,7 @@
 
 struct thread_struct {
 	unsigned long pc;	/* instruction pointer */
-	unsigned long ksp;	/* kernel stack pointer */
-	unsigned long usp;	/* user stack pointer */
+	unsigned long sp;	/* kernel stack pointer */
 };
 
 #define INIT_THREAD		{ }
