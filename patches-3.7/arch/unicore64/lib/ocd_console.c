@@ -38,7 +38,8 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
 	char c = '\n';
 
 	/* For each element in *s (16bit in an unsigned short type):
-	 * High 8-bit is background color, low 8-bit is foreground char */
+	 * High 8-bit is color, low 8-bit is char,
+	 * and only char is useful here. */
 	while (*s && (n > 0)) {
 		uc64_debug_puts((char *)s, 1);
 		s++;
