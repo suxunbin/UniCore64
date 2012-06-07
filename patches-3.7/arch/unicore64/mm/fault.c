@@ -95,8 +95,16 @@ void __do_itrap(unsigned long addr, struct pt_regs *regs)
 
 void __do_dtrap(unsigned long addr, struct pt_regs *regs)
 {
-	struct __trap_info *info = __dtrap_info + __dtrap_stat();
+	struct __trap_info *info;
+	int dtno;
 
+	dtno = __dtrap_stat();
+	if (dtno & CP0_TRAP_STAT_UNALIGN) {
+		pr_err("Error: DTRAP occured with Un-Alignment Sticky!\n");
+		dtno &= CP0_TRAP_STAT_SELECT;
+	}
+
+	info = __dtrap_info + dtno;
 	if (info->fn) {
 		info->fn(addr, regs);
 		return;
