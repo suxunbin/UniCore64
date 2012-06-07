@@ -33,7 +33,7 @@
 	__push		r0				@ push bfr
 	dmov		r0, bsr
 	__push		r0				@ push bsr
-	movc		r0, CP0_EPC, #1
+	movc		r0, CP0_TRAPADDR, #1
 	__push		r0				@ push r31(pc)
 	__push		lr				@ push r30(lr)
 	movc		r0, CP0_SWR, #5
@@ -63,7 +63,7 @@
 	__pop		lr				@ pop r30(lr)
 	movc		CP0_SWR, lr, #4			@ saved in temp reg
 	__pop		lr				@ pop r31(pc)
-	movc		CP0_EPC, lr, #1			@ saved in epc reg
+	movc		CP0_TRAPADDR, lr, #1		@ saved in epc reg
 	__pop		lr				@ pop bsr
 	dmov		bsr, lr
 	__pop		lr				@ pop bfr
@@ -110,7 +110,7 @@ ENTRY(__vec_itrap)
 	@ r0 - address of faulting instruction
 	@ r1 - pointer to registers on stack
 	@
-	movc		r0, CP0_EPC, #1
+	movc		r0, CP0_TRAPADDR, #1
 	dmov		r1, sp
 
 	__irq_enable
@@ -132,7 +132,7 @@ ENTRY(__vec_dtrap)
 	@ r0 - address of faulting address
 	@ r1 - pointer to registers on stack
 	@
-	movc		r0, CP0_EPC, #0
+	movc		r0, CP0_TRAPADDR, #0
 	dmov		r1, sp
 
 	__irq_enable

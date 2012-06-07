@@ -33,8 +33,8 @@ static void __do_pagefault(unsigned long addr, struct pt_regs *regs)
 	BUG();
 }
 
-#define __itrap_stat()	__read_cp_op(CP0_TRAP_STAT, 0)
-#define __dtrap_stat()	__read_cp_op(CP0_TRAP_STAT, 1)
+#define __itrap_stat()	__read_cp_op(CP0_TRAPSTAT, 0)
+#define __dtrap_stat()	__read_cp_op(CP0_TRAPSTAT, 1)
 
 struct __trap_info {
 	void (*fn) (unsigned long addr, struct pt_regs *);
@@ -99,9 +99,9 @@ void __do_dtrap(unsigned long addr, struct pt_regs *regs)
 	int dtno;
 
 	dtno = __dtrap_stat();
-	if (dtno & CP0_TRAP_STAT_UNALIGN) {
+	if (dtno & CP0_TRAPSTAT_UNALIGN) {
 		pr_err("Error: DTRAP occured with Un-Alignment Sticky!\n");
-		dtno &= CP0_TRAP_STAT_SELECT;
+		dtno &= CP0_TRAPSTAT_SELECT;
 	}
 
 	info = __dtrap_info + dtno;

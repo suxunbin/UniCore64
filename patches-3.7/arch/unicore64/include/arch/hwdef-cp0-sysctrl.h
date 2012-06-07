@@ -37,8 +37,8 @@
 #define CP0_CPUID		p0.c0
 #define CP0_CTRLREG		p0.c1
 #define CP0_TTB_ASID		p0.c2
-#define CP0_TRAP_STAT		p0.c3
-#define CP0_EPC			p0.c4
+#define CP0_TRAPSTAT		p0.c3
+#define CP0_TRAPADDR		p0.c4
 #define CP0_TLB			p0.c5
 #define CP0_DCACHE		p0.c6
 #define CP0_ICACHE		p0.c7
@@ -165,7 +165,7 @@
 #define CP0_CPUID_CACHE_WRITEBACK		__BF(1, 1, 26)
 #define CP0_CPUID_CACHE_WRITETHROUGH		__BF(1, 1, 27)
 
-#define CP0_TRAP_STAT_SELECT			__BS(4, 0)
-#define CP0_TRAP_STAT_UNALIGN			__BF(1, 1, 4)
+#define CP0_TRAPSTAT_SELECT			__BS(4, 0)
+#define CP0_TRAPSTAT_UNALIGN			__BF(1, 1, 4)
 
 #endif /* __UNICORE64_ARCH_HWDEF_CP0_SYSCTRL_H__ */

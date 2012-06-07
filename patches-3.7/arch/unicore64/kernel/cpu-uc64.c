@@ -210,10 +210,10 @@ void __show_cp0_regs(void)
 	pr_emerg(" CACHE:      %16lx\n", __read_cp_op(CP0_CPUID, 1));
 	pr_emerg(" CTRLREG:    %16lx", __read_cp(CP0_CTRLREG));
 	pr_emerg(" TTB/ASID:   %16lx\n", __read_cp(CP0_TTB_ASID));
-	pr_emerg(" ITRAP_STAT: %16lx", __read_cp_op(CP0_TRAP_STAT, 0));
-	pr_emerg(" DTRAP_STAT: %16lx", __read_cp_op(CP0_TRAP_STAT, 1));
-	pr_emerg(" DTRAP_ADDR: %16lx\n", __read_cp_op(CP0_EPC, 0));
-	pr_emerg(" EXCP_ADDR:  %16lx\n", __read_cp_op(CP0_EPC, 1));
+	pr_emerg(" ITRAPSTAT:  %16lx", __read_cp_op(CP0_TRAPSTAT, 0));
+	pr_emerg(" DTRAPSTAT:  %16lx", __read_cp_op(CP0_TRAPSTAT, 1));
+	pr_emerg(" ITRAPADDR:  %16lx\n", __read_cp_op(CP0_TRAPADDR, 1));
+	pr_emerg(" DTRAPADDR:  %16lx\n", __read_cp_op(CP0_TRAPADDR, 0));
 
 	pr_emerg(" MRAR_BASE:  %16lx %16lx %16lx %16lx\n",
 			__read_cp_op(CP0_MRAR, 0),
