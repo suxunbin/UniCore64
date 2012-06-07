@@ -16,3 +16,6 @@ CONFIG_DEBUG_OCD=y
 
 ### Boot options
 CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
+
+### Kernel hacking
+CONFIG_DEBUG_REDZONE=y
