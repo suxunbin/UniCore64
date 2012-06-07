@@ -177,8 +177,8 @@ void __init setup_arch_cpuinfo(void)
 
 	BUG_ON(!(uc64_cache & CP0_CPUID_CACHE_SEPERATE));
 
-	pr_info("Cachetype: %s %s, ",
-		(uc64_cache & CP0_CPUID_CACHE_LOCKDOWN) ? "LD" : NULL,
+	pr_info("Cachetype:%s %s, ",
+		(uc64_cache & CP0_CPUID_CACHE_LOCKDOWN) ? " LD" : "",
 		(uc64_cache & CP0_CPUID_CACHE_WRITEBACK) ? "WB" : "WT");
 
 	printk(KERN_CONT "I$: ");
