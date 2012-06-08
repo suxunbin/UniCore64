@@ -99,7 +99,7 @@ void __do_dtrap(unsigned long addr, struct pt_regs *regs)
 	int dtno;
 
 	dtno = __dtrap_stat();
-	if (dtno & CP0_TRAPSTAT_UNALIGN) {
+	if (unlikely(dtno & CP0_TRAPSTAT_UNALIGN)) {
 		pr_err("Error: DTRAP occured with Un-Alignment Sticky!\n");
 		dtno &= CP0_TRAPSTAT_SELECT;
 	}
