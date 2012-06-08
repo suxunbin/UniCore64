@@ -25,6 +25,14 @@ config CPU_DCACHE_DISABLE
 	  It unsure, say N.
 	  Please see web page at <http://www.pkunity.com/>
 
+config ALIGNMENT_TRAP
+	def_bool y
+	help
+	  UniCore processors can not fetch/store information which is not
+	  naturally aligned on the bus, i.e., a 8 byte fetch must start at an
+	  address divisible by 8. However, this is necessary for correct
+	  operation of some network protocols.
+
 config SWIOTLB
 	def_bool y
 
