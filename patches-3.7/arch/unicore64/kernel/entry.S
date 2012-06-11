@@ -20,14 +20,14 @@
 
 	.macro		__priv_entry
 	@ step 1: save r0 and sp to keep their original values
-	movc		CP0_SWR, r0, #4
-	movc		CP0_SWR, sp, #5
+	movc		CP0_SYSU, r0, #4
+	movc		CP0_SYSU, sp, #5
 	__redzone
 
 	@ step 2: push special registers into stack, see struct pt_regs
 	dmov		r0, #-1
 	__push		r0				@ push return value
-	movc		r0, CP0_SWR, #0
+	movc		r0, CP0_SYSU, #0
 	__push		r0				@ push swr #0
 	dmov		r0, bfr
 	__push		r0				@ push bfr
@@ -36,11 +36,11 @@
 	movc		r0, CP0_TRAPADDR, #1
 	__push		r0				@ push r31(pc)
 	__push		lr				@ push r30(lr)
-	movc		r0, CP0_SWR, #5
+	movc		r0, CP0_SYSU, #5
 	__push		r0				@ push r29(sp)
 
 	@ step 3: push general registers into stack, see struct pt_regs
-	movc		r0, CP0_SWR, #4			@ restore r0 value
+	movc		r0, CP0_SYSU, #4		@ restore r0 value
 	.irp		n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16 \
 			, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 	__push		r\n
@@ -59,9 +59,9 @@
 
 	@ step 3: pop special registers from stack, see struct pt_regs
 	__pop		lr				@ pop r29(sp)
-	movc		CP0_SWR, lr, #5			@ saved in temp reg
+	movc		CP0_SYSU, lr, #5		@ saved in temp reg
 	__pop		lr				@ pop r30(lr)
-	movc		CP0_SWR, lr, #4			@ saved in temp reg
+	movc		CP0_SYSU, lr, #4		@ saved in temp reg
 	__pop		lr				@ pop r31(pc)
 	movc		CP0_TRAPADDR, lr, #1		@ saved in epc reg
 	__pop		lr				@ pop bsr
@@ -69,11 +69,11 @@
 	__pop		lr				@ pop bfr
 	dmov		bfr, lr
 	__pop		lr				@ pop swr #0
-	movc		CP0_SWR, lr, #0
+	movc		CP0_SYSU, lr, #0
 
 	@ step 4: restore the original values of lr and sp
-	movc		lr, CP0_SWR, #4			@ restore r30(lr) value
-	movc		sp, CP0_SWR, #5			@ restore r29(sp) value
+	movc		lr, CP0_SYSU, #4		@ restore r30(lr) value
+	movc		sp, CP0_SYSU, #5		@ restore r29(sp) value
 	.endm
 
 /**
