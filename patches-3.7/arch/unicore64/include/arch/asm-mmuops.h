@@ -52,15 +52,4 @@ __ASMMACRO_WRAP(.macro	__set_pgd, rpgd;
 			movc	p0.c2, &rpgd, #0;
 		.endm)
 
-__ASMMACRO_WRAP(.macro	__itrap_status, rtrap;
-			movc	&rtrap, p0.c3, #0;
-		.endm)
-
-__ASMMACRO_WRAP(.macro	__dtrap_status, rtrap;
-			movc	&rtrap, p0.c3, #1;
-		.endm)
-
-__ASMMACRO_WRAP(.macro	__dtrap_addr, raddr;
-			movc	&raddr, p0.c4, #0;
-		.endm)
 #endif /* __UNICORE64_ARCH_ASM_MMUOPS_H__ */
