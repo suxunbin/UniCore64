@@ -52,4 +52,14 @@ __ASMMACRO_WRAP(.macro	__set_pgd, rpgd;
 			movc	p0.c2, &rpgd, #0;
 		.endm)
 
+/*
+ * __va2pa -  get physical address from virtual address
+ * FIXME: There are two exceptions:
+ *   if an interrupt occurs just between ldb and movc;
+ *   if dtrap occurs at rva address.
+ */
+__ASMMACRO_WRAP(.macro	__va2pa, rva, rpa;
+			ldb	&rpa, [&rva];
+			movc	&rpa, p0.c12, #8;
+		.endm)
 #endif /* __UNICORE64_ARCH_ASM_MMUOPS_H__ */
