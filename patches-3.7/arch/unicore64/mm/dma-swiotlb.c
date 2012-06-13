@@ -52,9 +52,23 @@ void dma_mark_clean(void *addr, size_t size)
 	BUG();
 }
 
+static void *__uc64_swiotlb_alloc_coherent(struct device *dev, size_t size,
+				        dma_addr_t *dma_handle, gfp_t flags,
+					struct dma_attrs *attrs)
+{
+	return swiotlb_alloc_coherent(dev, size, dma_handle, flags);
+}
+
+static void __uc64_swiotlb_free_coherent(struct device *dev, size_t size,
+					void *vaddr, dma_addr_t dma_addr,
+					struct dma_attrs *attrs)
+{
+	swiotlb_free_coherent(dev, size, vaddr, dma_addr);
+}
+
 struct dma_map_ops swiotlb_dma_map_ops = {
-	.alloc_coherent = swiotlb_alloc_coherent,
-	.free_coherent = swiotlb_free_coherent,
+	.alloc = __uc64_swiotlb_alloc_coherent,
+	.free = __uc64_swiotlb_free_coherent,
 	.map_sg = swiotlb_map_sg_attrs,
 	.unmap_sg = swiotlb_unmap_sg_attrs,
 	.dma_supported = swiotlb_dma_supported,
