@@ -50,6 +50,12 @@ static inline struct thread_info *current_thread_info(void)
 
 #endif /* !__ASSEMBLY__ */
 
+/*
+ * We use bit 30 of the preempt_count to indicate that kernel
+ * preemption is occurring.
+ */
+#define PREEMPT_ACTIVE		0x40000000
+
 /* thread information flags: */
 #define TIF_SIGPENDING		0 /* signal pending */
 #define TIF_NEED_RESCHED	1 /* rescheduling necessary */
