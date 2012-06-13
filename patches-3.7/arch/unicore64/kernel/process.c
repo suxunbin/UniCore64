@@ -145,3 +145,14 @@ void show_regs(struct pt_regs *regs)
 	/* FIXME */
 	BUG();
 }
+
+/**
+ * show_stack() -
+ * @tsk:
+ * @sp:
+ */
+void show_stack(struct task_struct *tsk, unsigned long *sp)
+{
+	/* FIXME */
+	BUG();
+}

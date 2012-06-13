@@ -12,14 +12,3 @@ void __init trap_init(void)
 {
 	__write_cp(__vectors_table, CP0_VECBASE);
 }
-
-/**
- * show_stack() -
- * @tsk:
- * @sp:
- */
-void show_stack(struct task_struct *tsk, unsigned long *sp)
-{
-	/* FIXME */
-	BUG();
-}
