@@ -1,4 +1,5 @@
 #include <linux/kernel.h>
+#include <linux/bug.h>
 
 /**
  * kernel_execve() -
