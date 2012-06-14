@@ -206,12 +206,12 @@ void __show_uc64_regs(void)
 void __show_cp0_regs(void)
 {
 	pr_emerg("\nCP0 (System Control) Information:\n");
-	pr_emerg(" CPUID:      %16lx", __read_cp_op(CP0_CPUID, 0));
+	pr_emerg(" CPUID:      %16lx\n", __read_cp_op(CP0_CPUID, 0));
 	pr_emerg(" CACHE:      %16lx\n", __read_cp_op(CP0_CPUID, 1));
-	pr_emerg(" CTRLREG:    %16lx", __read_cp(CP0_CTRLREG));
+	pr_emerg(" CTRLREG:    %16lx\n", __read_cp(CP0_CTRLREG));
 	pr_emerg(" TTB/ASID:   %16lx\n", __read_cp(CP0_TTB_ASID));
-	pr_emerg(" ITRAPSTAT:  %16lx", __read_cp_op(CP0_TRAPSTAT, 0));
-	pr_emerg(" DTRAPSTAT:  %16lx", __read_cp_op(CP0_TRAPSTAT, 1));
+	pr_emerg(" ITRAPSTAT:  %16lx\n", __read_cp_op(CP0_TRAPSTAT, 0));
+	pr_emerg(" DTRAPSTAT:  %16lx\n", __read_cp_op(CP0_TRAPSTAT, 1));
 	pr_emerg(" ITRAPADDR:  %16lx\n", __read_cp_op(CP0_TRAPADDR, 1));
 	pr_emerg(" DTRAPADDR:  %16lx\n", __read_cp_op(CP0_TRAPADDR, 0));
 
@@ -236,11 +236,11 @@ void __show_cp0_regs(void)
 			__read_cp_op(CP0_MRAR, 14),
 			__read_cp_op(CP0_MRAR, 15));
 
-	pr_emerg(" VECBASE:    %16lx", __read_cp(CP0_VECBASE));
-	pr_emerg(" INTR_TYPE:  %16lx", __read_cp_op(CP0_INTR, 0));
+	pr_emerg(" VECBASE:    %16lx\n", __read_cp(CP0_VECBASE));
+	pr_emerg(" INTR_TYPE:  %16lx\n", __read_cp_op(CP0_INTR, 0));
 	pr_emerg(" INTR_PRIO:  %16lx\n", __read_cp_op(CP0_INTR, 7));
-	pr_emerg(" INNER_TIMER_COUNTER: %16lx", __read_cp_op(CP0_INTR, 9));
-	pr_emerg(" INNER_TIMER_MATCH:   %16lx", __read_cp_op(CP0_INTR, 10));
+	pr_emerg(" ITM_CNTR:   %16lx\n", __read_cp_op(CP0_INTR, 9));
+	pr_emerg(" ITM_MATCH:  %16lx\n", __read_cp_op(CP0_INTR, 10));
 
-	pr_emerg(" R/W Margin: %16lx", __read_cp(CP0_RWMARGIN));
+	pr_emerg(" R/W Margin: %16lx\n", __read_cp(CP0_RWMARGIN));
 }
