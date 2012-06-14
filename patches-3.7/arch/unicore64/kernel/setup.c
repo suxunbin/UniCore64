@@ -47,7 +47,8 @@ void __init setup_arch(char **cmdline_p)
 	atomic_notifier_chain_register(&panic_notifier_list,
 			&uc64_panic_block);
 
-	setup_arch_cpuinfo();
+	__show_cpuinfo();
+
 	setup_arch_param(cmdline_p);
 	setup_arch_memory();
 	unflatten_device_tree();

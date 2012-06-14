@@ -16,7 +16,7 @@ void __show_uc64_regs(void)
 }
 
 /**
- * setup_arch_cpuinfo() - show the cpu and cache information
+ * __show_cpuinfo() - show the cpu and cache information
  *
  * show the cpu and cache information in the screen.
  * first, get the value in copro through the macro UC64_CPUID,
@@ -80,7 +80,7 @@ void __show_uc64_regs(void)
 		printk(KERN_CONT "L64B"); break;			\
 	}
 
-void __init setup_arch_cpuinfo(void)
+void __show_cpuinfo(void)
 {
 	unsigned long uc64_cpuid;
 	unsigned long uc64_cache;
