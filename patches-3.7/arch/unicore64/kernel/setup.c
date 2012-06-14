@@ -4,6 +4,7 @@
 #include <linux/string.h>
 #include <linux/of_fdt.h>
 #include <linux/console.h>
+#include <linux/sched.h>
 
 #include <asm/setup.h>
 #include <asm/setup_arch.h>
@@ -13,8 +14,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
 static int uc64_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
 {
-	__show_uc64_regs();
-	__show_cp0_regs();
+	show_regs(NULL);
 
 	return NOTIFY_DONE;
 }

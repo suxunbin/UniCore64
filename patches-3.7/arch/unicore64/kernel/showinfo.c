@@ -181,8 +181,8 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
  */
 void show_regs(struct pt_regs *regs)
 {
-	/* FIXME */
-	BUG();
+	__show_uc64_regs();
+	__show_cp0_regs();
 }
 
 /**
