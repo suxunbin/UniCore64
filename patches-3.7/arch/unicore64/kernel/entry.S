@@ -9,7 +9,7 @@
 
 	.macro		__thread_info, rd
 	dasr		&rd, sp, #13
-	dlsl		&rd, sp, #13
+	dlsl		&rd, &rd, #13
 	.endm
 
 	.macro		__redzone
