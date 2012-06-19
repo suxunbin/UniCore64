@@ -11,6 +11,15 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
 	memblock_add(base, size);
 }
 
+#ifdef CONFIG_BLK_DEV_INITRD
+void __init early_init_dt_setup_initrd_arch(unsigned long start,
+					    unsigned long end)
+{
+	/* FIXME */
+	BUG();
+}
+#endif
+
 /**
  * irq_create_of_mapping - Hook to resolve OF irq specifier into a Linux irq#
  * @controller:

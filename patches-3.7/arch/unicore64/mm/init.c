@@ -25,6 +25,14 @@ void free_initmem(void)
 	BUG();
 }
 
+#ifdef CONFIG_BLK_DEV_INITRD
+void free_initrd_mem(unsigned long start, unsigned long end)
+{
+	/* FIXME */
+	BUG();
+}
+#endif
+
 static void __init zone_sizes_init(void)
 {
 	unsigned long zone_sizes[MAX_NR_ZONES];
