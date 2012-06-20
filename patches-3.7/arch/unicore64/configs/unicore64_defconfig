@@ -1,8 +1,8 @@
 ### General setup
 CONFIG_LOCALVERSION="-uc64"
-
+#	Initial RAM filesystem and RAM disk (initramfs/initrd) support
 CONFIG_BLK_DEV_INITRD=y
-CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config.helloworld"
+CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config_64"
 
 ### Processor and System Type
 #	Processor Features
