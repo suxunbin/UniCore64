@@ -84,7 +84,7 @@ ENTRY(ret_from_fork)
 1001:	__irq_disable
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
-	and		r0, r18, #TIF_NEED_RESCHED	@ FIXME: wait for and.a
+	and		r0, r18, #(1 << TIF_NEED_RESCHED)	@ FIXME: wait for and.a
 	cmpsub.a	r0, #0
 	adr		lr, 1001b
 	bne		schedule		@ return to 1001b
