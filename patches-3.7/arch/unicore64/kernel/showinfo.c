@@ -8,11 +8,21 @@
 #include <arch/hwdef-cpu.h>
 #include <arch/hwdef-cp0-sysctrl.h>
 
-void __show_uc64_regs(void)
+void __show_uc64_regs(struct pt_regs *regs)
 {
-	pr_info("\nUniCore64 Information:\n");
-	pr_info(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
-	pr_info(" AFR BFR: %16lx %16lx\n", __read_uc64(afr), __read_uc64(bfr));
+	int i;
+
+	if (regs == NULL) {
+		pr_info("None Regs information.\n");
+		return;
+	}
+
+	pr_info("\nUniCore64 Regs Information:\n");
+	pr_info(" ASR: %16lx AFR: %16lx\n", regs->UC64_ASR, regs->UC64_AFR);
+	for (i = 0; i < 32; i += 4)
+		pr_info("R%02d~%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
+			regs->uc64_regs[i], regs->uc64_regs[i + 1],
+			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
 }
 
 /**
@@ -182,7 +192,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
  */
 void show_regs(struct pt_regs *regs)
 {
-	__show_uc64_regs();
+	__show_uc64_regs(regs);
 	__show_cp0_regs();
 }
 

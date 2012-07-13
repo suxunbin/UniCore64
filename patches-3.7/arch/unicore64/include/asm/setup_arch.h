@@ -13,7 +13,7 @@ extern void setup_arch_devtree(char *cmdline);
 
 extern char __vectors_table[];
 
-extern void __show_uc64_regs(void);
+extern void __show_uc64_regs(struct pt_regs *regs);
 extern void __show_cpuinfo(void);
 extern void __show_cp0_regs(void);
 
