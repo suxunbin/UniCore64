@@ -18,9 +18,28 @@ void __show_uc64_regs(struct pt_regs *regs)
 	}
 
 	pr_info("\nUniCore64 Regs Information:\n");
-	pr_info(" ASR: %16lx AFR: %16lx\n", regs->UC64_ASR, regs->UC64_AFR);
+	pr_info(" ASR/AFR: (%lx/%lx)", regs->UC64_ASR, regs->UC64_AFR);
+	printk(KERN_CONT " %s Mode,",
+			(regs->UC64_ASR & ASR_MODE_DEBUG) ? "DEBUG" :
+			((regs->UC64_ASR & ASR_MODE_PRIV) ? "PRIV" : "USER"));
+	printk(KERN_CONT " %s and %s bits,",
+			(regs->UC64_ASR & ASR_D_BIT) ? "D" : "d",
+			(regs->UC64_ASR & ASR_T_BIT) ? "T" : "t");
+	printk(KERN_CONT " 6Intc %s %s %s %s %s %s,",
+			(regs->UC64_ASR & ASR_INTR_PFM) ? "PFM" : "pfm",
+			(regs->UC64_ASR & ASR_INTR_DEV) ? "DEV" : "dev",
+			(regs->UC64_ASR & ASR_INTR_OTM) ? "OTM" : "otm",
+			(regs->UC64_ASR & ASR_INTR_ITM) ? "ITM" : "itm",
+			(regs->UC64_ASR & ASR_INTR_LSU) ? "LSU" : "lsu",
+			(regs->UC64_ASR & ASR_INTR_SMP) ? "SMP" : "smp");
+	printk(KERN_CONT " Flags %s%s%s%s.\n",
+			(regs->UC64_AFR & AFR_S_BIT) ? "S" : "s",
+			(regs->UC64_AFR & AFR_Z_BIT) ? "Z" : "z",
+			(regs->UC64_AFR & AFR_C_BIT) ? "C" : "c",
+			(regs->UC64_AFR & AFR_V_BIT) ? "V" : "v");
+
 	for (i = 0; i < 32; i += 4)
-		pr_info("R%02d~%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
+		pr_info(" R%02d~R%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
 			regs->uc64_regs[i], regs->uc64_regs[i + 1],
 			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
 }
