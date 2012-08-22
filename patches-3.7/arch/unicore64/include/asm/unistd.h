@@ -2,6 +2,7 @@
 #define __UNICORE64_ASM_UNISTD_H__
 
 #define __ARCH_WANT_SYNC_FILE_RANGE2
+#define __ARCH_WANT_SYSCALL_NO_AT
 
 /* Use the standard ABI for syscalls. */
 #include <asm-generic/unistd.h>
