@@ -10,6 +10,9 @@ CONFIG_ARCH_FPGA=y
 CONFIG_CPU_ICACHE_DISABLE=y
 CONFIG_CPU_DCACHE_DISABLE=y
 
+# Device Drivers
+#	Hardware I/O ports
+CONFIG_SERIO_I8042=n
 #	Console display driver support
 CONFIG_VGA_CONSOLE=n
 
