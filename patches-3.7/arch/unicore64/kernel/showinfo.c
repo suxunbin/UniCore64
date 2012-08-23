@@ -3,6 +3,7 @@
 #include <linux/bug.h>
 #include <linux/sched.h>
 
+#include <asm/uaccess.h>
 #include <asm/setup_arch.h>
 
 #include <arch/hwdef-cpu.h>
@@ -193,6 +194,27 @@ void __show_cp0_regs(void)
 	pr_info(" R/W Margin: %16lx\n", __read_cp(CP0_RWMARGIN));
 }
 
+static void __dump_mem(unsigned long bottom, unsigned long top)
+{
+	unsigned long p;
+	int i;
+	unsigned int val;
+
+	pr_info("Dump memory from 0x%016lx to 0x%016lx:\n", bottom, top);
+
+	for (p = bottom & ~31; p < top; ) {
+		pr_info(" %04lx:", p & 0xffff);
+
+		for (i = 0; i < 8; i++, p += 4) {
+			if (__get_user(val, (unsigned int *)p)) {
+				pr_info("Fail to access 0x%016lx\n", p);
+				return;
+			}
+			pr_cont(" %08x", val);
+		}
+	}
+}
+
 /**
  * dump_fpu() -
  * @regs:
@@ -211,8 +233,13 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
  */
 void show_regs(struct pt_regs *regs)
 {
+	unsigned long stack_end;
+
 	__show_uc64_regs(regs);
 	__show_cp0_regs();
+
+	stack_end = (unsigned long)current_thread_info();
+	__dump_mem(stack_end, stack_end + THREAD_SIZE);
 }
 
 /**
