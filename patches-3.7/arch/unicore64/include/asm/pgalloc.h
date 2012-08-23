@@ -18,7 +18,15 @@ extern void pmd_free(struct mm_struct *, pmd_t *);
 
 extern void pud_populate(struct mm_struct *, pud_t *, pmd_t *);
 
-#define __pte_free_tlb(tlb, ptep, addr)	BUG()
-#define __pmd_free_tlb(tlb, pmdp, addr)	BUG()
+#define __pte_free_tlb(tlb, ptep, addr)				\
+	do {							\
+		pgtable_page_dtor(ptep);			\
+		tlb_remove_page((tlb), (ptep));			\
+	} while (0)
+#define __pmd_free_tlb(tlb, pmdp, addr)				\
+	do {							\
+		pgtable_page_dtor(pmdp);			\
+		tlb_remove_page((tlb), (pmdp));			\
+	} while (0)
 
 #endif /* __UNICORE64_ASM_PGALLOC_H__ */
