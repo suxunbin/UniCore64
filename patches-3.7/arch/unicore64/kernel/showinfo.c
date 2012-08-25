@@ -233,13 +233,8 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
  */
 void show_regs(struct pt_regs *regs)
 {
-	unsigned long stack_end;
-
 	__show_uc64_regs(regs);
 	__show_cp0_regs();
-
-	stack_end = (unsigned long)current_thread_info();
-	__dump_mem(stack_end, stack_end + THREAD_SIZE);
 }
 
 /**
@@ -249,6 +244,16 @@ void show_regs(struct pt_regs *regs)
  */
 void show_stack(struct task_struct *tsk, unsigned long *sp)
 {
-	/* FIXME */
-	BUG();
+	unsigned long addr;
+	unsigned long stack_end;
+
+	pr_info("\nCall Trace:\n");
+	while (!kstack_end(sp)) {
+		addr = *sp++;
+		if (__kernel_text_address(addr))
+			pr_info(" [<%016lx>] %pS\n", addr, (void *)addr);
+	}
+
+	stack_end = (unsigned long)current_thread_info();
+	__dump_mem(stack_end, stack_end + THREAD_SIZE);
 }
