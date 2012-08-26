@@ -1,5 +1,19 @@
 #include <linux/kernel.h>
 #include <linux/seq_file.h>
+#include <linux/cpu.h>
+
+static struct cpu cpuinfo_unicore64;
+
+static int __init topology_init(void)
+{
+	int i;
+
+	for_each_possible_cpu(i)
+		register_cpu(&cpuinfo_unicore64, i);
+
+	return 0;
+}
+subsys_initcall(topology_init);
 
 /**
  * cpu_uc64_show() - show the UniCore64 cpu information
