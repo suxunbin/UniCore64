@@ -157,6 +157,8 @@ ENDPROC(__vec_int_puv3)
 ENTRY(__vec_int_itimer)
 	__priv_entry
 
+	@ void __itimer_irqhandler(struct pt_regs *regs)
+	dmov		r0, sp
 	call		__itimer_irqhandler
 
 	__priv_exit

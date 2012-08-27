@@ -103,13 +103,19 @@ static struct clocksource __itimer_cs = {
  * Clear corresponding bit of itimer irq in asr and call
  * architecture-independent handler.
  */
-void __itimer_irqhandler(void)
+void __itimer_irqhandler(struct pt_regs *regs)
 {
+	struct pt_regs *old_regs = set_irq_regs(regs);
+	irq_enter();
+
 	/* Disarm the compare/match, signal the event. */
 	__itimer_irq_disable();
 	__itimer_irq_clear();
 
 	__itimer_ce.event_handler(&__itimer_ce);
+
+	irq_exit();
+	set_irq_regs(old_regs);
 }
 
 /**
