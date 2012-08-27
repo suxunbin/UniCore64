@@ -19,21 +19,22 @@ void __show_uc64_regs(struct pt_regs *regs)
 	}
 
 	pr_info("\nUniCore64 Regs Information:\n");
-	pr_info(" ASR/AFR: (%lx/%lx)", regs->UC64_ASR, regs->UC64_AFR);
+	pr_info(" ASR(value %lx):", regs->UC64_ASR);
 	pr_cont(" %s Mode,",
 			(regs->UC64_ASR & ASR_MODE_DEBUG) ? "DEBUG" :
 			((regs->UC64_ASR & ASR_MODE_PRIV) ? "PRIV" : "USER"));
-	pr_cont(" %s and %s bits,",
-			(regs->UC64_ASR & ASR_D_BIT) ? "D" : "d",
-			(regs->UC64_ASR & ASR_T_BIT) ? "T" : "t");
-	pr_cont(" 6Intc %s %s %s %s %s %s,",
-			(regs->UC64_ASR & ASR_INTR_PFM) ? "PFM" : "pfm",
-			(regs->UC64_ASR & ASR_INTR_DEV) ? "DEV" : "dev",
-			(regs->UC64_ASR & ASR_INTR_OTM) ? "OTM" : "otm",
-			(regs->UC64_ASR & ASR_INTR_ITM) ? "ITM" : "itm",
-			(regs->UC64_ASR & ASR_INTR_LSU) ? "LSU" : "lsu",
-			(regs->UC64_ASR & ASR_INTR_SMP) ? "SMP" : "smp");
-	pr_cont(" Flags %s%s%s%s.\n",
+	pr_cont(" DebugExcp(%s)",
+			(regs->UC64_ASR & ASR_D_BIT) ? "OFF" : "ON");
+	pr_cont(" MPConsist(%s)\n",
+			(regs->UC64_ASR & ASR_T_BIT) ? "ON" : "OFF");
+	pr_info(" Intr PMF(%s) DEV(%s) OTM(%s) ITM(%s) LSU(%s) SMP(%s)\n",
+			(regs->UC64_ASR & ASR_INTR_PFM) ? "OFF" : "ON",
+			(regs->UC64_ASR & ASR_INTR_DEV) ? "OFF" : "ON",
+			(regs->UC64_ASR & ASR_INTR_OTM) ? "OFF" : "ON",
+			(regs->UC64_ASR & ASR_INTR_ITM) ? "OFF" : "ON",
+			(regs->UC64_ASR & ASR_INTR_LSU) ? "OFF" : "ON",
+			(regs->UC64_ASR & ASR_INTR_SMP) ? "OFF" : "ON");
+	pr_info(" AFR(value %lx): %s%s%s%s\n", regs->UC64_AFR,
 			(regs->UC64_AFR & AFR_S_BIT) ? "S" : "s",
 			(regs->UC64_AFR & AFR_Z_BIT) ? "Z" : "z",
 			(regs->UC64_AFR & AFR_C_BIT) ? "C" : "c",
