@@ -7,7 +7,7 @@ typedef u64 elf_greg_t;
 #define ELF_NGREG (sizeof(struct pt_regs) / sizeof(elf_greg_t))
 typedef elf_greg_t elf_gregset_t[ELF_NGREG];
 
-#define EM_UNICORE64		110 /* FIXME lator */
+#define EM_UNICORE64		200
 
 #define ELF_CLASS		ELFCLASS64
 #define ELF_DATA		ELFDATA2LSB
