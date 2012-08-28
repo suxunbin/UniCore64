@@ -36,7 +36,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
 
 #define pmd_offset(pudp, addr)			\
-	((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + pmd_index(addr))
+	__va((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + pmd_index(addr))
 
 #define pte_offset_kernel(pmdp, addr)		\
 	__va((pte_t *)(pmd_val(*(pmdp)) & PAGE_MASK) + pte_index(addr))
