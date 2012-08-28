@@ -19,8 +19,7 @@ int main(void)
 	OFFSET(TASK_THREAD,		task_struct, thread);
 	BLANK();
 
-	OFFSET(THREAD_PC,		thread_struct, pc);
-	OFFSET(THREAD_SP,		thread_struct, sp);
+	OFFSET(THREAD_CPU_CONTEXT,	thread_struct, cpu_context);
 	BLANK();
 
 	OFFSET(THREAD_INFO_FLAGS,	thread_info, flags);

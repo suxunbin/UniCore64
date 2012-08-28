@@ -52,8 +52,8 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	childregs->UC64_R00 = 0;
 	childregs->UC64_R29 = stack_start;
 
-	p->thread.sp = (unsigned long)childregs;
-	p->thread.pc = (unsigned long)ret_from_fork;
+	p->thread.cpu_context.r29 = (unsigned long)childregs;
+	p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
 
 	return 0;
 }

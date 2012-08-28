@@ -15,14 +15,30 @@
  */
 #define current_text_addr()	({ __label__ _l; _l: &&_l; })
 
+struct cpu_context_save {
+	unsigned long r16;
+	unsigned long r17;
+	unsigned long r18;
+	unsigned long r19;
+	unsigned long r20;
+	unsigned long r21;
+	unsigned long r22;
+	unsigned long r23;
+	unsigned long r24;
+	unsigned long r25;
+	unsigned long r26;
+	unsigned long r27;
+	unsigned long r29;	/* kernel stack pointer */
+	unsigned long r30;	/* return address */
+};
+
 struct thread_struct {
-	unsigned long pc;	/* instruction pointer */
-	unsigned long sp;	/* kernel stack pointer */
+	struct cpu_context_save	cpu_context;
 };
 
 #define INIT_THREAD		{ }
 
-#define thread_saved_pc(tsk)	((tsk)->thread.pc)
+#define thread_saved_pc(tsk)	((tsk)->thread.cpu_context.r30)
 
 /* ____epip: prepare_to_copy will be removed when tip tree merged */
 #define prepare_to_copy(tsk)	do { } while (0)
