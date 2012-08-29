@@ -3,10 +3,21 @@
 #include <arch/asm-debug.h>
 
 ENTRY(mcount)
-	__push		r0
-	ldd		r0, [ip-], #8
-	dsub		r0, r0, #4
-	__putdata	r0
-	__pop		r0
+	@ Save lr and all parameter registers, from r0 to r3
+	.irp		n, 30, 3, 2, 1, 0
+	__push		r\n
+	.endr
+
+	adr		r0, mcount_info
+	dmov		r1, lr
+	dmov		r2, lr
+	call		printk
+
+	@ Restore lr and all parameter registers, from r0 to r3
+	.irp		n, 0, 1, 2, 3, 30
+	__pop		r\n
+	.endr
 	return
+
+mcount_info:		.asciz	"\t[<%016lx>] %pS\n"
 ENDPROC(mcount)
