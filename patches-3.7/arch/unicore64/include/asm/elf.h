@@ -1,7 +1,7 @@
 #ifndef __UNICORE64_ASM_ELF_H__
 #define __UNICORE64_ASM_ELF_H__
 
-#include <asm/ptrace.h>
+#include <linux/ptrace.h>
 
 typedef u64 elf_greg_t;
 #define ELF_NGREG (sizeof(struct pt_regs) / sizeof(elf_greg_t))
@@ -34,7 +34,7 @@ typedef struct fpu_regs elf_fpregset_t;
  */
 #define elf_check_arch(x)	((x)->e_machine == EM_UNICORE64)
 
-#define SET_PERSONALITY(ex) set_personality(PER_LINUX)
+#define SET_PERSONALITY(ex)	set_personality(PER_LINUX)
 
 /*
  * This is the location that an ET_DYN program is loaded if exec'ed.  Typical
@@ -43,6 +43,6 @@ typedef struct fpu_regs elf_fpregset_t;
  * that it will "exec", and that there is sufficient room for the brk.
  */
 
-#define ELF_ET_DYN_BASE	(2 * TASK_SIZE / 3)
+#define ELF_ET_DYN_BASE		(2 * TASK_SIZE / 3)
 
 #endif /* __UNICORE64_ASM_ELF_H__ */
