@@ -32,9 +32,7 @@ typedef struct fpu_regs elf_fpregset_t;
 /*
  * This is used to ensure we don't load something for the wrong architecture.
  */
-#define elf_check_arch(x)  \
-	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
-	(x)->e_machine == EM_UNICORE64)
+#define elf_check_arch(x)	((x)->e_machine == EM_UNICORE64)
 
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 
