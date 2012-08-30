@@ -73,14 +73,14 @@
 #define __read_uc64(reg)					\
 	({							\
 		unsigned long __val;				\
-		__asm__("dmov	%0, " __stringify(reg)		\
+		__asm__ __volatile__("dmov	%0, " __stringify(reg)	\
 		    : "=r" (__val));				\
 		__val;						\
 	})
 
 #define __write_uc64(reg_value, reg)				\
 	({							\
-		__asm__("dmov	" __stringify(reg) ", %0"	\
+		__asm__ __volatile__("dmov	" __stringify(reg) ", %0"\
 		    : : "r" (reg_value));			\
 	})
 
