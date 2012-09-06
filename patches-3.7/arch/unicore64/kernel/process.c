@@ -50,8 +50,13 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 
 	*childregs = *regs;
 	childregs->UC64_R00 = 0;
-	childregs->UC64_R29 = stack_start;
+	if (stack_start) {
+		BUG();
+	} else { /* For kernel_thread, useless pt_regs will be kept in stack */
+		childregs->UC64_R29 = (unsigned long)childregs;
+	}
 
+	/* cpu_context is used for __switch_to */
 	p->thread.cpu_context.r29 = (unsigned long)childregs;
 	p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
 
