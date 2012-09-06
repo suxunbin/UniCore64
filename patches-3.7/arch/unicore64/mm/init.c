@@ -16,13 +16,33 @@ void __init mem_init(void)
 	totalram_pages += free_all_bootmem();
 }
 
+static inline unsigned long __free_area(unsigned long begin, unsigned long end)
+{
+	struct page *page;
+	unsigned long addr;
+
+	for (addr = begin; addr < end; addr += PAGE_SIZE) {
+		page = virt_to_page(addr);
+		ClearPageReserved(page);
+		init_page_count(page);
+		__free_page(page);
+	}
+
+	return (end - begin) >> PAGE_SHIFT;
+}
+
 /**
  * free_initmem() -
  */
 void free_initmem(void)
 {
-	/* FIXME */
-	BUG();
+	unsigned long pages;
+
+	pages = __free_area((unsigned long)__init_begin,
+			    (unsigned long)__init_end);
+	pr_info("Freeing init memory: %ld pages\n", pages);
+
+	totalram_pages += pages;
 }
 
 #ifdef CONFIG_BLK_DEV_INITRD
