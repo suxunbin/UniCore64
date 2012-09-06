@@ -197,23 +197,9 @@ void __show_cp0_regs(void)
 
 static void __dump_mem(unsigned long bottom, unsigned long top)
 {
-	unsigned long p;
-	int i;
-	unsigned int val;
-
 	pr_info("Dump memory from 0x%016lx to 0x%016lx:\n", bottom, top);
-
-	for (p = bottom & ~31; p < top; ) {
-		pr_info(" %04lx:", p & 0xffff);
-
-		for (i = 0; i < 8; i++, p += 4) {
-			if (__get_user(val, (unsigned int *)p)) {
-				pr_info("Fail to access 0x%016lx\n", p);
-				return;
-			}
-			pr_cont(" %08x", val);
-		}
-	}
+	print_hex_dump(KERN_INFO, " ", DUMP_PREFIX_ADDRESS, 16, 4,
+			(void *)bottom, top - bottom, true);
 }
 
 /**
