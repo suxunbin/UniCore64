@@ -18,6 +18,7 @@ config DEBUG_MCOUNT
 
 config EARLY_PRINTK
 	def_bool DEBUG_OCD
+	depends on PRINTK
 	help
 	  Write kernel log output directly into the ocd or to a serial port.
 
