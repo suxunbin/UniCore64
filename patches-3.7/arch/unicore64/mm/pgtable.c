@@ -106,8 +106,7 @@ void set_pte(pte_t *ptep, pte_t pte)
  */
 void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
 {
-	/* FIXME */
-	BUG();
+	set_pud(pudp, __pud(__pa(pmd) | UC64_PGD_EXIST));
 }
 
 /**
