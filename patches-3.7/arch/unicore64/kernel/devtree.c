@@ -38,7 +38,7 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
 
 void __init setup_arch_devtree(char *cmdline)
 {
-	initial_boot_params = (void *)UC64_PM_DTB_START;
+	initial_boot_params = (void *)UC64_VM_DTB_START;
 	of_scan_flat_dt(early_init_dt_scan_chosen, cmdline);
 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
 	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
