@@ -14,7 +14,7 @@ void __show_uc64_regs(struct pt_regs *regs)
 	int i;
 
 	if (regs == NULL)
-		regs = task_pt_regs(current_thread_info()->task);
+		regs = task_pt_regs(current);
 
 	pr_info("\nUniCore64 pt_regs at %lx:\n", (unsigned long)regs);
 	pr_info(" ASR(value %lx):", regs->UC64_ASR);

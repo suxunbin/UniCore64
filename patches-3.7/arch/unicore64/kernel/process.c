@@ -12,7 +12,7 @@
 int kernel_execve(const char *filename, const char *const argv[],
 		const char *const envp[])
 {
-	struct pt_regs *regs = task_pt_regs(current_thread_info()->task);
+	struct pt_regs *regs = task_pt_regs(current);
 	int ret = do_execve(filename, argv, envp, regs);
 
 	if (ret < 0)
