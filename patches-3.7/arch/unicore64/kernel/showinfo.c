@@ -13,12 +13,10 @@ void __show_uc64_regs(struct pt_regs *regs)
 {
 	int i;
 
-	if (regs == NULL) {
-		pr_info("None Regs information.\n");
-		return;
-	}
+	if (regs == NULL)
+		regs = task_pt_regs(current_thread_info()->task);
 
-	pr_info("\nUniCore64 Regs Information:\n");
+	pr_info("\nUniCore64 pt_regs at %lx:\n", (unsigned long)regs);
 	pr_info(" ASR(value %lx):", regs->UC64_ASR);
 	pr_cont(" %s Mode,",
 			(regs->UC64_ASR & ASR_MODE_DEBUG) ? "DEBUG" :
