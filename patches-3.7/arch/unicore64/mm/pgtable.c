@@ -9,9 +9,9 @@
  */
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
-	pgd_t *new_pgd;
+	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
 
-	if (new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL))
+	if (new_pgd)
 		memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
 
 	return new_pgd;
