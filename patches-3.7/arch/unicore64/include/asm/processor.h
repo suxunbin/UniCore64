@@ -53,8 +53,9 @@ extern unsigned long get_wchan(struct task_struct *p);
 
 /* Return some info about the user process TASK. */
 #define KSTK_PTREGS_GAP		L1_CACHE_BYTES /* Only one word for canary */
-#define task_pt_regs(p)	((struct pt_regs *) \
-		(task_stack_page(p) + THREAD_SIZE - KSTK_PTREGS_GAP) - 1)
+#define task_pt_regs(tsk)	((struct pt_regs *)			\
+				(task_stack_page(tsk) + THREAD_SIZE	\
+				- KSTK_PTREGS_GAP - sizeof(struct pt_regs)))
 /* Aliases for pc and sp (used in fs/proc/array.c) */
 #define KSTK_EIP(tsk)  (task_pt_regs(tsk)->UC64_R31)
 #define KSTK_ESP(tsk)  (task_pt_regs(tsk)->UC64_R29)
