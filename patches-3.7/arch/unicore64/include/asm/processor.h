@@ -52,7 +52,7 @@ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 extern unsigned long get_wchan(struct task_struct *p);
 
 /* Return some info about the user process TASK. */
-#define KSTK_PTREGS_GAP  8 /* FIXME */
+#define KSTK_PTREGS_GAP		L1_CACHE_BYTES /* Only one word for canary */
 #define task_pt_regs(p)	((struct pt_regs *) \
 		(task_stack_page(p) + THREAD_SIZE - KSTK_PTREGS_GAP) - 1)
 /* Aliases for pc and sp (used in fs/proc/array.c) */
