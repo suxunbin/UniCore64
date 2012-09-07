@@ -41,7 +41,8 @@ void __init paging_init(void)
 {
 	struct memblock_region *reg;
 
-	/* First 1G for direct-mapped area has been cleared. */
+	/* First 1G for direct-mapped area should be cleared. */
+	swapper_pg_dir[0] = __pgd(0);
 
 	/* Direct map all the memory banks. */
 	for_each_memblock(memory, reg) {
