@@ -10,7 +10,7 @@ CFLAGS_REMOVE_time.o		:= -pg
 obj-y				:= head.o entry.o switch_to.o
 obj-y				+= irq.o
 obj-y				+= process.o ptrace.o
-obj-y				+= setup.o showinfo.o sys.o
+obj-y				+= setup.o showinfo.o signal.o sys.o
 obj-y				+= time.o traps.o
 
 obj-$(CONFIG_UNICORE64)		+= cpu-uc64.o
