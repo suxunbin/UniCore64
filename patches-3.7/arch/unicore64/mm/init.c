@@ -102,6 +102,6 @@ void __init setup_arch_memory(void)
 {
 	memblock_init();
 	max_pfn_init();
-	paging_init();
 	zone_sizes_init();
+	paging_init();
 }
