@@ -146,5 +146,5 @@ unsigned long get_wchan(struct task_struct *p)
 void cpu_idle(void)
 {
 	/* FIXME */
-	BUG();
+	pr_info("cpu_idle is doing nothing now.\n");
 }
