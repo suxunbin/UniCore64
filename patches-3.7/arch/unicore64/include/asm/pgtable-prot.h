@@ -10,7 +10,7 @@
 
 /* FIXME: if READ is needed when WRITE or EXEC, otherwise, modify VM_flags */
 #define arch_vm_get_page_prot(vm_flags)			\
-		__pgprot(UC64_PTE_EXIST | UC64_PTE_TYPE_CACHE)
+		__pgprot(UC64_PTE_EXIST | UC64_PTE_TYPE_CACHE | UC64_PTE_USER)
 
 #define __P000		__pgprot(0)
 #define __P001		__pgprot(UC64_PTE_READ)
