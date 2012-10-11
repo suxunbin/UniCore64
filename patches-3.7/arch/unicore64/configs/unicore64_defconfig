@@ -5,6 +5,7 @@ CONFIG_BLK_DEV_INITRD=y
 CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config_64"
 
 ### Processor and System Type
+CONFIG_SMP=n
 #	Processor Features
 CONFIG_ARCH_FPGA=y
 CONFIG_CPU_ICACHE_DISABLE=y
