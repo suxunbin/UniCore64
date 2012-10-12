@@ -63,6 +63,8 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_RESTORE_SIGMASK	3 /* restore signal mask in do_signal */
 #define TIF_MEMDIE		4 /* is terminating due to OOM killer */
 #define TIF_NOTIFY_RESUME	5 /* callback before returning to user */
+#define TIF_POLLING_NRFLAG	6 /* true if poll_idle() is polling
+				 TIF_NEED_RESCHED */
 
 #endif /* __KERNEL__ */
 #endif /* __UNICORE64_ASM_THREAD_INFO_H__ */
