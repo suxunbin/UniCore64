@@ -6,6 +6,11 @@
 #endif
 
 #include <linux/spinlock_types.h>
+
+/* In order to support __lock_aligned in <asm-generic/bitops/atomic.h>,
+   We need it here. */
+#include <linux/linkage.h>
+
 #include <asm/processor.h>
 #include <arch/asm-debug.h>
 
