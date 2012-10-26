@@ -117,8 +117,7 @@ void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
  */
 void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page)
 {
-	/* FIXME */
-	BUG();
+	set_pmd(pmd, __pmd(page_to_phys(page) | UC64_PMD_EXIST));
 }
 
 /**
