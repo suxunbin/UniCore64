@@ -29,15 +29,18 @@
 extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 
 #define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
+#define pmd_index(addr)		(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1))
+#define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
+
 #define pgd_offset(mm, addr)	((mm)->pgd + pgd_index(addr))
 #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
 
-#define pmd_index(addr)		(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1))
-#define pmd_offset(pudp, addr)	((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + \
-					pmd_index(addr))
+#define pmd_offset(pudp, addr)			\
+	((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + pmd_index(addr))
 
-#define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
-#define pte_offset_kernel(pmdp, addr)	__va((pte_t *)(pmd_val(*(pmdp)) & PAGE_MASK) + pte_index(addr))
+#define pte_offset_kernel(pmdp, addr)		\
+	__va((pte_t *)(pmd_val(*(pmdp)) & PAGE_MASK) + pte_index(addr))
+
 #define pte_offset_map(dir, addr)	pte_offset_kernel((dir), (addr))
 #define pte_unmap(pte)			do { } while (0)
 #define pte_modify(pte, newprot)	__pte({BUG(); 0; })
