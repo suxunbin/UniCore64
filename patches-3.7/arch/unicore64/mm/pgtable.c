@@ -66,8 +66,12 @@ void pte_free_kernel(struct mm_struct *mm, pte_t *p)
  */
 pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
 {
-	/* FIXME */
-	BUG();
+	struct page *pte = alloc_page(GFP_KERNEL);
+
+	if (pte)
+		pgtable_page_ctor(pte);
+
+	return pte;
 }
 
 /**
