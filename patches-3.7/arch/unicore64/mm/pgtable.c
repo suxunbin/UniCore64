@@ -99,8 +99,7 @@ pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address)
  */
 void set_pte(pte_t *ptep, pte_t pte)
 {
-	/* FIXME */
-	BUG();
+	*(ptep) = pte;
 }
 
 /**
