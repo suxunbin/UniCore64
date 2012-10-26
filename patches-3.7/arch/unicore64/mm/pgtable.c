@@ -141,8 +141,7 @@ void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *ptep)
  */
 pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
-	/* FIXME */
-	BUG();
+	return (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 }
 
 /**
