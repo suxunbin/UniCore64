@@ -33,15 +33,4 @@ config OCD_CONSOLE
 	depends on VGA_CONSOLE!=y && FRAMEBUFFER_CONSOLE!=y && DEBUG_OCD
 	default y
 
-config DEBUG_REDZONE
-	bool "Protect stack when red zone enabled"
-	default n
-	help
-	  In common sense, compiler and os should guarantee stack discipline.
-
-	  However, we need to consider an optimization method named red zone,
-	  which will use unallocated stack space as temperary storage area.
-	  Since interrupts could take place in priviledge mode, we need to
-	  reserve additional stack space for correctness.
-
 endmenu

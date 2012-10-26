@@ -26,4 +26,3 @@ CONFIG_DEBUG_MCOUNT=y
 CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
 
 ### Kernel hacking
-CONFIG_DEBUG_REDZONE=y

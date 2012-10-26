@@ -12,17 +12,10 @@
 	dlsl		&rd, &rd, #13
 	.endm
 
-	.macro		__redzone
-#ifdef	CONFIG_DEBUG_REDZONE
-	dsub		sp, sp, #128			@ only a guess
-#endif
-	.endm
-
 	.macro		__priv_entry
 	@ step 1: save r0 and sp to keep their original values
 	movc		CP0_SYSU, r0, #4
 	movc		CP0_SYSU, sp, #5
-	__redzone
 
 	@ step 2: push special registers into stack, see struct pt_regs
 	dmov		r0, #-1
