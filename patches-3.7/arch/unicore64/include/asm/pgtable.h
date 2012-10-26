@@ -37,12 +37,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 					pmd_index(addr))
 
 #define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
-static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
-{
-	/* FIXME */
-	BUG();
-	return 0;
-}
+#define pte_offset_kernel(pmdp, addr)	__va((pte_t *)(pmd_val(*(pmdp)) & PAGE_MASK) + pte_index(addr))
 #define pte_offset_map(dir, addr)	pte_offset_kernel((dir), (addr))
 #define pte_unmap(pte)			do { } while (0)
 #define pte_modify(pte, newprot)	__pte({BUG(); 0; })
