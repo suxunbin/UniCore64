@@ -9,14 +9,6 @@ SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
 	BUG();
 }
 
-SYSCALL_DEFINE4(execve, const char __user *, filename,
-		const char __user *const __user *, argv,
-		const char __user *const __user *, envp,
-		struct pt_regs *, regs)
-{
-	BUG();
-}
-
 SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
 		unsigned long, prot, unsigned long, flags,
 		unsigned long, fd, off_t, offset)
