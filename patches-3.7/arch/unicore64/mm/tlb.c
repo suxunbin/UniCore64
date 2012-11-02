@@ -33,8 +33,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long va)
 void flush_tlb_range(struct vm_area_struct *vma,
 		     unsigned long start, unsigned long end)
 {
-	/* FIXME */
-	BUG();
+	__invalid_tlb();
 }
 
 /**
