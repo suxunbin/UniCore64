@@ -7,8 +7,8 @@
 	.section	".start"
 	.globl		_start
 _start:
-	__head_init	r0
-	__cache_init	r0
+	__head_init
+	__cache_init
 
 	dmovl		sp, #UC64_PM_ZIMAGE_STACKTOP
 
@@ -30,7 +30,7 @@ _start:
 
 	/* Re-initialize to system default status */
 	__flush_dcache
-	__head_init	r0
+	__head_init
 
 	/*
 	 * Jump to the start address of kernel image.

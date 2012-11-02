@@ -29,8 +29,8 @@
  */
 	__HEAD
 ENTRY(stext)
-	__head_init	r0
-	__cache_init	r0
+	__head_init
+	__cache_init
 
 	/*
 	 * Enable the MMU.  This completely changes the structure of the visible

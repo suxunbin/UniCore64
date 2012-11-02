@@ -12,11 +12,11 @@
  * .... .... ..BS IDAM
  * .... .... ..10 0000
  */
-.macro	__head_init, rt
-	dmovl		&rt, #ASR_MODE_PRIV | ASR_INTR_SELECT
-	dmov		asr, &rt
-	dmov		&rt, #CP0_CTRLREG_DEFAULT
-	movc		CP0_CTRLREG, &rt, #0
+.macro	__head_init
+	dmovl		r16, #ASR_MODE_PRIV | ASR_INTR_SELECT
+	dmov		asr, r16
+	dmov		r16, #CP0_CTRLREG_DEFAULT
+	movc		CP0_CTRLREG, r16, #0
 .endm
 
 /*
@@ -43,16 +43,16 @@
 /*
  * __cache_init - invalid and enable icache and dcache
  */
-.macro	__cache_init, rt
+.macro	__cache_init
 	__invalid_dcache
 	__invalid_icache
 
-	movc		&rt, p0.c1, #0;
+	movc		r16, p0.c1, #0;
 #ifndef CONFIG_CPU_DCACHE_DISABLE
-	dor		&rt, &rt, #4;
+	dor		r16, r16, #4;
 #endif
 #ifndef CONFIG_CPU_ICACHE_DISABLE
-	dor		&rt, &rt, #8;
+	dor		r16, r16, #8;
 #endif
-	movc		p0.c1, &rt, #0;
+	movc		p0.c1, r16, #0;
 .endm
