@@ -45,17 +45,11 @@
 
 /* virtual address of USER space */
 #define UC64_VM_USER_START		__BC(00000000, 00000000)
-#define UC64_VM_USER_END		__BC(0000001f, ffffffff)
-/* virtual address of KERNEL space */
+#define UC64_VM_USER_END		__BC(00000020, 00000000)
+/* virtual address of KERNEL space, in which DMAP means Direct MAPping */
 #define UC64_VM_KERNEL_START		__BC(ffffffe0, 00000000)
-#define UC64_VM_KERNEL_END		__BC(ffffffff, ffffffff)
-
-/* virtual address of direct mapping space */
 #define UC64_VM_DMAP_START		__BC(fffffff0, 00000000)
-#define UC64_VM_DMAP_END		__BC(ffffffff, ffffffff)
-
 #define UC64_VM_IO_START		__BC(ffffffff, 80000000)
-#define UC64_VM_IO_END			UC64_VM_DMAP_END
 
 /* FIXME */
 #define UC64_VM_VMALLOC_START		__BC(00000001, 00000000)
@@ -72,7 +66,7 @@
  *
  */
 #define UC64_PM_START			__BC(00000000, 00000000)
-#define UC64_PM_END			__BC(0000000f, ffffffff)
+#define UC64_PM_END			__BC(00000010, 00000000)
 
 #define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
 #define UC64_PM_ZIMAGE_STACKTOP		__BC(00000000, 03800000)
