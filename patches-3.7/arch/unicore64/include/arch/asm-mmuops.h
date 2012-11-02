@@ -40,6 +40,14 @@ __ASMMACRO_WRAP(.macro	__invalid_tlb;
 #define __invalid_tlb()				__asm__("__invalid_tlb")
 #define __flush_dcache()			__asm__("__flush_dcache")
 
+__ASMMACRO_WRAP(.macro	__invalid_itlb_by_va, rva;
+			movc	p0.c5, &rva, #20;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	__invalid_dtlb_by_va, rva;
+			movc	p0.c5, &rva, #12;
+		.endm)
+
 /**
  * DOC: ASM_MMUOPS_H_SET_PGD
  * __set_pgd -  set pgd address

@@ -19,8 +19,11 @@ void flush_tlb_mm(struct mm_struct *mm)
  */
 void flush_tlb_page(struct vm_area_struct *vma, unsigned long va)
 {
-	/* FIXME */
-	BUG();
+	__asm__ __volatile__(
+			"__invalid_itlb_by_va	%0\n"
+			"__invalid_dtlb_by_va	%0\n"
+			: : "r" (va)
+			: "memory", "cc");
 }
 
 
