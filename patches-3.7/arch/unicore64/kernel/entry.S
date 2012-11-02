@@ -87,6 +87,13 @@ ENTRY(ret_from_fork)
 	eret
 ENDPROC(ret_from_fork)
 
+ENTRY(ret_from_kthread)
+	call		schedule_tail
+	dmov		r0, r17
+	adr		lr, 1001b
+	jump		r18
+ENDPROC(ret_from_kthread)
+
 ENTRY(__vec_invalid)
 	dmovl		r0, 0xdeaddeaddeaddead
 	__putdata	r0

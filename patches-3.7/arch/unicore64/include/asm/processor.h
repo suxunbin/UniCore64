@@ -44,9 +44,6 @@ struct thread_struct {
 
 #define cpu_relax()		barrier()
 
-/* Create a new kernel thread */
-extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
-
 extern unsigned long get_wchan(struct task_struct *p);
 
 /* Return some info about the user process TASK. */

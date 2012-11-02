@@ -3,57 +3,8 @@
 
 #include <arch/asm-common.h>
 
-/**
- * kernel_execve() -
- * @filename:
- * @argv:
- * @envp:
- */
-int kernel_execve(const char *filename, const char *const argv[],
-		const char *const envp[])
-{
-	struct pt_regs *regs = task_pt_regs(current);
-	int ret = do_execve(filename, argv, envp, regs);
-
-	if (ret < 0)
-		return ret;
-
-	/* FIXME */
-	BUG();
-	return 0;
-}
-
-static void __noreturn kernel_thread_helper(void *unused,
-		int (*fn)(void *), void *arg)
-{
-	fn(arg);
-	do_exit(-1); /* Should never be called. */
-}
-
-/**
- * kernel_thread() - Create a kernel thread
- * @fn:
- * @arg:
- * @flags:
- */
-int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
-{
-	struct pt_regs regs;
-
-	memset(&regs, 0, sizeof(regs));
-
-	/* Don't use r0 since that is set to 0 in copy_thread. */
-	regs.UC64_R01 = (unsigned long)fn;
-	regs.UC64_R02 = (unsigned long)arg;
-	regs.UC64_R31 = (unsigned long)kernel_thread_helper;
-	regs.UC64_ASR = ASR_MODE_PRIV;
-
-	/* Create the new process. */
-	return do_fork(flags | CLONE_VM | CLONE_UNTRACED,
-			0, &regs, 0, NULL, NULL);
-}
-
 asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
+asmlinkage void ret_from_kthread(void) __asm__("ret_from_kthread");
 
 /**
  * copy_thread() - Copy a thread
@@ -68,17 +19,24 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 {
 	struct pt_regs *childregs = task_pt_regs(p);
 
-	*childregs = *regs;
-	childregs->UC64_R00 = 0;
-	if (stack_start) {
-		BUG();
-	} else { /* For kernel_thread, useless pt_regs will be kept in stack */
-		childregs->UC64_R29 = (unsigned long)childregs;
-	}
-
 	/* cpu_context is used for __switch_to */
+	memset(&p->thread.cpu_context, 0, sizeof(struct cpu_context_save));
 	p->thread.cpu_context.r29 = (unsigned long)childregs;
-	p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
+
+	if (unlikely(!regs)) {
+		p->thread.cpu_context.r30 = (unsigned long)ret_from_kthread;
+		p->thread.cpu_context.r17 = stack_start; /* arg for fn(arg) */
+		p->thread.cpu_context.r18 = stk_sz; /* fn for fn(arg) */
+		memset(childregs, 0, sizeof(struct pt_regs));
+		/* For kernel_thread, useless pt_regs will be kept in stack */
+		childregs->UC64_R29 = (unsigned long)childregs;
+	} else {
+		p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
+
+		*childregs = *regs;
+		childregs->UC64_R00 = 0;
+		childregs->UC64_R29 = stack_start;
+	}
 
 	return 0;
 }
