@@ -29,7 +29,7 @@ _start:
 	call		decompress_kernel
 
 	/* Re-initialize to system default status */
-	__flush_dcache	r0
+	__flush_dcache
 	__head_init	r0
 
 	/*

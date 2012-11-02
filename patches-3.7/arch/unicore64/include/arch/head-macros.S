@@ -44,8 +44,8 @@
  * __cache_init - invalid and enable icache and dcache
  */
 .macro	__cache_init, rt
-	__invalid_dcache	&rt
-	__invalid_icache	&rt
+	__invalid_dcache
+	__invalid_icache
 
 	movc		&rt, p0.c1, #0;
 #ifndef CONFIG_CPU_DCACHE_DISABLE

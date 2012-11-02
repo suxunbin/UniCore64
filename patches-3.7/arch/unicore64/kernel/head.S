@@ -39,7 +39,7 @@ ENTRY(stext)
 	dmovl		sp, #UC64_PM_ZIMAGE_STACKTOP
 	call		__head_pgtable_init
 
-	__invalid_tlb	r0
+	__invalid_tlb
 
 	movc		r0, CP0_CTRLREG, #0
 	dor		r0, r0, #CP0_CTRLREG_MMU

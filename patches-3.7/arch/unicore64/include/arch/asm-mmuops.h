@@ -11,38 +11,34 @@
 /**
  * DOC: ASM_MMUOPS_H_INVALIDATE_DCACHE
  * __invalid_dcache - invalidate entire L1 dcache
- */
-__ASMMACRO_WRAP(.macro	__invalid_dcache, rt;
-			dmovl	&rt, #0;
-			movc	p0.c6, &rt, #8;
-		.endm)
-
-/**
- * DOC: ASM_MMUOPS_H_FLUSH_DCACHE
  * __flush_dcache - flush entire L1 dcache
- */
-__ASMMACRO_WRAP(.macro	__flush_dcache, rt;
-			dmovl	&rt, #0;
-			movc	p0.c6, &rt, #12;
-		.endm)
-
-/**
- * DOC: ASM_MMUOPS_H_INVALIDATE_ICACHE
  * __invalid_icache - invalidate entire icache
- */
-__ASMMACRO_WRAP(.macro	__invalid_icache, rt;
-			dmovl	&rt, #0;
-			movc	p0.c7, &rt, #0;
-		.endm)
-
-/**
- * DOC: ASM_MMUOPS_H_INVALIDATE_TLB
  * __invalid_tlb - invalidate I&D tlb
  */
-__ASMMACRO_WRAP(.macro	__invalid_tlb, rt;
-			dmovl	&rt, #0;
-			movc	p0.c5, &rt, #24;
+__ASMMACRO_WRAP(.macro	__invalid_dcache;
+			dmovl	r16, #0;
+			movc	p0.c6, r16, #8;
 		.endm)
+
+__ASMMACRO_WRAP(.macro	__flush_dcache;
+			dmovl	r16, #0;
+			movc	p0.c6, r16, #12;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	__invalid_icache;
+			dmovl	r16, #0;
+			movc	p0.c7, r16, #0;
+		.endm)
+
+__ASMMACRO_WRAP(.macro	__invalid_tlb;
+			dmovl	r16, #0;
+			movc	p0.c5, r16, #24;
+		.endm)
+
+#define __invalid_dcache()			__asm__("__invalid_dcache")
+#define __invalid_icache()			__asm__("__invalid_icache")
+#define __invalid_tlb()				__asm__("__invalid_tlb")
+#define __flush_dcache()			__asm__("__flush_dcache")
 
 /**
  * DOC: ASM_MMUOPS_H_SET_PGD
