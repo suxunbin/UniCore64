@@ -1,6 +1,7 @@
 #include <linux/mm.h>
 #include <linux/kernel.h>
 #include <asm/tlbflush.h>
+#include <arch/asm-mmuops.h>
 
 /**
  * flush_tlb_mm() -
@@ -8,8 +9,7 @@
  */
 void flush_tlb_mm(struct mm_struct *mm)
 {
-	/* FIXME */
-	BUG();
+	__invalid_tlb();
 }
 
 /**
