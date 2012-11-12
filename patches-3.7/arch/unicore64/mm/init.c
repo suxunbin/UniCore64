@@ -73,7 +73,7 @@ static void __init memblock_init(void)
 	memblock_reserve(__pa(_text), _end - _text);
 
 	/* Reserve the page tables. */
-	memblock_reserve(__pa(swapper_pg_dir), 2 * PAGE_SIZE);
+	memblock_reserve(__pa(swapper_pg_dir), 4 * PAGE_SIZE);
 
 #ifdef CONFIG_BLK_DEV_INITRD
 	if (UC64_PM_INITRD_SIZE) {
