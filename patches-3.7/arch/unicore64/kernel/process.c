@@ -25,8 +25,8 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 
 	if (unlikely(!regs)) {
 		p->thread.cpu_context.r30 = (unsigned long)ret_from_kthread;
-		p->thread.cpu_context.r17 = stack_start; /* arg for fn(arg) */
-		p->thread.cpu_context.r18 = stk_sz; /* fn for fn(arg) */
+		p->thread.cpu_context.r18 = stack_start; /* fn for fn(arg) */
+		p->thread.cpu_context.r17 = stk_sz; /* arg for fn(arg) */
 		memset(childregs, 0, sizeof(struct pt_regs));
 		/* For kernel_thread, useless pt_regs will be kept in stack */
 		childregs->UC64_R29 = (unsigned long)childregs;
