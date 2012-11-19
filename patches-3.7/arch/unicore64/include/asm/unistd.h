@@ -5,6 +5,8 @@
 #define __ARCH_WANT_SYSCALL_NO_AT
 #define __ARCH_WANT_SYS_EXECVE
 
+#define sys_mmap		sys_mmap_pgoff
+
 /* Use the standard ABI for syscalls. */
 #include <asm-generic/unistd.h>
 

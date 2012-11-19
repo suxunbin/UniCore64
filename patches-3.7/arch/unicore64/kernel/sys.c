@@ -9,13 +9,6 @@ SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
 	BUG();
 }
 
-SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-		unsigned long, prot, unsigned long, flags,
-		unsigned long, fd, off_t, offset)
-{
-	BUG();
-}
-
 #undef __SYSCALL
 #define __SYSCALL(nr, call) [nr] = (call),
 
