@@ -137,6 +137,8 @@ void __init time_init(void)
 	__itimer_ce.min_delta_ns =
 		clockevent_delta2ns(MIN_COUNTER_DELTA, &__itimer_ce);
 
+	__itimer_ce.cpumask = cpumask_of(smp_processor_id());
+
 	clocksource_register_hz(&__itimer_cs, CLOCK_TICK_RATE);
 	clockevents_register_device(&__itimer_ce);
 }
