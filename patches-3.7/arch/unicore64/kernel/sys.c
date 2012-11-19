@@ -2,11 +2,15 @@
 #include <linux/syscalls.h>
 #include <asm-generic/syscalls.h>
 
-SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
-		void __user *, parent_tid, void __user *, child_tid,
-		struct pt_regs *, regs)
+SYSCALL_DEFINE6(clone_wrapper, unsigned long, clone_flags, unsigned long, newsp,
+		void __user *, parent_tid, int, tls_val,
+		void __user *, child_tid, struct pt_regs *, regs)
 {
-	BUG();
+	if (!newsp)
+		newsp = regs->UC64_R29;
+
+	return do_fork(clone_flags, newsp, regs, 0,
+			parent_tid, child_tid);
 }
 
 #undef __SYSCALL

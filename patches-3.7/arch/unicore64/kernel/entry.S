@@ -238,3 +238,9 @@ ENTRY(__vectors_table)
 	call		__vec_invalid			@ 0x28: INT_OST
 	call		__vec_invalid			@ 0x2c: INT_PM
 ENDPROC(__vectors_table)
+
+ENTRY(sys_clone)
+	dadd		ip, sp, #16
+	std		ip, [sp+], #8
+	b		sys_clone_wrapper
+ENDPROC(sys_clone)
