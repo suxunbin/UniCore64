@@ -39,13 +39,13 @@ struct pt_regs {
 #define UC64_R26		uc64_regs[26]
 #define UC64_R27		uc64_regs[27]
 #define UC64_R28		uc64_regs[28]
-#define UC64_R29		uc64_regs[29]
-#define UC64_R30		uc64_regs[30]
-#define UC64_R31		uc64_regs[31]
-#define UC64_ASR		uc64_regs[32]
-#define UC64_AFR		uc64_regs[33]
-#define UC64_SW0		uc64_regs[34] /* CP0_SYSU #0 */
-#define UC64_O00		uc64_regs[35] /* Orig R00 */
+#define UC64_AFR		uc64_regs[29]
+#define UC64_ASR		uc64_regs[30]
+#define UC64_SW0		uc64_regs[31] /* CP0_SYSU #0 */
+#define UC64_O00		uc64_regs[32] /* Orig R00 */
+#define UC64_R31		uc64_regs[33]
+#define UC64_R30		uc64_regs[34]
+#define UC64_R29		uc64_regs[35]
 
 #ifdef __KERNEL__
 
