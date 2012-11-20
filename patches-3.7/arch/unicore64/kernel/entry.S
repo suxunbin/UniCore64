@@ -101,19 +101,19 @@ ENTRY(__vec_jepriv)
 	/*
 	 * Get the system call number.
 	 */
-	movc		r16, CP0_TRAPADDR, #1	@ saved in epc reg
-	dsub		r16, r16, #4
-	ldw		r16, [r16+], #0
+	movc		r15, CP0_TRAPADDR, #1	@ saved in epc reg
+	dsub		r15, r15, #4
+	ldw		r15, [r15+], #0
 
 	__irq_enable
 
 	ldd		r17, =sys_call_table	@ load syscall table pointer
 
 	dmovl		r18, #0xffffff		@ mask off SWI op-code
-	dand		r16, r16, r18		@ mask off SWI op-code
+	dand		r15, r15, r18		@ mask off SWI op-code
 
-	dlsl		r16, r16, #3
-	ldd		r18, [r17+], r16	@ call sys_* routine
+	dlsl		r15, r15, #3
+	ldd		r18, [r17+], r15	@ call sys_* routine
 	std.w		r5, [sp-], #8		@ push fifth and sixth args
 	std.w		r4, [sp-], #8
 	call.r		r18
