@@ -112,6 +112,11 @@ unsigned long get_wchan(struct task_struct *p)
  */
 void cpu_idle(void)
 {
-	/* FIXME */
-	pr_info("cpu_idle is doing nothing now.\n");
+	/* endless idle loop with no priority at all */
+	while (1) {
+		/* FIXME: here we do some critical things */
+		preempt_enable_no_resched();
+		schedule();
+		preempt_disable();
+	}
 }
