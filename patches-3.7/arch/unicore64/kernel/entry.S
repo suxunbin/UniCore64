@@ -209,13 +209,29 @@ ENTRY(__vec_int_puv3)
 ENDPROC(__vec_int_puv3)
 
 ENTRY(__vec_int_itimer)
+	movc		CP0_SYSU, r0, #4
+	dmov		r0, bsr
+	dand		r0, r0, #7
+	cmpsub.a	r0, #1
+	movc		r0, CP0_SYSU, #4
+	beq		user_entry
 	__push		sp				@ push r29(sp)
 	__push		lr				@ push r30(lr)
+	b		start_save
+user_entry:
+	std.wu		sp, [sp-], #8
+	std.wu		lr, [sp-], #8
+start_save:
 	__context_save
 
 	@ void __itimer_irqhandler(struct pt_regs *regs)
 	dmov		r0, sp
 	call		__itimer_irqhandler
+
+	ldd		r17, [sp+], #240	@ get bsr
+	dand		r17, r17, #7
+	cmpsub.a	r17, #1
+	beq		ret_syscall
 
 	__context_restore
 	__pop		lr				@ pop r30(lr)
