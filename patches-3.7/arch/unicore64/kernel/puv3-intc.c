@@ -95,7 +95,7 @@ void puv3_intc_handler(void)
 		if (irqs == 0)
 			return;
 
-		irq = ffs(irqs);
+		irq = ffs(irqs) - 1;
 		irq_enter();
 		generic_handle_irq(irq);
 		irq_exit();
