@@ -55,8 +55,6 @@ void flush_thread(void)
  */
 void exit_thread(void)
 {
-	/* FIXME */
-	BUG();
 }
 
 /**
