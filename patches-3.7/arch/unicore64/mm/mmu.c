@@ -33,31 +33,27 @@ static void __init uc64_create_direct_mapping(phys_addr_t start,
 	}
 }
 
-static void __init create_io_direct_mapping(phys_addr_t start,
-		unsigned long length)
+static void __init uc64_create_io_direct_mapping(void)
 {
-	phys_addr_t phys;
-	phys_addr_t phys_pgd = UC64_PM_PGTABLE_PGD;
 	phys_addr_t phys_pud00 = UC64_PM_PGTABLE_PUD_IO00;
 	phys_addr_t phys_pud01 = UC64_PM_PGTABLE_PUD_IO01;
+	phys_addr_t phys_io_start = __pa(UC64_VM_IO_START);
 	pgprot_t prot_pud;
-	pgprot_t prot_pmd;
 	pud_t *pud;
-	pmd_t *pmd;
 
 	prot_pud = __pgprot(UC64_PGD_EXIST);
-	pud = (pud_t *)__va(phys_pgd) + pgd_index((unsigned long)__va(start));
-	set_pud(pud, __pud(phys_pud00 | pgprot_val(prot_pud)));
-	pud++;
-	set_pud(pud, __pud(phys_pud01 | pgprot_val(prot_pud)));
 
-	prot_pmd = __pgprot(UC64_PMD_TYPE_IO | UC64_PMD_EXIST
-			| UC64_PMD_RWX | UC64_PMD_SPAGE);
-	pmd = (pmd_t *)__va(phys_pud00) + pmd_index((unsigned long)__va(start));
-	for (phys = start; phys < (start + length); phys += UC64_PMD_SIZE) {
-		set_pmd(pmd, __pmd(phys | pgprot_val(prot_pmd)));
-		pmd++;
-	}
+	pud = (pud_t *)UC64_VM_PGTABLE_PGD
+		+ pgd_index((unsigned long)UC64_VM_IO_START);
+	set_pud(pud, __pud(phys_pud00 | pgprot_val(prot_pud)));
+	uc64_create_direct_mapping(phys_io_start, UC64_SPAGE_SIZE,
+			phys_pud00, UC64_PMD_TYPE_IO);
+
+	pud++;
+	phys_io_start += UC64_SPAGE_SIZE;
+	set_pud(pud, __pud(phys_pud01 | pgprot_val(prot_pud)));
+	uc64_create_direct_mapping(phys_io_start, UC64_SPAGE_SIZE,
+			phys_pud01, UC64_PMD_TYPE_IO);
 }
 
 /*
@@ -77,7 +73,7 @@ void __init paging_init(void)
 				UC64_PM_PGTABLE_PUD_DM00, UC64_PMD_TYPE_CACHE);
 	}
 
-	create_io_direct_mapping(__pa(UC64_VM_IO_START), 0x80000000);
+	uc64_create_io_direct_mapping();
 
 	/* Initialize the zero page. */
 	memset((void *)UC64_VM_ZEROPAGE, 0, PAGE_SIZE);
