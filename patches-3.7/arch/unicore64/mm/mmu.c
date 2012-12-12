@@ -11,10 +11,10 @@
 struct page *empty_zero_page;
 
 static void __init uc64_create_direct_mapping(phys_addr_t start,
-		unsigned long length)
+		unsigned long length, phys_addr_t phys_pud,
+		unsigned long prot_extra_flag)
 {
 	phys_addr_t phys;
-	phys_addr_t phys_pud = UC64_PM_PGTABLE_PUD_DM00;
 	pgprot_t prot_pmd;
 	pmd_t *pmd;
 
@@ -23,8 +23,8 @@ static void __init uc64_create_direct_mapping(phys_addr_t start,
 		BUG();
 
 	/* the first pud has been written in head.S */
-	prot_pmd = __pgprot(UC64_PMD_TYPE_CACHE | UC64_PMD_EXIST
-			| UC64_PMD_RWX | UC64_PMD_SPAGE);
+	prot_pmd = __pgprot(UC64_PMD_EXIST | UC64_PMD_SPAGE | UC64_PMD_RWX
+			| prot_extra_flag);
 	pmd = (pmd_t *)__va(phys_pud) + pmd_index((unsigned long)__va(start));
 
 	for (phys = start; phys < (start + length); phys += UC64_PMD_SIZE) {
@@ -73,7 +73,8 @@ void __init paging_init(void)
 
 	/* Direct map all the memory banks. */
 	for_each_memblock(memory, reg) {
-		uc64_create_direct_mapping(reg->base, reg->size);
+		uc64_create_direct_mapping(reg->base, reg->size,
+				UC64_PM_PGTABLE_PUD_DM00, UC64_PMD_TYPE_CACHE);
 	}
 
 	create_io_direct_mapping(__pa(UC64_VM_IO_START), 0x80000000);
