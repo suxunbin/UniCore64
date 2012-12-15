@@ -57,20 +57,38 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 
 static inline void arch_read_lock(arch_rwlock_t *rw)
 {
-	/* FIXME */
-	__asm__(
-		"dmovl r0, 0xdead0004\n\t"
-		"call uc64_debug_putx\n\t"
-	);
+	u32 tmp;
+
+	__asm__ __volatile__(
+		"1:	llw		%0, [%1+], #0\n"
+		"	cmpsub.a	%0, #0\n"
+		"	bfs		1b\n"
+		"	add		%0, %0, #1\n"
+		"	scw		%0, [%1+], #0\n"
+		"	cmpsub.a	%0, #0\n"
+		"	beq		1b"
+		: "=&r" (tmp)
+		: "r" (&rw->lock)
+		: "cc", "memory");
+
+	smp_mb();
 }
 
 static inline void arch_read_unlock(arch_rwlock_t *rw)
 {
-	/* FIXME */
-	__asm__(
-		"dmovl r0, 0xdead0005\n\t"
-		"call uc64_debug_putx\n\t"
-	);
+	u32 tmp;
+
+	smp_mb();
+
+	__asm__ __volatile__(
+		"1:	llw		%0, [%1+], #0\n"
+		"	sub		%0, %0, #1\n"
+		"	scw		%0,	[%1+], #0\n"
+		"	cmpsub.a	%0, #0\n"
+		"	beq		1b"
+		: "=&r" (tmp)
+		: "r" (&rw->lock)
+		: "cc", "memory");
 }
 
 static inline int arch_read_trylock(arch_rwlock_t *rw)
