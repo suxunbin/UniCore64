@@ -156,7 +156,6 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
 #define arch_spin_is_locked(x)			\
 	({					\
-		uc64_debug_putx(0xdead000a);	\
 		((x)->lock != 0);		\
 	})
 #define arch_spin_unlock_wait(lock) \
