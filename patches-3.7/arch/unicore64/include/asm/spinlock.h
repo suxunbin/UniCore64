@@ -12,26 +12,37 @@
 #include <linux/linkage.h>
 
 #include <asm/processor.h>
+#include <asm/barrier.h>
 #include <arch/asm-debug.h>
+
+#define LOCK_TOKEN		(1)
 
 #define arch_spin_lock_flags(lock, flags) arch_spin_lock(lock)
 
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
-	/* FIXME */
-	__asm__(
-		"dmovl r0, 0xdead0001\n\t"
-		"call uc64_debug_putx\n\t"
-	);
+	u32 tmp;
+
+	__asm__ __volatile__(
+		"1:	llw		%0, [%1+], #0\n"
+		"	cmpsub.a	%0, #0\n"
+		"	bne		1b\n"
+		"	mov		%0, %2\n"
+		"	scw		%0, [%1+], #0\n"
+		"	cmpsub.a	%0, #0\n"
+		"	beq		1b"
+		: "=&r" (tmp)
+		: "r" (&lock->lock), "r" (LOCK_TOKEN)
+		: "cc", "memory");
+
+	smp_mb();
 }
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
-	/* FIXME */
-	__asm__(
-		"dmovl r0, 0xdead0002\n\t"
-		"call uc64_debug_putx\n\t"
-	);
+	smp_mb();
+
+	lock->lock = 0;
 }
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
