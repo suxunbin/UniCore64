@@ -46,13 +46,13 @@ static void __init uc64_create_io_direct_mapping(void)
 	pud = (pud_t *)UC64_VM_PGTABLE_PGD
 		+ pgd_index((unsigned long)UC64_VM_IO_START);
 	set_pud(pud, __pud(phys_pud00 | pgprot_val(prot_pud)));
-	uc64_create_direct_mapping(phys_io_start, UC64_SPAGE_SIZE,
+	uc64_create_direct_mapping(phys_io_start, UC64_PGD_SIZE,
 			phys_pud00, UC64_PMD_TYPE_IO);
 
 	pud++;
-	phys_io_start += UC64_SPAGE_SIZE;
+	phys_io_start += UC64_PGD_SIZE;
 	set_pud(pud, __pud(phys_pud01 | pgprot_val(prot_pud)));
-	uc64_create_direct_mapping(phys_io_start, UC64_SPAGE_SIZE,
+	uc64_create_direct_mapping(phys_io_start, UC64_PGD_SIZE,
 			phys_pud01, UC64_PMD_TYPE_IO);
 }
 
