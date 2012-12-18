@@ -53,21 +53,19 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	__asm__ __volatile__(
 		"	llw		%0, [%1+], #0\n"
 		"	cmpsub.a	%0, #0\n"
+		"	cmovne		%0, #0\n"
 		"	bne		1f\n"
 		"	mov		%0, %2\n"
 		"	scw		%0, [%1+], #0\n"
-		"	sub		%0, %0, #1\n"
 		"1:"
 		: "=&r" (tmp)
 		: "r" (&lock->lock), "r" (LOCK_TOKEN)
 		: "cc", "memory");
 
-	if (tmp == 0) {
+	if (tmp)
 		smp_mb();
-		return 1;
-	} else {
-		return 0;
-	}
+
+	return tmp;
 }
 
 static inline void arch_read_lock(arch_rwlock_t *rw)
