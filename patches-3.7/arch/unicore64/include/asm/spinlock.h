@@ -77,7 +77,7 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 	__asm__ __volatile__(
 		"1:	llw		%0, [%1+], #0\n"
 		"	cmpsub.a	%0, #0\n"
-		"	bfs		1b\n"
+		"	bsl		1b\n"
 		"	add		%0, %0, #1\n"
 		"	scw		%0, [%1+], #0\n"
 		"	cmpsub.a	%0, #0\n"
