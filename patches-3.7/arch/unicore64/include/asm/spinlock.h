@@ -15,9 +15,6 @@
 #include <asm/barrier.h>
 #include <arch/asm-debug.h>
 
-#define LOCK_TOKEN		(1)
-#define WRLOCK_TOKEN		__BP(31)
-
 #define arch_spin_lock_flags(lock, flags) arch_spin_lock(lock)
 
 static inline void arch_spin_lock(arch_spinlock_t *lock)

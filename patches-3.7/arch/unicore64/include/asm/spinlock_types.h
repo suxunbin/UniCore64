@@ -5,6 +5,9 @@
 # error "please don't include this file directly"
 #endif
 
+#define LOCK_TOKEN		(1)
+#define WRLOCK_TOKEN		__BP(31)
+
 typedef struct {
 	volatile unsigned int lock;
 } arch_spinlock_t;
