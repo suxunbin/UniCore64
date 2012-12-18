@@ -98,7 +98,7 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 	__asm__ __volatile__(
 		"1:	llw		%0, [%1+], #0\n"
 		"	sub		%0, %0, #1\n"
-		"	scw		%0,	[%1+], #0\n"
+		"	scw		%0, [%1+], #0\n"
 		"	cmpsub.a	%0, #0\n"
 		"	beq		1b"
 		: "=&r" (tmp)
