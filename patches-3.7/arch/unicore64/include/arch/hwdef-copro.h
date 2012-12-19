@@ -19,7 +19,7 @@
 
 #define __write_cp_op(reg_value, reg, op_no)				\
 	({								\
-		__asm__ __volatile("movc	" __stringify(reg)	\
+		__asm__ __volatile__("movc	" __stringify(reg)	\
 			", %0, #" __stringify(op_no)			\
 		    : : "r" (reg_value));				\
 	})
