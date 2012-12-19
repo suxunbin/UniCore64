@@ -22,11 +22,11 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 	switch (size) {
 	case 4:
 		__asm__ __volatile__(
-			"1:	llw		%0, [%1+], #0\n"
+			"1:	llw		%0, [%1]\n"
 			"	cmpsub.a	%0, %2\n"
 			"	bne		2f\n"
 			"	mov		%0, %3\n"
-			"	scw		%0, [%1+], #0\n"
+			"	scw		%0, [%1]\n"
 			"	cmpsub.a	%0, #0\n"
 			"	beq		1b\n"
 			"	mov		%0, %2\n"
@@ -37,11 +37,11 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 		break;
 	case 8:
 		__asm__ __volatile__(
-			"1:	lld		%0, [%1+], #0\n"
+			"1:	lld		%0, [%1]\n"
 			"	dcmpsub.a	%0, %2\n"
 			"	bne		2f\n"
 			"	dmov		%0, %3\n"
-			"	scd		%0, [%1+], #0\n"
+			"	scd		%0, [%1]\n"
 			"	dcmpsub.a	%0, #0\n"
 			"	beq		1b\n"
 			"	dmov		%0, %2\n"

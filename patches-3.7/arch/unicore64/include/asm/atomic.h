@@ -13,10 +13,10 @@
 		int result;						\
 		smp_mb();						\
 		__asm__ __volatile__(					\
-			"1:	llw		%0, [%2+], #0\n"	\
+			"1:	llw		%0, [%2]\n"		\
 			"	add		%0, %0, %3\n"		\
 			"	mov		%1, %0\n"		\
-			"	scw		%1, [%2+], #0\n"	\
+			"	scw		%1, [%2]\n"		\
 			"	cmpsub.a	%1, #0\n"		\
 			"	beq		1b"			\
 			: "=&r" (result), "=&r" (tmp)			\
@@ -34,10 +34,10 @@
 		int result;						\
 		smp_mb();						\
 		__asm__ __volatile__(					\
-			"1:	llw		%0, [%2+], #0\n"	\
+			"1:	llw		%0, [%2]\n"		\
 			"	sub		%0, %0, %3\n"		\
 			"	mov		%1, %0\n"		\
-			"	scw		%1, [%2+], #0\n"	\
+			"	scw		%1, [%2]\n"		\
 			"	cmpsub.a	%1, #0\n"		\
 			"	beq		1b"			\
 			: "=&r" (result), "=&r" (tmp)			\

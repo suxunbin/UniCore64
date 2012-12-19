@@ -25,11 +25,11 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 	u32 tmp;
 
 	__asm__ __volatile__(
-		"1:	llw		%0, [%1+], #0\n"
+		"1:	llw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	bne		1b\n"
 		"	mov		%0, %2\n"
-		"	scw		%0, [%1+], #0\n"
+		"	scw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	beq		1b"
 		: "=&r" (tmp)
@@ -51,12 +51,12 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	u32 tmp;
 
 	__asm__ __volatile__(
-		"	llw		%0, [%1+], #0\n"
+		"	llw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	cmovne		%0, #0\n"
 		"	bne		1f\n"
 		"	mov		%0, %2\n"
-		"	scw		%0, [%1+], #0\n"
+		"	scw		%0, [%1]\n"
 		"1:"
 		: "=&r" (tmp)
 		: "r" (&lock->lock), "r" (LOCK_TOKEN)
@@ -73,11 +73,11 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 	u32 tmp;
 
 	__asm__ __volatile__(
-		"1:	llw		%0, [%1+], #0\n"
+		"1:	llw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	bsl		1b\n"
 		"	add		%0, %0, #1\n"
-		"	scw		%0, [%1+], #0\n"
+		"	scw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	beq		1b"
 		: "=&r" (tmp)
@@ -94,9 +94,9 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 	smp_mb();
 
 	__asm__ __volatile__(
-		"1:	llw		%0, [%1+], #0\n"
+		"1:	llw		%0, [%1]\n"
 		"	sub		%0, %0, #1\n"
-		"	scw		%0, [%1+], #0\n"
+		"	scw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	beq		1b"
 		: "=&r" (tmp)
@@ -119,11 +119,11 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 	u32 tmp;
 
 	__asm__ __volatile__(
-		"1:	llw		%0, [%1+], #0\n"
+		"1:	llw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	bne		1b\n"
 		"	mov		%0, %2\n"
-		"	scw		%0, [%1+], #0\n"
+		"	scw		%0, [%1]\n"
 		"	cmpsub.a	%0, #0\n"
 		"	beq		1b"
 		: "=&r" (tmp)
