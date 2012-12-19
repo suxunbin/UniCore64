@@ -6,7 +6,7 @@
 #endif
 
 #define LOCK_TOKEN		(1)
-#define WRLOCK_TOKEN		__BP(31)
+#define WRLOCK_TOKEN		(0x80000000)
 #define UNLOCK_TOKEN		(0)
 
 typedef struct {
