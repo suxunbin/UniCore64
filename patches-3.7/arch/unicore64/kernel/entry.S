@@ -75,7 +75,6 @@ ENTRY(ret_from_fork)
 	__context_restore
 	ldd.wu		lr, [sp]+, #8
 	ldd.wu		sp, [sp]+, #8
-	dsub		sp, sp, #288
 	eret
 ENDPROC(ret_from_fork)
 
