@@ -17,6 +17,8 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 {
 	unsigned long res = 0;
 
+	smp_mb();
+
 	switch (size) {
 	case 4:
 		__asm__ __volatile__(
@@ -52,23 +54,13 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 		__cmpxchg_called_with_bad_pointer();
 	}
 
+	smp_mb();
+
 	return res;
 }
 
-static inline unsigned long __cmpxchg_mb(volatile void *ptr, unsigned long old,
-					unsigned long new, int size)
-{
-	unsigned long ret;
-
-	smp_mb();
-	ret = __cmpxchg(ptr, old, new, size);
-	smp_mb();
-
-	return ret;
-}
-
 #define cmpxchg(ptr, o, n)						\
-	((__typeof__(*(ptr)))__cmpxchg_mb((ptr),			\
+	((__typeof__(*(ptr)))__cmpxchg((ptr),				\
 					  (unsigned long)(o),		\
 					  (unsigned long)(n),		\
 					  sizeof(*(ptr))))
