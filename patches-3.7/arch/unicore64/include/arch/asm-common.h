@@ -25,6 +25,10 @@ __ASMMACRO_WRAP(.macro	__halt;
 			halt;
 		.endm)
 
+__ASMMACRO_WRAP(.macro	__sync;
+			sync;
+		.endm)
+
 __ASMMACRO_WRAP(.macro	__irq_disable;
 			dmov	r16, asr;
 			dor	r16, r16, #ASR_INTR_SELECT;
@@ -38,6 +42,7 @@ __ASMMACRO_WRAP(.macro	__irq_enable;
 		.endm)
 
 #define __halt()			__asm__ __volatile__("__halt")
+#define __sync()			__asm__ __volatile__("__sync")
 
 /*
  * We use "____" prefix(4 '_') only for debug:
