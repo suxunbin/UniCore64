@@ -1,9 +1,6 @@
 #ifndef __UNICORE64_ASM_CMPXCHG_H__
 #define __UNICORE64_ASM_CMPXCHG_H__
 
-#ifndef CONFIG_SMP
-#include <asm-generic/cmpxchg.h>
-#else
 #include <asm/barrier.h>
 
 #include <arch/asm-debug.h>
@@ -96,7 +93,5 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr,
 
 #define xchg(ptr, x) \
 	((__typeof__(*(ptr)))__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))))
-
-#endif /* CONFIG_SMP */
 
 #endif /* __UNICORE64_ASM_CMPXCHG_H__ */
