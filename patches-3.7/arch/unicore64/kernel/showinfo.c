@@ -38,10 +38,14 @@ void __show_uc64_regs(struct pt_regs *regs)
 			(regs->UC64_AFR & AFR_C_BIT) ? "C" : "c",
 			(regs->UC64_AFR & AFR_V_BIT) ? "V" : "v");
 
-	for (i = 0; i < 32; i += 4)
+	for (i = 0; i < 28; i += 4)
 		pr_info(" R%02d~R%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
 			regs->uc64_regs[i], regs->uc64_regs[i + 1],
 			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
+	for (i = 28; i < 32; i += 4)
+		pr_info(" R%02d~R%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
+			regs->uc64_regs[i], regs->uc64_regs[i + 7],
+			regs->uc64_regs[i + 6], regs->uc64_regs[i + 5]);
 }
 
 /**
