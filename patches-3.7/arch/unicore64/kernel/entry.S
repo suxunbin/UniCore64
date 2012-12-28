@@ -81,10 +81,9 @@ ENTRY(ret_from_fork)
 	cmpsub.a	r0, #0
 	adr		lr, 1001b
 	bne		schedule		@ return to 1001b
-	and		r1, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
-	cmpsub.a	r1, #0
-	dmov		r0, sp			@ 'regs'
-	dmov		r2, #0			@ 'syscall'
+	and		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
+	cmpsub.a	r0, #0
+	dmov		r1, #0			@ 'syscall'
 	bne.l		do_notify_resume
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
@@ -141,10 +140,9 @@ ret_syscall:
 	cmpsub.a	r0, #0
 	adr		lr, ret_syscall
 	bne		schedule
-	and		r1, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
-	cmpsub.a	r1, #0
-	dmov		r0, sp			@ 'regs'
-	dmov		r2, #0			@ 'syscall'
+	and		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
+	cmpsub.a	r0, #0
+	dmov		r1, #0                  @ 'syscall'
 	bne.l		do_notify_resume
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
