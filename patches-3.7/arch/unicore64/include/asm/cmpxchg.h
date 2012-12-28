@@ -65,11 +65,38 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 					  (unsigned long)(n),		\
 					  sizeof(*(ptr))))
 
-#define xchg(ptr, x)				\
-	({					\
-		uc64_debug_putx(0xdead0022);	\
-		(*ptr);				\
-	})
+extern void __xchg_called_with_bad_pointer(void);
+
+static inline unsigned long __xchg(unsigned long x, volatile void *ptr,
+				int size)
+{
+	unsigned long ret;
+
+	switch (size) {
+	case 4:
+		__asm__ __volatile__(
+			"swapw	%0, [%1], %2"
+			: "=&r" (ret)
+			: "r" (ptr), "r" (x)
+			: "cc", "memory");
+		break;
+	case 8:
+		__asm__ __volatile__(
+			"swapd	%0, [%1], %2"
+			: "=&r" (ret)
+			: "r" (ptr), "r" (x)
+			: "cc", "memory");
+		break;
+	default:
+		__xchg_called_with_bad_pointer();
+	}
+
+	return ret;
+}
+
+#define xchg(ptr, x) \
+	((__typeof__(*(ptr)))__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))))
+
 #endif /* CONFIG_SMP */
 
 #endif /* __UNICORE64_ASM_CMPXCHG_H__ */
