@@ -1,12 +1,9 @@
 #include <linux/kernel.h>
 #include <linux/memblock.h>
 #include <linux/bootmem.h>
-#include <linux/initrd.h>
 
 #include <asm/sections.h>
 #include <asm/setup_arch.h>
-
-#include <arch/hwdef-memory.h>
 
 /**
  * mem_init() - release free pages to the buddy allocator
@@ -51,7 +48,8 @@ void free_initmem(void)
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
-	totalram_pages += __free_area(start, end);
+	/* FIXME */
+	BUG();
 }
 #endif
 
@@ -74,16 +72,6 @@ static void __init memblock_init(void)
 
 	/* Reserve the page tables. */
 	memblock_reserve(__pa(swapper_pg_dir), 4 * PAGE_SIZE);
-
-#ifdef CONFIG_BLK_DEV_INITRD
-	if (UC64_PM_INITRD_SIZE) {
-		memblock_reserve(UC64_PM_INITRD_START, UC64_PM_INITRD_SIZE);
-
-		/* Now convert initrd to virtual addresses */
-		initrd_start = (unsigned long)__va(UC64_PM_INITRD_START);
-		initrd_end = initrd_start + UC64_PM_INITRD_SIZE;
-	}
-#endif
 
 	memblock_allow_resize();
 	memblock_dump_all();
