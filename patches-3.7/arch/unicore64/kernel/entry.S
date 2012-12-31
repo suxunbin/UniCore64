@@ -74,13 +74,13 @@
  */
 ENTRY(ret_from_fork)
 	call		schedule_tail
-	b		ret_syscall
+	b		ret_to_user
 ENDPROC(ret_from_fork)
 
 ENTRY(ret_from_kthread)
 	call		schedule_tail
 	dmov		r0, r17
-	adr		lr, ret_syscall
+	adr		lr, ret_to_user
 	jump		r18
 ENDPROC(ret_from_kthread)
 
@@ -116,13 +116,13 @@ ENTRY(__vec_jepriv)
 	dadd		sp, sp, #16
 	std.w		r0, [sp+], #0
 
-ret_syscall:
+ret_to_user:
 	__irq_disable
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
 	and		r0, r18, #(1 << TIF_NEED_RESCHED)
 	cmpsub.a	r0, #0
-	adr		lr, ret_syscall
+	adr		lr, ret_to_user
 	bne		schedule
 	and		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
 	cmpsub.a	r0, #0
@@ -199,7 +199,7 @@ ENTRY(__vec_int_itimer)
 	ldd		r17, [sp+], #240	@ get bsr
 	dand		r17, r17, #7
 	cmpsub.a	r17, #1
-	beq		ret_syscall
+	beq		ret_to_user
 
 	__context_restore
 	eret
