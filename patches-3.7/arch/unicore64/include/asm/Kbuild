@@ -60,6 +60,7 @@ generic-y += tlb.h
 generic-y += topology.h
 generic-y += types.h
 generic-y += uaccess.h
+generic-y += ucontext.h
 generic-y += unaligned.h
 generic-y += user.h
 generic-y += pci.h

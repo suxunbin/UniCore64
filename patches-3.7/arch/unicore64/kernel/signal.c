@@ -1,7 +1,7 @@
 #include <linux/syscalls.h>
 #include <linux/tracehook.h>
 
-#include <asm-generic/ucontext.h>
+#include <asm/ucontext.h>
 #include <asm/uaccess.h>
 
 SYSCALL_DEFINE3(sigaltstack, const stack_t __user *, uss,
