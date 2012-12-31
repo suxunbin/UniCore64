@@ -6,6 +6,7 @@
 ccflags-$(CONFIG_DEBUG_MCOUNT)	:= -pg
 CFLAGS_REMOVE_early_printk.o	:= -pg
 CFLAGS_REMOVE_time.o		:= -pg
+CFLAGS_REMOVE_process.o		:= -pg
 
 obj-y				:= head.o entry.o switch_to.o
 obj-y				+= irq.o
