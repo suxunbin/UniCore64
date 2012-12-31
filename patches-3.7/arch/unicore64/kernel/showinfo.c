@@ -43,9 +43,10 @@ void __show_uc64_regs(struct pt_regs *regs)
 			regs->uc64_regs[i], regs->uc64_regs[i + 1],
 			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
 
-	pr_info(" R28~ SP: %16lx %016lx\n", regs->UC64_R28, regs->UC64_R29);
-	pr_info(" LR: [<%016lx>] %pS\n", regs->UC64_R30,
-			(void *)regs->UC64_R30);
+	pr_info(" R28: %16lx USP: %016lx -- KSP: %016lx\n", regs->UC64_R28,
+			regs->UC64_R29, regs->UC64_KSP);
+	pr_info(" ULR: %016lx -- KLR: [<%016lx>] %pS\n", regs->UC64_R30,
+			regs->UC64_KLR, (void *)regs->UC64_KLR);
 	pr_info(" PC: [<%016lx>] %pS\n", regs->UC64_R31,
 			(void *)regs->UC64_R31);
 }
