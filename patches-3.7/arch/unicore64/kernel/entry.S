@@ -120,12 +120,10 @@ ret_to_user:
 	__irq_disable
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
-	and		r0, r18, #(1 << TIF_NEED_RESCHED)
-	cmpsub.a	r0, #0
+	cmpand.a	r18, #(1 << TIF_NEED_RESCHED)
 	adr		lr, ret_to_user
 	bne		schedule
-	and		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
-	cmpsub.a	r0, #0
+	and.a		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
 	dmov		r1, #0                  @ 'syscall'
 	bne.l		do_notify_resume
 	__thread_info	r17
