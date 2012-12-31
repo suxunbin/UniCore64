@@ -42,10 +42,12 @@ void __show_uc64_regs(struct pt_regs *regs)
 		pr_info(" R%02d~R%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
 			regs->uc64_regs[i], regs->uc64_regs[i + 1],
 			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
-	for (i = 28; i < 32; i += 4)
-		pr_info(" R%02d~R%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
-			regs->uc64_regs[i], regs->uc64_regs[i + 7],
-			regs->uc64_regs[i + 6], regs->uc64_regs[i + 5]);
+
+	pr_info(" R28~ SP: %16lx %016lx\n", regs->UC64_R28, regs->UC64_R29);
+	pr_info(" LR: [<%016lx>] %pS\n", regs->UC64_R30,
+			(void *)regs->UC64_R30);
+	pr_info(" PC: [<%016lx>] %pS\n", regs->UC64_R31,
+			(void *)regs->UC64_R31);
 }
 
 /**
