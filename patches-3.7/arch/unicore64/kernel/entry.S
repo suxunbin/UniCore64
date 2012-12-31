@@ -74,29 +74,13 @@
  */
 ENTRY(ret_from_fork)
 	call		schedule_tail
-1001:	__irq_disable
-	__thread_info	r17
-	ldw		r18, [r17+], #THREAD_INFO_FLAGS
-	and		r0, r18, #(1 << TIF_NEED_RESCHED)	@ FIXME: wait for and.a
-	cmpsub.a	r0, #0
-	adr		lr, 1001b
-	bne		schedule		@ return to 1001b
-	and		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
-	cmpsub.a	r0, #0
-	dmov		r1, #0			@ 'syscall'
-	bne.l		do_notify_resume
-	__thread_info	r17
-	ldw		r18, [r17+], #THREAD_INFO_FLAGS
-	cmpsub.a	r18, #0
-	bne		__vec_invalid		@ print error information
-	__context_restore
-	eret
+	b		ret_syscall
 ENDPROC(ret_from_fork)
 
 ENTRY(ret_from_kthread)
 	call		schedule_tail
 	dmov		r0, r17
-	adr		lr, 1001b
+	adr		lr, ret_syscall
 	jump		r18
 ENDPROC(ret_from_kthread)
 
