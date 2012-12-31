@@ -29,7 +29,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 		p->thread.cpu_context.r17 = stk_sz; /* arg for fn(arg) */
 		memset(childregs, 0, sizeof(struct pt_regs));
 		/* For kernel_thread, useless pt_regs will be kept in stack */
-		childregs->UC64_R29 = (unsigned long)childregs;
+		childregs->UC64_KSP = (unsigned long)childregs;
 	} else {
 		p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
 
