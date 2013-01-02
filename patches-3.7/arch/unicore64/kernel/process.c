@@ -28,8 +28,6 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 		p->thread.cpu_context.r18 = stack_start; /* fn for fn(arg) */
 		p->thread.cpu_context.r17 = stk_sz; /* arg for fn(arg) */
 		memset(childregs, 0, sizeof(struct pt_regs));
-		/* For kernel_thread, useless pt_regs will be kept in stack */
-		childregs->UC64_KSP = (unsigned long)childregs;
 	} else {
 		p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
 
@@ -37,6 +35,9 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 		childregs->UC64_R00 = 0;
 		childregs->UC64_R29 = stack_start;
 	}
+
+	/* Kernel-mode SP should be ALWAYS kept for re-entrance */
+	childregs->UC64_KSP = (unsigned long)childregs;
 
 	return 0;
 }
