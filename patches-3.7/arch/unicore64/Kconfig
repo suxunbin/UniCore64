@@ -84,6 +84,9 @@ config ARCH_FPGA
 config ARCH_PUV3
 	def_bool n
 
+config ARCH_PUV4
+	def_bool y
+
 endmenu
 
 menu "Kernel Features"

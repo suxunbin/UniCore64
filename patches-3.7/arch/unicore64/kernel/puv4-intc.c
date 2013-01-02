@@ -6,34 +6,34 @@
 #include <linux/irq.h>
 #include <linux/platform_device.h>
 
-#include <arch/puv3-irq.h>
-#include <arch/puv3-regs-intc.h>
+#include <arch/puv4-irq.h>
+#include <arch/puv4-regs-intc.h>
 
-#define __puv3_intc_disable_all()	do {			\
+#define __puv4_intc_disable_all()	do {			\
 			writel(0, INTC_ICMR);			\
 			writel(0, INTC_ICLR);			\
 			writel(1, INTC_ICCR);			\
 		} while (0)
 
-static void puv3_intc_mask_irq(struct irq_data *d)
+static void puv4_intc_mask_irq(struct irq_data *d)
 {
 	writel(readl(INTC_ICMR) & ~(1 << d->irq), INTC_ICMR);
 }
 
-static void puv3_intc_unmask_irq(struct irq_data *d)
+static void puv4_intc_unmask_irq(struct irq_data *d)
 {
 	writel(readl(INTC_ICMR) | (1 << d->irq), INTC_ICMR);
 }
 
 /* We don't need to ACK IRQs on the PKUnity unless they're GPIOs */
-static struct irq_chip puv3_intc_normal_chip = {
-	.name		= "PUV3-INTC-NORMAL",
-	.irq_ack	= puv3_intc_mask_irq,
-	.irq_mask	= puv3_intc_mask_irq,
-	.irq_unmask	= puv3_intc_unmask_irq,
+static struct irq_chip puv4_intc_normal_chip = {
+	.name		= "PUV4-INTC-NORMAL",
+	.irq_ack	= puv4_intc_mask_irq,
+	.irq_mask	= puv4_intc_mask_irq,
+	.irq_unmask	= puv4_intc_unmask_irq,
 };
 
-static int __devinit puv3_intc_probe(struct platform_device *pdev)
+static int __devinit puv4_intc_probe(struct platform_device *pdev)
 {
 	unsigned int irq;
 	struct resource *res;
@@ -51,10 +51,10 @@ static int __devinit puv3_intc_probe(struct platform_device *pdev)
 	}
 
 	/* disable all IRQs */
-	__puv3_intc_disable_all();
+	__puv4_intc_disable_all();
 
-	for (irq = PUV3_IRQS_MIN; irq <= PUV3_IRQS_MAX; irq++) {
-		irq_set_chip(irq, &puv3_intc_normal_chip);
+	for (irq = PUV4_IRQS_MIN; irq <= PUV4_IRQS_MAX; irq++) {
+		irq_set_chip(irq, &puv4_intc_normal_chip);
 		irq_set_handler(irq, handle_level_irq);
 		irq_modify_status(irq, IRQ_NOREQUEST | IRQ_NOAUTOEN,
 				IRQ_NOPROBE);
@@ -63,30 +63,30 @@ static int __devinit puv3_intc_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static struct platform_driver puv3_intc_driver = {
+static struct platform_driver puv4_intc_driver = {
 	.driver		= {
-		.name	= "PUV3-INTC",
+		.name	= "PUV4-INTC",
 	},
-	.probe		= puv3_intc_probe,
+	.probe		= puv4_intc_probe,
 };
 
-static int __init puv3_intc_init(void)
+static int __init puv4_intc_init(void)
 {
 	int ret = 0;
 
-	ret = platform_driver_register(&puv3_intc_driver);
+	ret = platform_driver_register(&puv4_intc_driver);
 	if (ret) {
-		pr_err("failed to register puv3_intc_driver\n");
+		pr_err("failed to register puv4_intc_driver\n");
 	}
 
 	return ret;
 }
-arch_initcall(puv3_intc_init);
+arch_initcall(puv4_intc_init);
 
 /*
- * This function handles all puv3 hardware interrupts.
+ * This function handles all puv4 hardware interrupts.
  */
-void puv3_intc_handler(void)
+void puv4_intc_handler(void)
 {
 	unsigned int irqs, irq;
 

@@ -1,0 +1,23 @@
+#ifndef __UNICORE64_ARCH_PUV4_REGS_INTC__
+#define __UNICORE64_ARCH_PUV4_REGS_INTC__
+
+#include <arch/puv4-iomem.h>
+
+/*
+ * PUV4 Interrupt Controller (INTC) Registers
+ *
+ * INTC Level Reg INTC_ICLR.
+ * INTC Mask Reg INTC_ICMR.
+ * INTC Pending Reg INTC_ICPR.
+ * INTC IRQ Pending Reg INTC_ICIP.
+ * INTC REAL Pending Reg INTC_ICFP.
+ * INTC Control Reg INTC_ICCR.
+ */
+#define INTC_ICLR		PUV4_IOREG(PUV4_INTC_BASE + 0x000)
+#define INTC_ICMR		PUV4_IOREG(PUV4_INTC_BASE + 0x004)
+#define INTC_ICPR		PUV4_IOREG(PUV4_INTC_BASE + 0x008)
+#define INTC_ICIP		PUV4_IOREG(PUV4_INTC_BASE + 0x00C)
+#define INTC_ICFP		PUV4_IOREG(PUV4_INTC_BASE + 0x010)
+#define INTC_ICCR		PUV4_IOREG(PUV4_INTC_BASE + 0x014)
+
+#endif /* __UNICORE64_ARCH_PUV4_REGS_INTC__ */

@@ -178,14 +178,14 @@ ENTRY(__vec_dtrap)
 	eret
 ENDPROC(__vec_dtrap)
 
-ENTRY(__vec_int_puv3)
+ENTRY(__vec_int_puv4)
 	__context_save
-#ifdef CONFIG_ARCH_PUV3
-	call		puv3_intc_handler
+#ifdef CONFIG_ARCH_PUV4
+	call		puv4_intc_handler
 #endif
 	__context_restore
 	eret
-ENDPROC(__vec_int_puv3)
+ENDPROC(__vec_int_puv4)
 
 ENTRY(__vec_int_itimer)
 	__context_save
@@ -214,7 +214,7 @@ ENTRY(__vectors_table)
 	call		__vec_invalid			@ 0x18: INT_KERNEL
 	call		__vec_invalid			@ 0x1c: INT_FAULT
 	b		__vec_int_itimer		@ 0x20: INT_TIMER
-	b		__vec_int_puv3			@ 0x24: INT_PE
+	b		__vec_int_puv4			@ 0x24: INT_PE
 	call		__vec_invalid			@ 0x28: INT_OST
 	call		__vec_invalid			@ 0x2c: INT_PM
 ENDPROC(__vectors_table)
