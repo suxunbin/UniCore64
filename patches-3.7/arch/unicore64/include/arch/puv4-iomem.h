@@ -67,7 +67,10 @@
 #define PUV4_OST_BASE			(PUV4_APB_BASE + 0x800000) /* APB-8 */
 #define PUV4_RESETC_BASE		(PUV4_APB_BASE + 0x900000) /* APB-9 */
 #define PUV4_PM_BASE			(PUV4_APB_BASE + 0xA00000) /* APB-10 */
-#define PUV4_PS2_BASE			(PUV4_APB_BASE + 0xB00000) /* APB-11 */
 #define PUV4_SDC_BASE			(PUV4_APB_BASE + 0xC00000) /* APB-12 */
+
+/* FIXME: For FPGA board ONLY */
+#define PUV4_PS2_BASE			(PUV4_APB_BASE + 0x1100000)
+#include <arch/puv4-regs-ps2.h>
 
 #endif  /* __UNICORE64_ARCH_PUV4_IOMEM_H__ */

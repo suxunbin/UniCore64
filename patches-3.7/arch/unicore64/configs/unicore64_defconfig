@@ -13,7 +13,7 @@ CONFIG_CPU_DCACHE_DISABLE=y
 
 # Device Drivers
 #	Hardware I/O ports
-CONFIG_SERIO_I8042=n
+CONFIG_SERIO_I8042=y
 #	Console display driver support
 CONFIG_VGA_CONSOLE=n
 

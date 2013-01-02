@@ -1,5 +1,6 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
+#include <linux/io.h>
 
 #include <arch/puv4-iomem.h>
 #include <arch/puv4-irq.h>
@@ -32,8 +33,29 @@ static struct resource puv4_ost_resources[] = {
 	},
 };
 
+static struct resource puv4_ps2_resources[] = {
+	[0] = {
+		.start	= PUV4_PS2_BASE,
+		.end	= PUV4_PS2_BASE + PUV4_IOMEM_REGION,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= IRQ_PS2_KBD,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static void puv4_ps2_init(void)
+{
+#ifdef CONFIG_ARCH_FPGA
+	writeb(0x13, PS2_CNT);
+#endif
+}
+
 static int __init puv4_core_init(void)
 {
+	puv4_ps2_init();
+
 	/* APB-5 */
 	platform_device_register_simple("PUV4-INTC", -1,
 			puv4_intc_resources, ARRAY_SIZE(puv4_intc_resources));
@@ -43,6 +65,10 @@ static int __init puv4_core_init(void)
 	/* APB-8 */
 	platform_device_register_simple("PUV4-OST", -1,
 			puv4_ost_resources, ARRAY_SIZE(puv4_ost_resources));
+
+	/* APB PS2 */
+	platform_device_register_simple("PUV4-PS2", -1,
+			puv4_ps2_resources, ARRAY_SIZE(puv4_ps2_resources));
 
 	return 0;
 }
