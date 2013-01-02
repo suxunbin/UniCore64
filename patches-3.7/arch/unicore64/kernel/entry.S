@@ -53,9 +53,9 @@
 	dmov		bfr, lr
 	__pop		lr				@ pop bsr
 	dmov		bsr, lr
+	dadd		sp, sp, #16			@ Reserved 2 dwords
 	__pop		lr				@ pop swr #0
 	movc		CP0_SYSU, lr, #0
-	dadd		sp, sp, #16			@ Reserved 2 dwords
 	dadd		sp, sp, #8			@ pop return value
 	__pop		lr				@ pop r31(pc)
 	movc		CP0_TRAPADDR, lr, #1		@ saved in epc reg
