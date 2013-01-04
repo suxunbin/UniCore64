@@ -214,7 +214,7 @@ ENTRY(__vectors_table)
 	call		__vec_invalid			@ 0x18: INT_KERNEL
 	call		__vec_invalid			@ 0x1c: INT_FAULT
 	b		__vec_int_itimer		@ 0x20: INT_TIMER
-	b		__vec_int_puv4			@ 0x24: INT_PE
+	b		__vec_int_puv4			@ 0x24: INT_PUV4
 	call		__vec_invalid			@ 0x28: INT_OST
 	call		__vec_invalid			@ 0x2c: INT_PM
 ENDPROC(__vectors_table)
