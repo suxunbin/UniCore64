@@ -66,7 +66,7 @@
 
 	@ step 4: pop kernel-mode sp and lr from pt_regs
 	__pop		lr
-	__pop		sp
+	dadd            sp, sp, #8                      @ pop ksp
 	.endm
 
 /**
