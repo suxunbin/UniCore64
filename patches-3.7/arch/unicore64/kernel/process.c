@@ -37,7 +37,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	}
 
 	/* Kernel-mode SP should be ALWAYS kept for re-entrance */
-	childregs->UC64_KSP = (unsigned long)childregs;
+	childregs->UC64_KSP = (unsigned long)childregs + sizeof(struct pt_regs);
 
 	return 0;
 }
