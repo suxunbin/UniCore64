@@ -41,12 +41,7 @@ ENTRY(stext)
 
 	__invalid_tlb
 
-	movc		r0, CP0_CTRLREG, #0
-	dor		r0, r0, #CP0_CTRLREG_MMU
-#ifdef	CONFIG_ALIGNMENT_TRAP
-	dor		r0, r0, #CP0_CTRLREG_ALIGN
-#endif
-	movc		CP0_CTRLREG, r0, #0
+	__enable_mmu
 
 	ldd		sp, __priv_sp
 

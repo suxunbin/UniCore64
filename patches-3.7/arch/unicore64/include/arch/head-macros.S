@@ -56,3 +56,15 @@
 #endif
 	movc		p0.c1, r16, #0;
 .endm
+
+/*
+ * __enable_mmu - enable MMU
+ */
+.macro	__enable_mmu
+	movc		r16, CP0_CTRLREG, #0
+	dor		r16, r16, #CP0_CTRLREG_MMU
+#ifdef	CONFIG_ALIGNMENT_TRAP
+	dor		r16, r16, #CP0_CTRLREG_ALIGN
+#endif
+	movc		CP0_CTRLREG, r16, #0
+.endm
