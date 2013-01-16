@@ -1,6 +1,16 @@
 #include <linux/init.h>
 #include <linux/smp.h>
 
+unsigned int num_processors = 2;
+
+void __init smp_setup_processor_id(void)
+{
+	int i;
+
+	for (i = 0; i < num_processors; i++)
+		set_cpu_possible(i, true);
+}
+
 void __init smp_prepare_cpus(unsigned int max_cpus)
 {
 	/* FIXME */
