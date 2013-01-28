@@ -13,8 +13,10 @@ void __init smp_setup_processor_id(void)
 
 void __init smp_prepare_cpus(unsigned int max_cpus)
 {
-	/* FIXME */
-	BUG();
+	int cpu;
+
+	for_each_possible_cpu(cpu)
+		set_cpu_present(cpu, true);
 }
 
 void __devinit smp_prepare_boot_cpu(void)
