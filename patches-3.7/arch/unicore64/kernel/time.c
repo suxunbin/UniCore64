@@ -130,7 +130,7 @@ void __init time_init(void)
 	__itimer_irq_disable();
 	__itimer_irq_clear();
 
-	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_TICK_RATE, 5);
+	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_EVENT_TICK_RATE, 5);
 
 	__itimer_ce.max_delta_ns =
 		clockevent_delta2ns(MAX_COUNTER_DELTA, &__itimer_ce);
