@@ -1,8 +1,12 @@
 #include <linux/init.h>
 #include <linux/smp.h>
 #include <linux/sched.h>
+#include <linux/delay.h>
 
 unsigned int num_processors = 2;
+
+/* Set when a secondary comes online.  */
+static int smp_secondary_alive __devinitdata;
 
 void __init smp_setup_processor_id(void)
 {
@@ -62,6 +66,10 @@ unsigned long secondary_stack_start;
 
 static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
 {
+	unsigned long timeout;
+
+	smp_secondary_alive = 0;
+
 	/*
 	 * CSU is not quite ready. Use a temporary reg 0xff6100000.
 	 */
@@ -71,6 +79,21 @@ static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
 		"stw	r1, [r0]\n"
 		"movc	p0.c10, r0, #4");
 
+	/* Wait one second for secondary to start up. */
+	timeout = jiffies + 1 * HZ;
+	while (time_before(jiffies, timeout)) {
+		if (smp_secondary_alive == 1)
+			goto alive;
+		udelay(10);
+		barrier();
+	}
+
+	/* We failed to boot the CPU.  */
+
+	printk(KERN_ERR "SMP: Processor %d is stuck.\n", cpu);
+	return -1;
+
+ alive:
 	return 0;
 }
 
