@@ -19,6 +19,6 @@ obj-$(CONFIG_UNICORE64)		+= cpu-uc64.o
 obj-$(CONFIG_OF_EARLY_FLATTREE)	+= devtree.o
 obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
 obj-$(CONFIG_ARCH_PUV4)		+= puv4-core.o puv4-intc.o
-obj-$(CONFIG_SMP)			+= smp.o
+obj-$(CONFIG_SMP)			+= smp.o headsmp.o
 
 extra-y				:= vmlinux.lds

@@ -1,5 +1,6 @@
 #include <linux/init.h>
 #include <linux/smp.h>
+#include <linux/sched.h>
 
 unsigned int num_processors = 2;
 
@@ -57,11 +58,48 @@ void __init smp_cpus_done(unsigned int max_cpus)
 	BUG();
 }
 
-int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *tidle)
+unsigned long secondary_stack_start;
+
+static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
+{
+	/*
+	 * CSU is not quite ready. Use a temporary reg 0xff6100000.
+	 */
+	__asm__ __volatile__(
+		"dmovl	r0, #0xfffffffff6100000\n"
+		"ldd	r1, =secondary_stext\n"
+		"stw	r1, [r0]\n"
+		"movc	p0.c10, r0, #4");
+
+	return 0;
+}
+
+/*
+ * Bring one cpu online.
+ */
+int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	/*
+	 * We need to tell the secondary core where to find its stack.
+	 */
+	secondary_stack_start = (unsigned long) task_stack_page(idle)
+			+ THREAD_SIZE - KSTK_PTREGS_GAP;
+
+	/*
+	 * Now bring the CPU into our world.
+	 */
+	smp_boot_one_cpu(cpu, idle);
+
+	return cpu_online(cpu) ? 0 : -1;
+}
+
+/*
+ * Where secondaries begin a life of C.
+ */
+void __init secondary_start_kernel(void)
 {
 	/* FIXME */
 	BUG();
-	return 0;
 }
 
 void smp_send_stop(void)
