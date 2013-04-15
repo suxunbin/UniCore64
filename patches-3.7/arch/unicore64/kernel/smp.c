@@ -70,6 +70,8 @@ static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
 
 	smp_secondary_alive = 0;
 
+	wmb();
+
 	/*
 	 * CSU is not quite ready. Use a temporary reg 0xff6100000.
 	 */
