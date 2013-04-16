@@ -170,6 +170,7 @@ ENTRY(__vec_itrap)
 
 	__irq_disable
 
+	b		ret_to_user
 	__context_restore
 	eret
 ENDPROC(__vec_itrap)
@@ -192,6 +193,7 @@ ENTRY(__vec_dtrap)
 
 	__irq_disable
 
+	b		ret_to_user
 	__context_restore
 	eret
 ENDPROC(__vec_dtrap)
@@ -201,6 +203,12 @@ ENTRY(__vec_int_puv4)
 #ifdef CONFIG_ARCH_PUV4
 	call		puv4_intc_handler
 #endif
+
+	ldd		r17, [sp+], #240	@ get bsr
+	dand		r17, r17, #7
+	cmpsub.a	r17, #1
+	beq		ret_to_user
+
 	__context_restore
 	eret
 ENDPROC(__vec_int_puv4)
