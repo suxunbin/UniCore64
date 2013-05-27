@@ -123,8 +123,11 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *idle)
  */
 void __init secondary_start_kernel(void)
 {
-	/* FIXME */
-	BUG();
+	preempt_disable();
+
+	smp_secondary_alive = 1;
+
+	cpu_idle();
 }
 
 void smp_send_stop(void)
