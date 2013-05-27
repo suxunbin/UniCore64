@@ -19,8 +19,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 
 void __devinit smp_prepare_boot_cpu(void)
 {
-	/* FIXME */
-	BUG();
 }
 
 void smp_send_reschedule(int cpu)
