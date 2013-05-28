@@ -225,6 +225,8 @@ void __init secondary_start_kernel(void)
 
 	preempt_disable();
 
+	setup_itimer();
+
 	smp_secondary_alive = 1;
 
 	cpu_idle();
