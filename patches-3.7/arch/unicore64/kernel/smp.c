@@ -79,8 +79,7 @@ static void send_ipi_message(const struct cpumask *to_whom,
 
 void smp_send_reschedule(int cpu)
 {
-	/* FIXME */
-	BUG();
+	send_ipi_message(cpumask_of(cpu), IPI_RESCHEDULE);
 }
 
 int smp_call_function(smp_call_func_t func, void *info, int wait)
