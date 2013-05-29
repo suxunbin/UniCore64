@@ -2,6 +2,21 @@
 #include <linux/smp.h>
 #include <linux/sched.h>
 #include <linux/delay.h>
+#include <linux/cpu.h>
+
+#include <arch/hwdef-cp0-sysctrl.h>
+
+/* A collection of single bit ipi messages.  */
+static struct {
+	unsigned long bits ____cacheline_aligned;
+} ipi_data[NR_CPUS] __cacheline_aligned;
+
+enum ipi_message_type {
+	IPI_RESCHEDULE,
+	IPI_CALL_FUNC,
+	IPI_CALL_FUNC_SINGLE,
+	IPI_CPU_STOP,
+};
 
 unsigned int num_processors = 2;
 
@@ -26,6 +41,40 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 
 void __devinit smp_prepare_boot_cpu(void)
 {
+}
+
+static void send_ipi(int cpu)
+{
+	switch (cpu) {
+	case 0:
+		__write_cp_op(0, CP0_INTR, 3);
+		break;
+	case 1:
+		__write_cp_op(0, CP0_INTR, 4);
+		break;
+	case 2:
+		__write_cp_op(0, CP0_INTR, 5);
+		break;
+	case 3:
+		__write_cp_op(0, CP0_INTR, 6);
+		break;
+	default:
+		printk(KERN_CRIT "Wrong core number\n");
+	}
+}
+
+static void send_ipi_message(const struct cpumask *to_whom,
+				enum ipi_message_type operation)
+{
+	int i;
+
+	mb();
+	for_each_cpu(i, to_whom)
+		set_bit(operation, &ipi_data[i].bits);
+
+	mb();
+	for_each_cpu(i, to_whom)
+		send_ipi(i);
 }
 
 void smp_send_reschedule(int cpu)
