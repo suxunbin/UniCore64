@@ -63,6 +63,11 @@ static void __init zone_sizes_init(void)
 
 	/* Initialize mem_map[] */
 	free_area_init(zone_sizes);
+
+	/* Initialize the zero page. */
+	memset((void *)UC64_VM_ZEROPAGE, 0, PAGE_SIZE);
+	empty_zero_page = virt_to_page(UC64_VM_ZEROPAGE);
+
 }
 
 static void __init memblock_init(void)
@@ -102,6 +107,6 @@ void __init setup_arch_memory(void)
 {
 	memblock_init();
 	max_pfn_init();
-	zone_sizes_init();
 	paging_init();
+	zone_sizes_init();
 }

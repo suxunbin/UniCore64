@@ -75,10 +75,6 @@ void __init paging_init(void)
 
 	uc64_create_io_direct_mapping();
 
-	/* Initialize the zero page. */
-	memset((void *)UC64_VM_ZEROPAGE, 0, PAGE_SIZE);
-	empty_zero_page = virt_to_page(UC64_VM_ZEROPAGE);
-
 }
 
 /**
