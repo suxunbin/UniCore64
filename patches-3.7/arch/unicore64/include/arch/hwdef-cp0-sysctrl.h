@@ -56,6 +56,7 @@
 #define CP0_INTR_IK3			__BF(1, 1, 11)
 #define CP0_INTR_IK4			__BF(1, 1, 12)
 #define CP0_INTR_IPM			__BF(1, 1, 13)
+#define CP0_INTR_SMP			__BF(1, 4, 9)
 
 /**
  * DOC: HWDEF_CP0_SYSCTRL_H_CP0_CTRLREG

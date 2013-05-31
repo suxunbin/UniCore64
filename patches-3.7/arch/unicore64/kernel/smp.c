@@ -6,6 +6,11 @@
 
 #include <arch/hwdef-cp0-sysctrl.h>
 
+#define __ipi_disable()	\
+	__write_uc64(__read_uc64(asr) | ASR_INTR_SMP)
+#define __ipi_clear()		\
+	__write_cp(__read_cp(CP0_INTR) & ~CP0_INTR_SMP, CP0_INTR)
+
 /* A collection of single bit ipi messages.  */
 static struct {
 	unsigned long bits ____cacheline_aligned;
