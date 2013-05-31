@@ -84,6 +84,24 @@ ENTRY(ret_from_kthread)
 	jump		r18
 ENDPROC(ret_from_kthread)
 
+ENTRY(__vec_int_kernel)
+	__context_save
+
+#ifdef CONFIG_SMP
+	@ void ipi_handler(struct pt_regs *regs)
+	dmov		r0, sp
+	call		ipi_handler
+#endif
+
+	ldd		r17, [sp+], #240	@ get bsr
+	dand		r17, r17, #7
+	cmpsub.a	r17, #1
+	beq		ret_to_user
+
+	__context_restore
+	eret
+ENDPROC(__vec_int_kernel)
+
 ENTRY(__vec_invalid)
 	dmovl		r0, 0xdeaddeaddeaddead
 	__putdata	r0
@@ -211,7 +229,7 @@ ENTRY(__vectors_table)
 	b		__vec_itrap			@ 0x0c: ITRAP
 	b		__vec_dtrap			@ 0x10: DTRAP
 	call		__vec_invalid			@ 0x14: FPU_EXC
-	call		__vec_invalid			@ 0x18: INT_KERNEL
+	b		__vec_int_kernel		@ 0x18: INT_KERNEL
 	call		__vec_invalid			@ 0x1c: INT_FAULT
 	b		__vec_int_itimer		@ 0x20: INT_TIMER
 	b		__vec_int_puv4			@ 0x24: INT_PUV4

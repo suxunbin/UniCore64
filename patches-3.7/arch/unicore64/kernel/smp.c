@@ -3,11 +3,12 @@
 #include <linux/sched.h>
 #include <linux/delay.h>
 #include <linux/cpu.h>
+#include <linux/interrupt.h>
 
 #include <arch/hwdef-cp0-sysctrl.h>
 
 #define __ipi_disable()	\
-	__write_uc64(__read_uc64(asr) | ASR_INTR_SMP)
+	__write_uc64(__read_uc64(asr) | ASR_INTR_SMP, asr)
 #define __ipi_clear()		\
 	__write_cp(__read_cp(CP0_INTR) & ~CP0_INTR_SMP, CP0_INTR)
 
@@ -80,6 +81,61 @@ static void send_ipi_message(const struct cpumask *to_whom,
 	mb();
 	for_each_cpu(i, to_whom)
 		send_ipi(i);
+}
+
+/* This function handlers all IPIs. */
+void ipi_handler(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+	int cpu = smp_processor_id();
+	unsigned long *pending_ipis = &ipi_data[cpu].bits;
+	unsigned long ops;
+
+	/* IPI bits should be cleared before checking pending IPIs.*/
+	__ipi_disable();
+	__ipi_clear();
+
+	/* Order interrupt and bit testing. */
+	mb();
+	while ((ops = xchg(pending_ipis, 0)) != 0) {
+		/* Order bit clearing and data access. */
+		mb();
+		do {
+			unsigned long which;
+
+			which = ops & -ops;
+			ops &= ~which;
+			which = __ffs(which);
+
+			switch (which) {
+			case IPI_RESCHEDULE:
+				scheduler_ipi();
+				break;
+
+			case IPI_CALL_FUNC:
+				irq_enter();
+				generic_smp_call_function_interrupt();
+				irq_exit();
+				break;
+
+			case IPI_CALL_FUNC_SINGLE:
+				irq_enter();
+				generic_smp_call_function_single_interrupt();
+				irq_exit();
+				break;
+
+			default:
+				printk(KERN_CRIT "Unknown IPI on CPU %d: %lu\n",
+					cpu, which);
+				break;
+			}
+		} while (ops);
+
+		/* Order data access and bit testing. */
+		mb();
+	}
+
+	set_irq_regs(old_regs);
 }
 
 void smp_send_reschedule(int cpu)
