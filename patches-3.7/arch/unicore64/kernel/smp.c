@@ -227,6 +227,8 @@ void __init secondary_start_kernel(void)
 
 	setup_itimer();
 
+	notify_cpu_starting(cpu);
+
 	smp_secondary_alive = 1;
 
 	cpu_idle();
