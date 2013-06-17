@@ -82,26 +82,14 @@ void smp_send_reschedule(int cpu)
 	send_ipi_message(cpumask_of(cpu), IPI_RESCHEDULE);
 }
 
-int smp_call_function(smp_call_func_t func, void *info, int wait)
+void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 {
-	/* FIXME */
-	BUG();
-	return 0;
+	send_ipi_message(mask, IPI_CALL_FUNC);
 }
 
-void smp_call_function_many(const struct cpumask *mask, smp_call_func_t func,
-				void *info, bool wait)
+void arch_send_call_function_single_ipi(int cpu)
 {
-	/* FIXME */
-	BUG();
-}
-
-int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
-				int wait)
-{
-	/* FIXME */
-	BUG();
-	return 0;
+	send_ipi_message(cpumask_of(cpu), IPI_CALL_FUNC_SINGLE);
 }
 
 void __init smp_cpus_done(unsigned int max_cpus)

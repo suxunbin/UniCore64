@@ -9,4 +9,7 @@
 
 #define raw_smp_processor_id() (current_thread_info()->cpu)
 
+extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+extern void arch_send_call_function_single_ipi(int cpu);
+
 #endif /* __UNICORE64_ASM_SMP_H__ */
