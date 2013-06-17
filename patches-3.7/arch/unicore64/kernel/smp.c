@@ -233,6 +233,8 @@ void __init secondary_start_kernel(void)
 
 	set_cpu_online(cpu, true);
 
+	local_irq_enable();
+
 	smp_secondary_alive = 1;
 
 	cpu_idle();
