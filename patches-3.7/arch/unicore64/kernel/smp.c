@@ -155,8 +155,11 @@ void arch_send_call_function_single_ipi(int cpu)
 
 void __init smp_cpus_done(unsigned int max_cpus)
 {
-	/* FIXME */
-	BUG();
+	unsigned long bogosum = loops_per_jiffy * num_online_cpus();
+
+	pr_info("SMP: Total of %d processors activated (%lu.%02lu BogoMIPS).\n",
+		num_online_cpus(), bogosum / (500000/HZ),
+		(bogosum / (5000/HZ)) % 100);
 }
 
 unsigned long secondary_stack_start;
