@@ -220,6 +220,8 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *idle)
  */
 void __init secondary_start_kernel(void)
 {
+	unsigned int cpu = smp_processor_id();
+
 	atomic_inc(&init_mm.mm_count);
 	current->active_mm = &init_mm;
 
@@ -228,6 +230,8 @@ void __init secondary_start_kernel(void)
 	setup_itimer();
 
 	notify_cpu_starting(cpu);
+
+	set_cpu_online(cpu, true);
 
 	smp_secondary_alive = 1;
 
