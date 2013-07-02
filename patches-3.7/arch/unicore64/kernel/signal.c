@@ -26,6 +26,8 @@ SYSCALL_DEFINE0(rt_sigreturn)
 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
 		goto badframe;
 
+	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
+		goto badframe;
 	set_current_blocked(&set);
 
 	if (__copy_from_user(regs, &frame->uc.uc_mcontext.regs,
@@ -55,6 +57,7 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	struct rt_sigframe  *frame;
 	int err = 0;
 	unsigned long sp = regs->UC64_R29;
+	sigset_t *oldset = sigmask_to_save();
 
 	frame = (void __user *)((sp - sizeof(*frame)) & ~7);
 
@@ -68,6 +71,7 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	err |= __copy_to_user(&frame->uc.uc_mcontext.regs, regs,
 				sizeof(struct pt_regs));
+	err |= __copy_to_user(&frame->uc.uc_sigmask, oldset, sizeof(*oldset));
 
 	/*Save jepriv code in frame->retcode*/
 	err |= __put_user(0xf000008b, &(frame->retcode));
