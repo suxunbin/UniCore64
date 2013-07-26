@@ -108,6 +108,8 @@ ENTRY(__head_pgtable_init)
 	dmovl		r0, UC64_PM_START
 	dor		r0, r0, #UC64_PMD_SPAGE | UC64_PMD_EXIST
 	dor		r0, r0, #UC64_PMD_TYPE_CACHE | UC64_PMD_RWX
+	dmovl		r2, #UC64_PMD_SHARE
+	dor		r0, r0, r2
 	dmovl		r2, UC64_PMD_SIZE
 
 	.rep		32
