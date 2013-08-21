@@ -13,7 +13,7 @@
  * .... .... ..10 0000
  */
 .macro	__head_init
-	dmovl		r16, #ASR_MODE_PRIV | ASR_INTR_SELECT
+	dmovl		r16, #ASR_MODE_PRIV | ASR_INTR_SELECT | ASR_T_BIT
 	dmov		asr, r16
 	dmov		r16, #CP0_CTRLREG_DEFAULT
 	movc		CP0_CTRLREG, r16, #0
