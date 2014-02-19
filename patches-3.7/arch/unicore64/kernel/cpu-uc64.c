@@ -1,15 +1,18 @@
 #include <linux/kernel.h>
 #include <linux/seq_file.h>
 #include <linux/cpu.h>
+#include <linux/percpu.h>
 
-static struct cpu cpuinfo_unicore64;
+static DEFINE_PER_CPU(struct cpu, cpuinfo_unicore64);
 
 static int __init topology_init(void)
 {
 	int i;
 
-	for_each_possible_cpu(i)
-		register_cpu(&cpuinfo_unicore64, i);
+	for_each_possible_cpu(i) {
+		struct cpu *c = &per_cpu(cpuinfo_unicore64, i);
+		register_cpu(c, i);
+	}
 
 	return 0;
 }
