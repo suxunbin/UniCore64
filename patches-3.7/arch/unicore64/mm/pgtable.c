@@ -9,7 +9,7 @@
  */
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
-	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
+	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 
 	if (new_pgd)
 		copy_page(new_pgd, swapper_pg_dir);

@@ -5,6 +5,7 @@
 #include <linux/cpu.h>
 #include <linux/interrupt.h>
 
+#include <asm/pgtable.h>
 #include <arch/hwdef-cp0-sysctrl.h>
 
 #define __ipi_disable()	\
@@ -225,6 +226,8 @@ void __init secondary_start_kernel(void)
 {
 	unsigned int cpu = smp_processor_id();
 
+	/* First 1G for direct-mapped area should be cleared. */
+	swapper_pg_dir[0] = __pgd(0);
 	atomic_inc(&init_mm.mm_count);
 	current->active_mm = &init_mm;
 
