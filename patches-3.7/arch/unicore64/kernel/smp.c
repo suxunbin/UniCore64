@@ -244,8 +244,6 @@ void __init secondary_start_kernel(void)
 
 	local_irq_enable();
 
-	calibrate_delay();
-
 	smp_secondary_alive = 1;
 
 	cpu_idle();
