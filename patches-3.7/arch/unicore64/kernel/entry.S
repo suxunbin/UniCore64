@@ -193,7 +193,11 @@ ENTRY(__vec_dtrap)
 
 	__irq_disable
 
-	b		ret_to_user
+	ldd		r17, [sp+], #240	@ get bsr
+	dand		r17, r17, #7
+	cmpsub.a	r17, #1
+	beq		ret_to_user
+
 	__context_restore
 	eret
 ENDPROC(__vec_dtrap)
