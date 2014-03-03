@@ -163,7 +163,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
 		(bogosum / (5000/HZ)) % 100);
 }
 
-unsigned long secondary_stack_start;
+volatile unsigned long secondary_stack_start;
 
 /*
  * CSR is not quite ready. Use a temporary reg 0xff6100000.
@@ -212,6 +212,7 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *idle)
 	 */
 	secondary_stack_start = (unsigned long) task_stack_page(idle)
 			+ THREAD_SIZE - KSTK_PTREGS_GAP;
+	mb();
 
 	/*
 	 * Now bring the CPU into our world.
