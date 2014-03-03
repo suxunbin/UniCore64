@@ -165,6 +165,11 @@ void __init smp_cpus_done(unsigned int max_cpus)
 
 unsigned long secondary_stack_start;
 
+/*
+ * CSR is not quite ready. Use a temporary reg 0xff6100000.
+ */
+#define CSR_R0	0xfffffffff6100000
+
 static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
 {
 	unsigned long timeout;
@@ -173,11 +178,8 @@ static int __init smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
 
 	wmb();
 
-	/*
-	 * CSU is not quite ready. Use a temporary reg 0xff6100000.
-	 */
 	__asm__ __volatile__(
-		"dmovl	r0, #0xfffffffff6100000\n"
+		"dmovl	r0, #" __stringify(CSR_R0) "\n"
 		"ldd	r1, =secondary_stext\n"
 		"stw	r1, [r0]\n"
 		"movc	p0.c10, r0, #4");
