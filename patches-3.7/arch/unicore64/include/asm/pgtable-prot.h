@@ -6,11 +6,12 @@
 #include <arch/hwdef-pgtable.h>
 
 #define PAGE_KERNEL	__pgprot(UC64_PTE_RWX | UC64_PTE_DIRTY		\
-		| UC64_PTE_EXIST | UC64_PTE_YOUNG | UC64_PTE_TYPE_CACHE)
+		| UC64_PTE_EXIST | UC64_PTE_YOUNG | UC64_PTE_TYPE_CACHE \
+		| UC64_PTE_SHARE)
 
 /* FIXME: if READ is needed when WRITE or EXEC, otherwise, modify VM_flags */
-#define arch_vm_get_page_prot(vm_flags)			\
-		__pgprot(UC64_PTE_EXIST | UC64_PTE_TYPE_CACHE | UC64_PTE_USER)
+#define arch_vm_get_page_prot(vm_flags) __pgprot(UC64_PTE_EXIST \
+		| UC64_PTE_TYPE_CACHE | UC64_PTE_USER | UC64_PTE_SHARE)
 
 #define __P000		__pgprot(0)
 #define __P001		__pgprot(UC64_PTE_READ)
