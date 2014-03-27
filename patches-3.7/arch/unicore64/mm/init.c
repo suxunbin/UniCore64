@@ -76,7 +76,7 @@ static void __init memblock_init(void)
 	memblock_reserve(__pa(_text), _end - _text);
 
 	/* Reserve the page tables. */
-	memblock_reserve(__pa(swapper_pg_dir), 4 * PAGE_SIZE);
+	memblock_reserve(__pa(UC64_VM_DTB_START), 8 * PAGE_SIZE);
 
 	memblock_allow_resize();
 	memblock_dump_all();
