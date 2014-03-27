@@ -75,7 +75,7 @@ static void __init memblock_init(void)
 	/* Reserve the kernel text, kernel data and initrd with memblock. */
 	memblock_reserve(__pa(_text), _end - _text);
 
-	/* Reserve the page tables. */
+	/* Reserve zero page, DTB and page tables. */
 	memblock_reserve(__pa(UC64_VM_DTB_START), 8 * PAGE_SIZE);
 
 	memblock_allow_resize();
