@@ -1,5 +1,6 @@
 CONFIG_STATIC=y
 CONFIG_CROSS_COMPILER_PREFIX="/pub/toolchain/uc64/bin/unicore64-linux-"
+CONFIG_EXTRA_CFLAGS="-msoft-float"
 
 # CONFIG_NANDWRITE is not set
 # CONFIG_NANDDUMP is not set
