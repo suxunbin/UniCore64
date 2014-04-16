@@ -146,7 +146,8 @@ ret_to_user:
 	bne.l		do_notify_resume
 	__thread_info	r17
 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
-	cmpsub.a	r18, #0
+	and.a		r0, r18, #(1 << TIF_NOTIFY_RESUME | 1 << TIF_SIGPENDING)
+	cmpsub.a	r0, #0
 	bne		__vec_invalid		@ print error information
 	__context_restore
 	eret
