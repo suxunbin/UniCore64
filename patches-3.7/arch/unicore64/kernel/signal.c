@@ -110,8 +110,31 @@ static void do_signal(struct pt_regs *regs, int syscall)
 			force_sigsegv(signr, current);
 		else
 			signal_delivered(signr, &info, &ka, regs, false);
-	} else
-		BUG(); /* FIXME: did we come from a system call? */
+	}
+
+	/* Did we come from a system call? */
+	if (syscall) {
+		/* Restart the system call - no handlers present */
+		switch (regs->UC64_R00) {
+		case -ERESTARTNOHAND:
+		case -ERESTARTSYS:
+		case -ERESTARTNOINTR:
+			regs->UC64_R00 = regs->UC64_O00;
+			regs->UC64_R31 -= 4;
+			break;
+
+		case -ERESTART_RESTARTBLOCK:
+			regs->UC64_R00 = __NR_restart_syscall;
+			regs->UC64_R31 -= 4;
+			break;
+		}
+	}
+
+	/*
+	 * If there's no signal to deliver, we just put the saved sigmask
+	 * back.
+	 */
+	restore_saved_sigmask();
 }
 
 asmlinkage void do_notify_resume(unsigned int thread_flags, int syscall)
