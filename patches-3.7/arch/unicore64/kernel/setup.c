@@ -5,11 +5,22 @@
 #include <linux/of_fdt.h>
 #include <linux/console.h>
 #include <linux/sched.h>
+#include <linux/screen_info.h>
 
 #include <asm/setup.h>
 #include <asm/setup_arch.h>
 
 static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
+
+struct screen_info screen_info = {
+	.orig_x = 0,
+	.orig_y = 25,
+	.orig_video_cols = 80,
+	.orig_video_lines = 25,
+	.orig_video_isVGA = 1,
+	.orig_video_points = 16
+};
+EXPORT_SYMBOL(screen_info);
 
 static int uc64_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
@@ -57,9 +68,18 @@ void __init setup_arch(char **cmdline_p)
 	unflatten_device_tree();
 
 	/* Set default console for virtual terminal */
+/*
 #if defined(CONFIG_OCD_CONSOLE)
 	conswitchp = &ocd_con;
 #elif defined(CONFIG_DUMMY_CONSOLE)
 	conswitchp = &dummy_con;
+#endif*/
+
+#ifdef CONFIG_VT
+#if defined(CONFIG_VGA_CONSOLE)
+	conswitchp = &vga_con;
+#elif defined(CONFIG_DUMMY_CONSOLE)
+	conswitchp = &dummy_con;
+#endif
 #endif
 }

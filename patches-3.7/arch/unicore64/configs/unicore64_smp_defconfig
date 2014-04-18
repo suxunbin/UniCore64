@@ -8,14 +8,30 @@ CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
 CONFIG_SMP=y
 #	Processor Features
 CONFIG_ARCH_FPGA=y
-CONFIG_CPU_ICACHE_DISABLE=y
-CONFIG_CPU_DCACHE_DISABLE=y
+CONFIG_CPU_ICACHE_DISABLE=n
+CONFIG_CPU_DCACHE_DISABLE=n
 
 # Device Drivers
 #	Hardware I/O ports
 CONFIG_SERIO_I8042=y
 #	Console display driver support
+CONFIG_FRAMEBUFFER_CONSOLE=y
 CONFIG_VGA_CONSOLE=n
+CONFIG_FONTS=y
+CONFIG_FONT_8x8=y
+CONFIG_FONT_8x16=y
+CONFIG_INPUT=y
+
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+
+#       Graphics support
+CONFIG_FB_PUV4_DE2=y
+CONFIG_FB=y
+CONFIG_FB_SYS_FILLRECT=y
+CONFIG_FB_SYS_COPYAREA=y
+CONFIG_FB_SYS_IMAGEBLIT=y
+CONFIG_FB_SYS_FOPS=y
 
 ### Kernel hacking
 CONFIG_DEBUG_KERNEL=y
@@ -23,6 +39,6 @@ CONFIG_DEBUG_OCD=y
 CONFIG_DEBUG_MCOUNT=n
 
 ### Boot options
-CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
+CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-32"
 
 ### Kernel hacking
