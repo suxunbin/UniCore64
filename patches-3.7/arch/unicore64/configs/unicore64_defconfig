@@ -16,6 +16,11 @@ CONFIG_CPU_DCACHE_DISABLE=y
 CONFIG_SERIO_I8042=y
 #	Console display driver support
 CONFIG_VGA_CONSOLE=n
+CONFIG_FRAMEBUFFER_CONSOLE=y
+
+#       Graphics support
+CONFIG_FB_PUV4_DE2=y
+CONFIG_FB=y
 
 ### Kernel hacking
 CONFIG_DEBUG_KERNEL=y
@@ -23,6 +28,6 @@ CONFIG_DEBUG_OCD=y
 CONFIG_DEBUG_MCOUNT=n
 
 ### Boot options
-CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
+CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-16"
 
 ### Kernel hacking
