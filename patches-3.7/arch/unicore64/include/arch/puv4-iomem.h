@@ -73,4 +73,16 @@
 #define PUV4_PS2_BASE			(PUV4_APB_BASE + 0x1100000)
 #include <arch/puv4-regs-ps2.h>
 
+/* FIXME:
+ * PKUNITY Memory Map Addresses: 0x03000000 - 0x03FFFFFF (16MB)
+ */
+#define PKUNITY_DE2_MMAP_BASE	        0x03800000 \
+/* 0x03800000 - 0x04000000 8MB */
+#define PKUNITY_DE2_MMAP_SIZE		0x00800000 /* 8MB */
+#define PKUNITY_VPU_MMAP_BASE	        0x0C000000 \
+/* 0x0C000000 - 0x15FFFFFF 160MB */
+#define PKUNITY_VPU_MMAP_SIZE		0x0A000000 /* 160MB */
+#define PKUNITY_UNIGFX2_BASE		(PUV4_AHB_BASE + 0xC00000) /* FIXME */
+#include <arch/puv4-regs-unigfx2.h>
+
 #endif  /* __UNICORE64_ARCH_PUV4_IOMEM_H__ */

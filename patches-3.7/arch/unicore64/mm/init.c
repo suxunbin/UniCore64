@@ -5,6 +5,8 @@
 #include <asm/sections.h>
 #include <asm/setup_arch.h>
 
+#include <arch/puv4-iomem.h>
+
 /**
  * mem_init() - release free pages to the buddy allocator
  * Returns the number of pages actually released.

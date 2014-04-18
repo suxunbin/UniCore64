@@ -99,4 +99,13 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
 
 #include <asm-generic/pgtable.h>
 
+/*
+ * Remap a physical page `pfn' of size `size' with page protection `prot'
+ * into virtual address `from'
+ */
+#define io_remap_pfn_range(vma, from, pfn, size, prot) \
+remap_pfn_range(vma, from, pfn, size, prot)
+
+#define pgtable_cache_init() do { } while (0)
+
 #endif /* __UNICORE64_ASM_PGTABLE_H__ */
