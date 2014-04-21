@@ -3,6 +3,7 @@
 #include <linux/sched.h>
 
 #include <asm/setup_arch.h>
+#include <arch/asm-mmuops.h>
 
 /*
  * empty_zero_page is a special page that is used for
@@ -74,6 +75,8 @@ void __init paging_init(void)
 	}
 
 	uc64_create_io_direct_mapping();
+
+	__invalid_tlb();
 
 }
 
