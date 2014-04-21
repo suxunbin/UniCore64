@@ -6,6 +6,7 @@
 #include <linux/interrupt.h>
 
 #include <asm/pgtable.h>
+#include <asm/tlbflush.h>
 #include <arch/hwdef-cp0-sysctrl.h>
 
 #define __ipi_disable()	\
@@ -253,4 +254,52 @@ void smp_send_stop(void)
 {
 	/* FIXME */
 	BUG();
+}
+
+static void ipi_flush_tlb_mm(void *x)
+{
+	__invalid_tlb();
+}
+
+void flush_tlb_mm(struct mm_struct *mm)
+{
+	preempt_disable();
+
+	if (mm == current->active_mm)
+		__invalid_tlb();
+
+	if (smp_call_function(ipi_flush_tlb_mm, NULL, 1)) {
+		printk(KERN_CRIT "flush_tlb_mm: timed out\n");
+	}
+
+	preempt_enable();
+}
+
+static void ipi_flush_tlb_page(void *x)
+{
+	/* flush the whole tlb currently. */
+	__invalid_tlb();
+}
+
+void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+{
+	struct mm_struct *mm = vma->vm_mm;
+
+	preempt_disable();
+
+	if (mm == current->active_mm)
+		__invalid_tlb();
+
+	if (smp_call_function(ipi_flush_tlb_page, NULL, 1)) {
+		printk(KERN_CRIT "flush_tlb_page: timed out\n");
+	}
+
+	preempt_enable();
+}
+
+void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+		unsigned long end)
+{
+	/* flush the whole user tlb.  */
+	flush_tlb_mm(vma->vm_mm);
 }
