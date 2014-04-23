@@ -23,10 +23,10 @@ LINUX_BUILDLOG	:= $(DIR_WORKING)/linux-build.log
 PATH		:= $(CROSS_UNICORE64)/bin:$(PATH)
 
 ifndef SMP
-	LINUX_DEFCONFIG := unicore64_defconfig
+	LINUX_DEFCONFIG := unicore64_qemu_defconfig
 	QEMU_SMP	:= 1
 else
-	LINUX_DEFCONFIG := unicore64_smp_defconfig
+	LINUX_DEFCONFIG := unicore64_smp_qemu_defconfig
 	QEMU_SMP	:= 2
 endif
 
