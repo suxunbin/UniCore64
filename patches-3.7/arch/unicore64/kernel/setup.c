@@ -68,18 +68,9 @@ void __init setup_arch(char **cmdline_p)
 	unflatten_device_tree();
 
 	/* Set default console for virtual terminal */
-/*
 #if defined(CONFIG_OCD_CONSOLE)
 	conswitchp = &ocd_con;
 #elif defined(CONFIG_DUMMY_CONSOLE)
 	conswitchp = &dummy_con;
-#endif*/
-
-#ifdef CONFIG_VT
-#if defined(CONFIG_VGA_CONSOLE)
-	conswitchp = &vga_con;
-#elif defined(CONFIG_DUMMY_CONSOLE)
-	conswitchp = &dummy_con;
-#endif
 #endif
 }
