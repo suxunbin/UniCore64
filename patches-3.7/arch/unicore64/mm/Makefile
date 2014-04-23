@@ -6,3 +6,4 @@ CFLAGS_REMOVE_pgtable.o		:= -pg
 obj-y				:= fault.o ioremap.o init.o
 obj-y				+= mmu.o pgtable.o
 obj-$(CONFIG_SWIOTLB)		+= dma-swiotlb.o
+obj-y				+= dma-mapping.o
