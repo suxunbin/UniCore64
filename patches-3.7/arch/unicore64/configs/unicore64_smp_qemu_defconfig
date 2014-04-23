@@ -8,8 +8,8 @@ CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
 CONFIG_SMP=y
 #	Processor Features
 CONFIG_ARCH_FPGA=y
-CONFIG_CPU_ICACHE_DISABLE=n
-CONFIG_CPU_DCACHE_DISABLE=n
+CONFIG_CPU_ICACHE_DISABLE=y
+CONFIG_CPU_DCACHE_DISABLE=y
 
 # Device Drivers
 #	Hardware I/O ports
