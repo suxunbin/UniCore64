@@ -38,8 +38,8 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
  */
 void pte_free(struct mm_struct *mm, struct page *p)
 {
-	/* FIXME */
-	BUG();
+	pgtable_page_dtor(p);
+	__free_page(p);
 }
 
 /**
@@ -49,8 +49,9 @@ void pte_free(struct mm_struct *mm, struct page *p)
  */
 void pte_free_kernel(struct mm_struct *mm, pte_t *p)
 {
-	/* FIXME */
-	BUG();
+	if(p) {
+		free_page((unsigned long)p);
+	}
 }
 
 /**
@@ -82,8 +83,13 @@ pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
  */
 pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address)
 {
-	/* FIXME */
-	BUG();
+	pte_t *pte;
+	struct page *page;
+	page  = alloc_page(GFP_KERNEL | __GFP_ZERO);
+
+	pte = (pte_t *)page_address(page);
+
+	return pte;
 }
 
 /**
@@ -131,8 +137,7 @@ void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t page)
  */
 void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *ptep)
 {
-	/* FIXME */
-	BUG();
+	set_pmd(pmd, __pmd(__pa((unsigned long)ptep) | UC64_PMD_EXIST));
 }
 
 /**
@@ -152,6 +157,5 @@ pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
  */
 void pmd_free(struct mm_struct *mm, pmd_t *pmdp)
 {
-	/* FIXME */
-	BUG();
+	free_page((unsigned long)pmdp);
 }
