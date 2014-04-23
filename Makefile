@@ -22,6 +22,7 @@ LINUX_BUILDLOG	:= $(DIR_WORKING)/linux-build.log
 
 PATH		:= $(CROSS_UNICORE64)/bin:$(PATH)
 
+ifndef FPGA
 ifndef SMP
 	LINUX_DEFCONFIG := unicore64_qemu_defconfig
 	QEMU_SMP	:= 1
@@ -29,6 +30,14 @@ else
 	LINUX_DEFCONFIG := unicore64_smp_qemu_defconfig
 	QEMU_SMP	:= 2
 endif
+else
+ifndef SMP
+	LINUX_DEFCONFIG := unicore64_defconfig
+else
+	LINUX_DEFCONFIG := unicore64_smp_defconfig
+endif
+endif
+
 
 all:
 	@echo ""
@@ -49,6 +58,10 @@ all:
 	@echo "     or: SMP=y make linux-make"
 	@echo "     or: make qemu-new"
 	@echo "     or: make qemu-make"
+	@echo ""
+	@echo "For FPGA: make linux-new"
+	@echo "          FPGA=y make linux-make"
+	@echo "          FPGA=y SMP=y make linux-make"
 	@echo ""
 	@echo "Running qemu and get trace"
 	@echo "     make qemu-run  (file and local mode)"
