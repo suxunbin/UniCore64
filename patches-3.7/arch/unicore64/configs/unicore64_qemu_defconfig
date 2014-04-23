@@ -1,0 +1,28 @@
+### General setup
+CONFIG_LOCALVERSION="-uc64"
+#	Initial RAM filesystem and RAM disk (initramfs/initrd) support
+CONFIG_BLK_DEV_INITRD=y
+CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
+
+### Processor and System Type
+CONFIG_SMP=n
+#	Processor Features
+CONFIG_ARCH_FPGA=y
+CONFIG_CPU_ICACHE_DISABLE=y
+CONFIG_CPU_DCACHE_DISABLE=y
+
+# Device Drivers
+#	Hardware I/O ports
+CONFIG_SERIO_I8042=y
+#	Console display driver support
+CONFIG_VGA_CONSOLE=n
+
+### Kernel hacking
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_OCD=y
+CONFIG_DEBUG_MCOUNT=n
+
+### Boot options
+CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
+
+### Kernel hacking
