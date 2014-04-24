@@ -25,6 +25,13 @@ nod /dev/tty5	 	644 0 0 c 5 5
 nod /dev/tty6	 	644 0 0 c 5 6
 nod /dev/mem		666 0 0 c 1 1
 
+nod /dev/sda		666 0 0 b 8 0
+nod /dev/sda1		666 0 0 b 8 1
+nod /dev/sda2		666 0 0 b 8 2
+nod /dev/sda3		666 0 0 b 8 3
+nod /dev/sda4		666 0 0 b 8 4
+nod /dev/sda5		666 0 0 b 8 5
+
 slink /dev/fb		/dev/fb0 777 0 0
 
 file /etc/fstab		../../etc/fstab		755 0 0
