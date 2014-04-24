@@ -85,13 +85,12 @@ ENTRY(ret_from_kthread)
 ENDPROC(ret_from_kthread)
 
 ENTRY(__vec_int_kernel)
+#ifdef CONFIG_SMP
 	__context_save
 
-#ifdef CONFIG_SMP
 	@ void ipi_handler(struct pt_regs *regs)
 	dmov		r0, sp
 	call		ipi_handler
-#endif
 
 	ldd		r17, [sp+], #240	@ get bsr
 	dand		r17, r17, #7
@@ -100,6 +99,9 @@ ENTRY(__vec_int_kernel)
 
 	__context_restore
 	eret
+#else
+	call __vec_invalid
+#endif
 ENDPROC(__vec_int_kernel)
 
 ENTRY(__vec_invalid)
