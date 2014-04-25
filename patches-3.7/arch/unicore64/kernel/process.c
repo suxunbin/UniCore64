@@ -93,8 +93,25 @@ void (*pm_power_off)(void) = NULL;
  */
 unsigned long get_wchan(struct task_struct *p)
 {
-	/* FIXME */
-	BUG();
+	unsigned long fp, sp, lr;
+	int count = 0;
+	if (!p || p == current || p->state == TASK_RUNNING)
+		return 0;
+
+	fp = thread_saved_fp(p);
+	sp = thread_saved_sp(p);
+	do {
+		unsigned long high, low;
+		low = sp;
+		high = ALIGN(low, THREAD_SIZE);
+		if (fp < (low + 24) || (fp + 8) >= high)
+			return 0;
+		lr = *(unsigned long *)(fp - 8);
+		if (!in_sched_functions(lr))
+			return lr;
+		sp = *(unsigned long *)(fp - 16);
+		fp = *(unsigned long *)(fp - 24);
+	} while (count++ < 16);
 	return 0;
 }
 

@@ -39,6 +39,8 @@ struct thread_struct {
 #define INIT_THREAD		{ }
 
 #define thread_saved_pc(tsk)	((tsk)->thread.cpu_context.r30)
+#define thread_saved_sp(tsk)	((tsk)->thread.cpu_context.r29)
+#define thread_saved_fp(tsk)	((tsk)->thread.cpu_context.r27)
 
 #define release_thread(tsk)	do { } while (0)
 
