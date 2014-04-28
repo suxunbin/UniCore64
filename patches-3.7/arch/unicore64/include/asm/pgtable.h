@@ -43,7 +43,8 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
 
 #define pte_offset_map(dir, addr)	pte_offset_kernel((dir), (addr))
 #define pte_unmap(pte)			do { } while (0)
-#define pte_modify(pte, newprot)	__pte({BUG(); 0; })
+#define pte_modify(pte, newprot)	__pte((pte_val(pte) & ~UC64_PTE_RWX) \
+					| (pgprot_val(newprot) & UC64_PTE_RWX))
 
 /* ZERO_PAGE is a global shared page that is always zero,
  * used for zero-mapped memory areas etc..  */
