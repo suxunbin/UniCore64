@@ -1,6 +1,16 @@
 #ifndef __UNICORE64_ASM_DMA_MAPPING_H__
 #define __UNICORE64_ASM_DMA_MAPPING_H__
 
+#ifdef __KERNEL__
+
+#include <linux/mm_types.h>
+#include <linux/scatterlist.h>
+#include <linux/swiotlb.h>
+
+#include <asm-generic/dma-coherent.h>
+
+#include <asm/cacheflush.h>
+
 extern struct dma_map_ops swiotlb_dma_map_ops;
 
 #define get_dma_ops(dev)		(&swiotlb_dma_map_ops)
@@ -24,4 +34,5 @@ extern void dma_mark_clean(void *addr, size_t size);
 
 #include <asm-generic/dma-mapping-common.h>
 
+#endif /* __KERNEL__ */
 #endif /* __UNICORE64_ASM_DMA_MAPPING_H__ */
