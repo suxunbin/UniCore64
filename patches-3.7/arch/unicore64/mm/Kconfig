@@ -34,8 +34,7 @@ config ALIGNMENT_TRAP
 	  operation of some network protocols.
 
 config SWIOTLB
-#	def_bool y
-	bool "SW IO TLB"
+	def_bool y
 
 config IOMMU_HELPER
 	def_bool SWIOTLB
