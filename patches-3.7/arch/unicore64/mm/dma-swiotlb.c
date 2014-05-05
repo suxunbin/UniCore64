@@ -7,51 +7,6 @@
 
 #include <asm/dma.h>
 
-/**
- * dma_capable() -
- * @dev:
- * @addr:
- * @size:
- */
-bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
-{
-	/* FIXME */
-	BUG();
-}
-
-/**
- * phys_to_dma() -
- * @dev:
- * @paddr:
- */
-dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
-{
-	/* FIXME */
-	BUG();
-}
-
-/**
- * dma_to_phys() -
- * @dev:
- * @daddr:
- */
-phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
-{
-	/* FIXME */
-	BUG();
-}
-
-/**
- * dma_mark_clean() -
- * @addr:
- * @size:
- */
-void dma_mark_clean(void *addr, size_t size)
-{
-	/* FIXME */
-	BUG();
-}
-
 static void *__uc64_swiotlb_alloc_coherent(struct device *dev, size_t size,
 				        dma_addr_t *dma_handle, gfp_t flags,
 					struct dma_attrs *attrs)
