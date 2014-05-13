@@ -1,6 +1,7 @@
 #include <linux/kernel.h>
 #include <linux/memblock.h>
 #include <linux/bootmem.h>
+#include <linux/swiotlb.h>
 
 #include <asm/sections.h>
 #include <asm/setup_arch.h>
@@ -74,6 +75,9 @@ static void __init zone_sizes_init(void)
 
 static void __init memblock_init(void)
 {
+	/* Reserve the noncached region with memblock. */
+	memblock_reserve(UC64_PM_NONCACHED_START, SZ_4M);
+
 	/* Reserve the kernel text, kernel data and initrd with memblock. */
 	memblock_reserve(__pa(_text), _end - _text);
 
@@ -111,4 +115,6 @@ void __init setup_arch_memory(void)
 	max_pfn_init();
 	paging_init();
 	zone_sizes_init();
+
+	swiotlb_init(1);
 }

@@ -13,6 +13,13 @@
 #define arch_vm_get_page_prot(vm_flags) __pgprot(UC64_PTE_EXIST \
 		| UC64_PTE_TYPE_CACHE | UC64_PTE_USER | UC64_PTE_SHARE)
 
+/*
+ * Mark the prot value as uncacheable.
+ * NOTE: the same setting method for PTE and PMD.
+ */
+#define pgprot_noncached(prot)		\
+	__pgprot((pgprot_val(prot) & ~UC64_PTE_TYPE_SELECT) | UC64_PTE_TYPE_NOCACHE)
+
 #define __P000		__pgprot(0)
 #define __P001		__pgprot(UC64_PTE_READ)
 #define __P010		__pgprot(0)

@@ -74,6 +74,9 @@ void __init paging_init(void)
 				UC64_PM_PGTABLE_PUD_DM00, UC64_PMD_TYPE_CACHE);
 	}
 
+	/* Set first 4M physical memory as noncached */
+	uc64_create_direct_mapping(UC64_PM_NONCACHED_START, SZ_4M, UC64_PM_PGTABLE_PUD_DM00, 0);
+
 	uc64_create_io_direct_mapping();
 
 	__invalid_tlb();
