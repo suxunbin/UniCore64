@@ -37,6 +37,12 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
 	static int ypos_last;
 	char c = '\n';
 
+	while (ypos > ypos_last) {
+		uc64_debug_puts(&c, 1);
+		ypos_last++;
+	}
+	ypos_last = ypos;
+
 	/* For each element in *s (16bit in an unsigned short type):
 	 * High 8-bit is color, low 8-bit is char,
 	 * and only char is useful here. */
@@ -45,11 +51,6 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
 		s++;
 		n--;
 	}
-
-	if (ypos != ypos_last) {
-		uc64_debug_puts(&c, 1);
-	}
-	ypos_last = ypos;
 }
 
 static int ocd_con_scroll(struct vc_data *vc, int t, int b, int dir, int cnt)
