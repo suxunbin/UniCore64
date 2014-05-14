@@ -106,5 +106,5 @@ void __init paging_init(void)
 void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr,
 	pte_t *ptep)
 {
-	/* FIXME */
+	__invalid_tlb();
 }
