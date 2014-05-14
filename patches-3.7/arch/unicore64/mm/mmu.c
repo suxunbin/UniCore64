@@ -75,7 +75,8 @@ void __init paging_init(void)
 	}
 
 	/* Set first 4M physical memory as noncached */
-	uc64_create_direct_mapping(UC64_PM_NONCACHED_START, SZ_4M,
+	uc64_create_direct_mapping(UC64_PM_NONCACHED_START,
+			UC64_PM_NONCACHED_END - UC64_PM_NONCACHED_START,
 			UC64_PM_PGTABLE_PUD_DM00, UC64_PMD_TYPE_NOCACHE);
 
 	uc64_create_io_direct_mapping();

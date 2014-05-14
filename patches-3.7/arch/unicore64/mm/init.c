@@ -76,7 +76,8 @@ static void __init zone_sizes_init(void)
 static void __init memblock_init(void)
 {
 	/* Reserve the noncached region with memblock. */
-	memblock_reserve(UC64_PM_NONCACHED_START, SZ_4M);
+	memblock_reserve(UC64_PM_NONCACHED_START,
+			UC64_PM_NONCACHED_END - UC64_PM_NONCACHED_START);
 
 	/* Reserve the kernel text, kernel data and initrd with memblock. */
 	memblock_reserve(__pa(_text), _end - _text);
