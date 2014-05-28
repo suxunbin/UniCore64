@@ -5,7 +5,6 @@ generic-y += bitops.h
 generic-y += bug.h
 generic-y += bugs.h
 generic-y += cache.h
-generic-y += cacheflush.h
 generic-y += checksum.h
 generic-y += cmpxchg-local.h
 generic-y += cputime.h
