@@ -1,6 +1,8 @@
 #include <linux/mm.h>
 #include <linux/memblock.h>
 #include <linux/sched.h>
+#include <asm/cacheflush.h>
+#include <asm/tlbflush.h>
 
 #include <asm/setup_arch.h>
 #include <arch/asm-mmuops.h>
@@ -106,5 +108,6 @@ void __init paging_init(void)
 void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr,
 	pte_t *ptep)
 {
-	__invalid_tlb();
+	flush_tlb_mm(vma->vm_mm);
+	flush_cache_all();
 }
