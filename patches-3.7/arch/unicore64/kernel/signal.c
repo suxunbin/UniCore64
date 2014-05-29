@@ -3,6 +3,7 @@
 
 #include <asm/ucontext.h>
 #include <asm/uaccess.h>
+#include <arch/asm-mmuops.h>
 
 SYSCALL_DEFINE3(sigaltstack, const stack_t __user *, uss,
 		stack_t __user *, uoss,	struct pt_regs *, regs)
@@ -75,6 +76,8 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	/*Save jepriv code in frame->retcode*/
 	err |= __put_user(0xf000008b, &(frame->retcode));
+
+	__flush_dcache();
 
 	if (err)
 		return -EFAULT;
