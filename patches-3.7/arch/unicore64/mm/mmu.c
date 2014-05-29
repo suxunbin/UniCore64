@@ -108,6 +108,7 @@ void __init paging_init(void)
 void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr,
 	pte_t *ptep)
 {
-	flush_tlb_mm(vma->vm_mm);
+	/* It's too slow to use flush_tlb_mm(vma->vm_mm) */
+	__invalid_tlb();
 	flush_cache_all();
 }
