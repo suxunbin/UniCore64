@@ -126,6 +126,9 @@ void ipi_handler(struct pt_regs *regs)
 				irq_exit();
 				break;
 
+			case IPI_CPU_STOP:
+				__halt();
+
 			default:
 				printk(KERN_CRIT "Unknown IPI on CPU %d: %lu\n",
 					cpu, which);
@@ -252,8 +255,11 @@ void __init secondary_start_kernel(void)
 
 void smp_send_stop(void)
 {
-	/* FIXME */
-	BUG();
+	cpumask_t to_whom;
+	cpumask_copy(&to_whom, cpu_possible_mask);
+	cpumask_clear_cpu(smp_processor_id(), &to_whom);
+
+	send_ipi_message(&to_whom, IPI_CPU_STOP);
 }
 
 static void ipi_flush_tlb_mm(void *x)
