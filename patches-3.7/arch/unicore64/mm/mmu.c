@@ -110,5 +110,4 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr,
 {
 	/* It's too slow to use flush_tlb_mm(vma->vm_mm) */
 	__invalid_tlb();
-	flush_cache_all();
 }
