@@ -1,0 +1,4 @@
+Linux base: 3.7-rc3
+
+patches-3.7:
+	arch/unicore64 should be placed under linux/arch/unicore64 dir
