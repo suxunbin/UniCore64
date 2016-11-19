@@ -1,0 +1,56 @@
+From f9a31127bcc9b3a00d12a5a4f27e78629fcac0a4 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Fri, 14 Dec 2012 17:33:11 +0800
+Subject: [PATCH 490/641] unicore64: add smp memory barrier
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild    |    1 -
+ arch/unicore64/include/asm/barrier.h |   23 +++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/include/asm/barrier.h
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 7fa4c2e..d1f8f11 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ include include/asm-generic/Kbuild.asm
+ 
+ generic-y += auxvec.h
+-generic-y += barrier.h
+ generic-y += bitops.h
+ generic-y += bug.h
+ generic-y += bugs.h
+diff --git a/arch/unicore64/include/asm/barrier.h b/arch/unicore64/include/asm/barrier.h
+new file mode 100644
+index 0000000..c8651ca
+--- /dev/null
++++ b/arch/unicore64/include/asm/barrier.h
+@@ -0,0 +1,23 @@
++#ifndef __UNICORE64_ASM_BARRIER_H__
++#define __UNICORE64_ASM_BARRIER_H__
++
++#define mb()   __asm__ __volatile__ ("sync" : : : "memory")
++#define rmb()  __asm__ __volatile__ ("sync" : : : "memory")
++#define wmb()  __asm__ __volatile__ ("sync" : : : "memory")
++
++#ifdef CONFIG_SMP
++#define smp_mb()			mb()
++#define smp_rmb()			rmb()
++#define smp_wmb()			wmb()
++#else
++#define smp_mb()			barrier()
++#define smp_rmb()			barrier()
++#define smp_wmb()			barrier()
++#endif
++
++#define read_barrier_depends()		do { } while (0)
++#define smp_read_barrier_depends()	do { } while (0)
++
++#define set_mb(var, value)		do { var = value; smp_mb(); } while (0)
++
++#endif /* __UNICORE64_ASM_BARRIER_H__ */
+-- 
+1.7.9.5
+

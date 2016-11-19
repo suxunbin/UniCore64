@@ -1,0 +1,52 @@
+From a7202da4575aaece1ef95378a99b8e149d4d622b Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 19 Dec 2012 09:30:25 +0800
+Subject: [PATCH 505/641] unicore64: Modify cmpxchg
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/cmpxchg.h |   16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/cmpxchg.h b/arch/unicore64/include/asm/cmpxchg.h
+index e6a4e4a..125f3ba 100644
+--- a/arch/unicore64/include/asm/cmpxchg.h
++++ b/arch/unicore64/include/asm/cmpxchg.h
+@@ -17,6 +17,8 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ {
+ 	unsigned long res = 0;
+ 
++	smp_mb();
++
+ 	switch (size) {
+ 	case 4:
+ 		__asm__ __volatile__(
+@@ -52,23 +54,13 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ 		__cmpxchg_called_with_bad_pointer();
+ 	}
+ 
+-	return res;
+-}
+-
+-static inline unsigned long __cmpxchg_mb(volatile void *ptr, unsigned long old,
+-					unsigned long new, int size)
+-{
+-	unsigned long ret;
+-
+-	smp_mb();
+-	ret = __cmpxchg(ptr, old, new, size);
+ 	smp_mb();
+ 
+-	return ret;
++	return res;
+ }
+ 
+ #define cmpxchg(ptr, o, n)						\
+-	((__typeof__(*(ptr)))__cmpxchg_mb((ptr),			\
++	((__typeof__(*(ptr)))__cmpxchg((ptr),				\
+ 					  (unsigned long)(o),		\
+ 					  (unsigned long)(n),		\
+ 					  sizeof(*(ptr))))
+-- 
+1.7.9.5
+

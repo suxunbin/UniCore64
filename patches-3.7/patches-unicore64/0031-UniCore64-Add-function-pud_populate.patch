@@ -1,0 +1,36 @@
+From 042c3c6200882852427438f32231db6ab15b2865 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Tue, 25 Oct 2011 18:00:11 +0800
+Subject: [PATCH 031/641] UniCore64: Add function pud_populate
+
+Fixed error:
+mm/built-in.o: In function `__pmd_alloc':
+(.text+0x18f39): undefined reference to `pud_populate'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index 161b4a2..f538b76 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -91,3 +91,14 @@ void set_pte(pte_t *ptep, pte_t pte)
+ 	/* FIXME */
+ 	BUG();
+ }
++
++/**
++ * pud_populate() - Allocate and initialize the kernel pmds
++ * @mm:
++ * pmd:
++ */
++void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
++{
++	/* FIXME */
++	BUG();
++}
+-- 
+1.7.9.5
+

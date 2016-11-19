@@ -1,0 +1,28 @@
+From 627d1e532c530fe422223b241b02a07bb651e707 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Tue, 25 Oct 2011 17:41:02 +0800
+Subject: [PATCH 025/641] UniCore64: Select config
+ CONFIG_GENERIC_CALIBRATE_DELAY
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index 700b876..029a0d0 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -20,6 +20,9 @@ config ARCH_DMA_ADDR_T_64BIT
+ config RWSEM_GENERIC_SPINLOCK
+ 	def_bool y
+ 
++config GENERIC_CALIBRATE_DELAY
++	def_bool y
++
+ source "init/Kconfig"
+ 
+ menu "Processor and System Type"
+-- 
+1.7.9.5
+

@@ -1,0 +1,29 @@
+From edfc7d60ab6bfd007beed8ef00f3941f2a5e8a3b Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 01:37:47 +0800
+Subject: [PATCH 599/641] UniCore64: disable cache in
+ unicore64_smp_qemu_defconfig
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ .../unicore64/configs/unicore64_smp_qemu_defconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/configs/unicore64_smp_qemu_defconfig b/arch/unicore64/configs/unicore64_smp_qemu_defconfig
+index 1d25511..c850ca3 100644
+--- a/arch/unicore64/configs/unicore64_smp_qemu_defconfig
++++ b/arch/unicore64/configs/unicore64_smp_qemu_defconfig
+@@ -8,8 +8,8 @@ CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
+ CONFIG_SMP=y
+ #	Processor Features
+ CONFIG_ARCH_FPGA=y
+-CONFIG_CPU_ICACHE_DISABLE=n
+-CONFIG_CPU_DCACHE_DISABLE=n
++CONFIG_CPU_ICACHE_DISABLE=y
++CONFIG_CPU_DCACHE_DISABLE=y
+ 
+ # Device Drivers
+ #	Hardware I/O ports
+-- 
+1.7.9.5
+

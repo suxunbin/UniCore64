@@ -1,0 +1,31 @@
+From 2d6df7f24297907c12011510ddde7fb02959b9b7 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Mon, 17 Jun 2013 17:44:16 +0800
+Subject: [PATCH 562/641] unicore64: smp_boot done
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index f29106f..499c345 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -155,8 +155,11 @@ void arch_send_call_function_single_ipi(int cpu)
+ 
+ void __init smp_cpus_done(unsigned int max_cpus)
+ {
+-	/* FIXME */
+-	BUG();
++	unsigned long bogosum = loops_per_jiffy * num_online_cpus();
++
++	pr_info("SMP: Total of %d processors activated (%lu.%02lu BogoMIPS).\n",
++		num_online_cpus(), bogosum / (500000/HZ),
++		(bogosum / (5000/HZ)) % 100);
+ }
+ 
+ unsigned long secondary_stack_start;
+-- 
+1.7.9.5
+

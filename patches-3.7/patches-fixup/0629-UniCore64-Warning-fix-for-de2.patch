@@ -1,0 +1,60 @@
+From 29acea2462ff1adf53521eb8bd37e21ac27f9df7 Mon Sep 17 00:00:00 2001
+From: Zhan Yuefeng <zhanyuefeng@mprc.pku.edu.cn>
+Date: Thu, 15 May 2014 00:41:43 +0800
+Subject: [PATCH 629/641] UniCore64: Warning fix for de2
+
+---
+ drivers/video/fb-puv4.c |   23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
+
+diff --git a/drivers/video/fb-puv4.c b/drivers/video/fb-puv4.c
+index 0518a27..a1b064c 100644
+--- a/drivers/video/fb-puv4.c
++++ b/drivers/video/fb-puv4.c
+@@ -178,6 +178,7 @@ static int unifb_check_var(struct fb_var_screeninfo *var,
+ 
+ static int unifb_set_par(struct fb_info *info)
+ {
++	static int tmp = 1;
+ 	int hTotal, vTotal, hSyncStart, hSyncEnd, vSyncStart, vSyncEnd;
+ 	int format;
+ 	struct pkunity_de2 *de2_channel = dev_get_drvdata(info->device);
+@@ -262,7 +263,6 @@ static int unifb_set_par(struct fb_info *info)
+ 	/* update */
+ 	unifb_regs[11] = 0x1 | 0x1 << 4 | 0x1 << 5;
+ 	writel(unifb_regs[11], DE2_UPDATE_STATE_REG);
+-	static int tmp = 1;
+ 	while (tmp)
+ 		tmp = readl(DE2_UPDATE_STATE_REG);
+ 	/* change old var to current one */
+@@ -270,27 +270,6 @@ static int unifb_set_par(struct fb_info *info)
+ 	return 0;
+ }
+ 
+-#ifndef MODULE
+-static int __init unifb_setup(char *options)
+-{
+-	char *this_opt;
+-	unifb_enable = 0;
+-	if (!options)
+-		return 1;
+-	unifb_enable = 1;
+-	if (!*options)
+-		return 1;
+-	while ((this_opt = strsep(&options, ",")) != NULL) {
+-		if (!*this_opt)
+-			continue;
+-		/* Test disable for backwards compatibility */
+-		if (!strcmp(this_opt, "disable"))
+-			unifb_enable = 0;
+-	}
+-	return 1;
+-}
+-#endif  /*  MODULE  */
+-
+ /*
+  *  Set a single color register. The values supplied are already
+  *  rounded down to the hardware's capabilities (according to the
+-- 
+1.7.9.5
+

@@ -1,0 +1,30 @@
+From d7018688d31f9b1aa183a252f733fbe6bda9c5b3 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Thu, 1 Mar 2012 09:36:53 +0800
+Subject: [PATCH 314/641] UniCore64: fixed the size of dtb problem
+
+We ldd the base address of dtb, but forgot to fix the size of dtb,
+so the size was always zero. The dtb size is right now.
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/boot.S |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/boot/boot.S b/arch/unicore64/boot/boot.S
+index 7815582..af95c92 100644
+--- a/arch/unicore64/boot/boot.S
++++ b/arch/unicore64/boot/boot.S
+@@ -20,7 +20,8 @@ _start:
+ 	 */
+ 	dmovl	r0, #UC64_PM_DTB_START
+ 	ldd	r1, =dtb_data
+-	dmovl	r2, #dtb_data_end - dtb_data
++	ldd	r2, =dtb_data_end
++	dsub	r2, r2, r1
+ 	call	memcpy
+ #endif /* CONFIG_ARCH_FPGA */
+ 
+-- 
+1.7.9.5
+

@@ -1,0 +1,27 @@
+From 59ce290a36f6eb434b2dc346014a1eb74b3361e6 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 29 May 2013 19:42:05 +0800
+Subject: [PATCH 552/641] unicore64: Send reschedule ipi
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index 857f02e..7ab8aeb 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -79,8 +79,7 @@ static void send_ipi_message(const struct cpumask *to_whom,
+ 
+ void smp_send_reschedule(int cpu)
+ {
+-	/* FIXME */
+-	BUG();
++	send_ipi_message(cpumask_of(cpu), IPI_RESCHEDULE);
+ }
+ 
+ int smp_call_function(smp_call_func_t func, void *info, int wait)
+-- 
+1.7.9.5
+

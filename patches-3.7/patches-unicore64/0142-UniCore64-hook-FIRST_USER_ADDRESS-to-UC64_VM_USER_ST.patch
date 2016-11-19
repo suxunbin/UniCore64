@@ -1,0 +1,27 @@
+From 0ff65ecd9d1f7dd93df9378a1d83264f4730aeb5 Mon Sep 17 00:00:00 2001
+From: GuanXuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 10 Dec 2011 13:44:32 +0800
+Subject: [PATCH 142/641] UniCore64: hook FIRST_USER_ADDRESS to
+ UC64_VM_USER_START
+
+Signed-off-by: GuanXuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgtable.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index abbd4ef..b42a46e 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -9,7 +9,7 @@
+ #define VMALLOC_START		UC64_VM_VMALLOC_START
+ #define VMALLOC_END		UC64_VM_VMALLOC_END
+ 
+-#define FIRST_USER_ADDRESS	(0)
++#define FIRST_USER_ADDRESS	UC64_VM_USER_START
+ 
+ #define PGDIR_SHIFT		UC64_PGD_SHIFT
+ #define PGDIR_SIZE		UC64_PGD_SIZE
+-- 
+1.7.9.5
+

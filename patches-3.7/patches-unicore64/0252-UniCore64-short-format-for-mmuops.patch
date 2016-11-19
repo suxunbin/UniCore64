@@ -1,0 +1,138 @@
+From 66c62ff6f91f953e0915cb578afa476c7123e162 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 18 Jan 2012 16:04:15 +0800
+Subject: [PATCH 252/641] UniCore64: short format for mmuops
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/boot.S               |    8 ++++----
+ arch/unicore64/include/arch/asm-mmuops.h |   20 ++++++++++----------
+ arch/unicore64/kernel/head.S             |   12 ++++++------
+ 3 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/arch/unicore64/boot/boot.S b/arch/unicore64/boot/boot.S
+index fa8d87b..9c03900 100644
+--- a/arch/unicore64/boot/boot.S
++++ b/arch/unicore64/boot/boot.S
+@@ -15,9 +15,9 @@ _start:
+ 	/*
+ 	 * Initialise TLB and Caches.
+ 	 */
+-	uc64_invalidate_dcache	r0
+-	uc64_invalidate_icache	r0
+-	uc64_invalidate_tlb	r0
++	__invalid_dcache	r0
++	__invalid_icache	r0
++	__invalid_tlb		r0
+ 
+ 	/*
+ 	 * Turn on dcache and icache.
+@@ -58,7 +58,7 @@ _start:
+ 	/*
+ 	 * Flush the cache to maintain consistency.
+ 	 */
+-	uc64_flush_dcache	r0
++	__flush_dcache	r0
+ 
+ 	/*
+ 	 * Initialize ASR and coprocessor 0.
+diff --git a/arch/unicore64/include/arch/asm-mmuops.h b/arch/unicore64/include/arch/asm-mmuops.h
+index 619bb3c..e5e5e6a 100644
+--- a/arch/unicore64/include/arch/asm-mmuops.h
++++ b/arch/unicore64/include/arch/asm-mmuops.h
+@@ -10,45 +10,45 @@
+ 
+ /**
+  * DOC: ASM_MMUOPS_H_INVALIDATE_DCACHE
+- * uc64_invalidate_dcache - invalidate entire L1 dcache
++ * __invalid_dcache - invalidate entire L1 dcache
+  */
+-__ASMMACRO_WRAP(.macro	uc64_invalidate_dcache, rt;
++__ASMMACRO_WRAP(.macro	__invalid_dcache, rt;
+ 			dmovl	&rt, #0;
+ 			movc	p0.c6, &rt, #8;
+ 		.endm)
+ 
+ /**
+  * DOC: ASM_MMUOPS_H_FLUSH_DCACHE
+- * uc64_flush_dcache - flush entire L1 dcache
++ * __flush_dcache - flush entire L1 dcache
+  */
+-__ASMMACRO_WRAP(.macro	uc64_flush_dcache, rt;
++__ASMMACRO_WRAP(.macro	__flush_dcache, rt;
+ 			dmovl	&rt, #0;
+ 			movc	p0.c6, &rt, #12;
+ 		.endm)
+ 
+ /**
+  * DOC: ASM_MMUOPS_H_INVALIDATE_ICACHE
+- * uc64_invalidate_icache - invalidate entire icache
++ * __invalid_icache - invalidate entire icache
+  */
+-__ASMMACRO_WRAP(.macro	uc64_invalidate_icache, rt;
++__ASMMACRO_WRAP(.macro	__invalid_icache, rt;
+ 			dmovl	&rt, #0;
+ 			movc	p0.c7, &rt, #0;
+ 		.endm)
+ 
+ /**
+  * DOC: ASM_MMUOPS_H_INVALIDATE_TLB
+- * uc64_invalidate_tlb - invalidate I&D tlb
++ * __invalid_tlb - invalidate I&D tlb
+  */
+-__ASMMACRO_WRAP(.macro	uc64_invalidate_tlb, rt;
++__ASMMACRO_WRAP(.macro	__invalid_tlb, rt;
+ 			dmovl	&rt, #0;
+ 			movc	p0.c5, &rt, #24;
+ 		.endm)
+ 
+ /**
+  * DOC: ASM_MMUOPS_H_SET_PGD
+- * uc64_set_pgd -  set pgd address
++ * __set_pgd -  set pgd address
+  */
+-__ASMMACRO_WRAP(.macro	uc64_set_pgd, rpgd;
++__ASMMACRO_WRAP(.macro	__set_pgd, rpgd;
+ 			movc	p0.c2, &rpgd, #0;
+ 		.endm)
+ 
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 6261b17..dc900f7 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -29,18 +29,18 @@
+  */
+ 	__HEAD
+ ENTRY(stext)
+-	__head_initialize		r0
++	__head_initialize	r0
+ 
+ 	/* Set sp for function discipline */
+ 	ldd	sp, __priv_sp
+ 
+ 	call	__head_pgtable_init
+ 
+-	uc64_invalidate_tlb		r0
+-	uc64_invalidate_dcache		r0
+-	uc64_invalidate_icache		r0
++	__invalid_tlb		r0
++	__invalid_dcache	r0
++	__invalid_icache	r0
+ 
+-	uc64_enable_cache		r0
++	uc64_enable_cache	r0
+ 
+ 	/*
+ 	 * Enable the MMU.  This completely changes the structure of the visible
+@@ -116,7 +116,7 @@ ENTRY(__head_pgtable_init)
+ 	 * Step five: set pgd register in cp0
+ 	 */
+ 	dmovl	r0, #UC64_PM_PGTABLE_PGD
+-	uc64_set_pgd	r0
++	__set_pgd	r0
+ 
+ 	__pop	lr
+ 	return
+-- 
+1.7.9.5
+

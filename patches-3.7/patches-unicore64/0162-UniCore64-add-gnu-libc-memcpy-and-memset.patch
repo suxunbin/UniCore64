@@ -1,0 +1,25 @@
+From 9d338a35abf3ae40066e8c217dc4211b03d8273e Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Tue, 13 Dec 2011 10:14:49 +0800
+Subject: [PATCH 162/641] UniCore64: add gnu libc memcpy and memset
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/lib/Makefile |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/unicore64/lib/Makefile b/arch/unicore64/lib/Makefile
+index eb0e16d..7f87ff1 100644
+--- a/arch/unicore64/lib/Makefile
++++ b/arch/unicore64/lib/Makefile
+@@ -1 +1,7 @@
+ lib-y			:= delay.o
++
++GNU_LIBC_A		:= $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libc.a)
++GNU_LIBC_A_OBJS		:= memcpy.o memset.o wordcopy.o
++lib-y			+= $(GNU_LIBC_A_OBJS)
++$(addprefix $(obj)/, $(GNU_LIBC_A_OBJS)):
++	$(Q)$(AR) p $(GNU_LIBC_A) $(notdir $@) > $@
+-- 
+1.7.9.5
+

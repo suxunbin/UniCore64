@@ -1,0 +1,38 @@
+From 89340b2faedfa5b127a5753d0ddf66200a7ac53b Mon Sep 17 00:00:00 2001
+From: Zhang Huan <zhanghuan@mprc.pku.edu.cn>
+Date: Sat, 19 Apr 2014 02:43:44 +0800
+Subject: [PATCH 591/641] de2 architecture
+
+signed-off-by: Ma Lina <malina@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig |    7 +-
+ 4 files changed, 130 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/video/unifb2.c
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index f8c54d1..2136874 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -16,6 +16,11 @@ CONFIG_CPU_DCACHE_DISABLE=y
+ CONFIG_SERIO_I8042=y
+ #	Console display driver support
+ CONFIG_VGA_CONSOLE=n
++CONFIG_FRAMEBUFFER_CONSOLE=y
++
++#       Graphics support
++CONFIG_FB_PUV4_DE2=y
++CONFIG_FB=y
+ 
+ ### Kernel hacking
+ CONFIG_DEBUG_KERNEL=y
+@@ -23,6 +28,6 @@ CONFIG_DEBUG_OCD=y
+ CONFIG_DEBUG_MCOUNT=n
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
++CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-16"
+ 
+ ### Kernel hacking
+-- 
+1.7.9.5
+

@@ -1,0 +1,268 @@
+From 980033b84ed1676d357993ec6d2e2441f675c301 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Tue, 16 Apr 2013 09:21:41 +0800
+Subject: [PATCH 575/641] UniCore64: add signal support for page fault
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    8 +++
+ arch/unicore64/mm/fault.c     |  138 +++++++++++++++++++++++++++++++++--------
+ 2 files changed, 120 insertions(+), 26 deletions(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index fa06fad..e0c7937 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -170,6 +170,7 @@ ENTRY(__vec_itrap)
+ 
+ 	__irq_disable
+ 
++	b		ret_to_user
+ 	__context_restore
+ 	eret
+ ENDPROC(__vec_itrap)
+@@ -192,6 +193,7 @@ ENTRY(__vec_dtrap)
+ 
+ 	__irq_disable
+ 
++	b		ret_to_user
+ 	__context_restore
+ 	eret
+ ENDPROC(__vec_dtrap)
+@@ -201,6 +203,12 @@ ENTRY(__vec_int_puv4)
+ #ifdef CONFIG_ARCH_PUV4
+ 	call		puv4_intc_handler
+ #endif
++
++	ldd		r17, [sp+], #240	@ get bsr
++	dand		r17, r17, #7
++	cmpsub.a	r17, #1
++	beq		ret_to_user
++
+ 	__context_restore
+ 	eret
+ ENDPROC(__vec_int_puv4)
+diff --git a/arch/unicore64/mm/fault.c b/arch/unicore64/mm/fault.c
+index 74af588..7b89e33 100644
+--- a/arch/unicore64/mm/fault.c
++++ b/arch/unicore64/mm/fault.c
+@@ -5,16 +5,61 @@
+ 
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
+-static void __fixup_exception(struct pt_regs *regs)
++static void __fixup_exception(struct pt_regs *regs, unsigned long address)
+ {
+ 	const struct exception_table_entry *fixup;
+ 
+ 	fixup = search_exception_tables(GET_IP(regs));
+ 
+-	if (fixup)
++	if (fixup) {
+ 		SET_IP(regs, fixup->fixup);
+-	else
+-		BUG();
++	} else {
++		printk(KERN_ALERT
++				"Unable to handle kernel %s at virtual address %08lx\n",
++				(address < PAGE_SIZE) ? "NULL pointer dereference" :
++				"paging request", address);
++
++		/* FIXME: die first */
++		do_exit(SIGKILL);
++	}
++}
++
++void do_bad_area(unsigned long address, int si_code, struct pt_regs *regs)
++{
++	struct task_struct *tsk = current;
++	siginfo_t info;
++
++	if (user_mode(regs)) {
++		/* User mode accesses just cause a SIGSEGV */
++		info.si_signo = SIGSEGV;
++		info.si_errno = 0;
++		info.si_code = si_code;
++		info.si_addr = (void *)address;
++		force_sig_info(SIGSEGV, &info, tsk);
++		return;
++	}
++
++	__fixup_exception(regs, address);
++}
++
++void do_sigbus(unsigned long address, struct pt_regs *regs)
++{
++	struct task_struct *tsk = current;
++	siginfo_t info;
++
++	/*
++	 * Send a sigbus, regardless of whether we were in kernel
++	 * or user mode.
++	 */
++	info.si_signo = SIGBUS;
++	info.si_errno = 0;
++	info.si_code = BUS_ADRERR;
++	info.si_addr = (void *)address;
++	force_sig_info(SIGBUS, &info, tsk);
++
++	/* Kernel mode? Handle exceptions or die */
++	if (!user_mode(regs))
++		__fixup_exception(regs, address);
+ }
+ 
+ static void __do_ipagefault(unsigned long address, struct pt_regs *regs)
+@@ -23,34 +68,48 @@ static void __do_ipagefault(unsigned long address, struct pt_regs *regs)
+ 	struct mm_struct *mm;
+ 	struct vm_area_struct *vma;
+ 	unsigned long error_code;
++	siginfo_t info;
+ 	int fault;
+ 
+ 	tsk = current;
++
++	/* FIXME: We fault-in kernel-space virtual memory on-demand */
++
+ 	mm = tsk->mm;
+ 	error_code = __read_cp_op(p0.c3, 0);
++	info.si_code = SEGV_MAPERR;
+ 
+ 	if (!mm)
+ 		/* If we have no user context, we must not take the fault.. */
+-		__fixup_exception(regs);
++		__fixup_exception(regs, address);
+ 
+ 	vma = find_vma(mm, address);
+-	if (!vma)
+-		BUG();
++	if (!vma) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
+ 	if (vma->vm_start <= address)
+ 		goto good_area;
+-	if (!(vma->vm_flags & VM_GROWSDOWN))
+-		BUG();
+-	if (expand_stack(vma, address))
+-		BUG();
++	if (!(vma->vm_flags & VM_GROWSDOWN)) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
++	if (expand_stack(vma, address)) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
+ 
+ /*
+  * Ok, we have a good vm_area for this memory access, so
+  * we can handle it..
+  */
+ good_area:
++	info.si_code = SEGV_ACCERR;
+ 	if (error_code == 6) {
+-		if (!(vma->vm_flags & VM_EXEC))
+-			BUG();
++		if (!(vma->vm_flags & VM_EXEC)) {
++			do_bad_area(address, info.si_code, regs);
++			return;
++		}
+ 	}
+ 
+ 	/*
+@@ -58,8 +117,12 @@ good_area:
+ 	 * sure we exit gracefully rather than endlessly redo the fault.
+ 	 */
+ 	fault = handle_mm_fault(mm, vma, address, 0);
+-	if (unlikely(fault & VM_FAULT_ERROR))
+-		BUG();
++	if (unlikely(fault & VM_FAULT_ERROR)) {
++		if (fault & VM_FAULT_SIGBUS)
++			do_sigbus(address, regs);
++		else
++			BUG();
++	}
+ 
+ 	if (fault & VM_FAULT_MAJOR)
+ 		tsk->maj_flt++;
+@@ -75,34 +138,53 @@ static void __do_dpagefault(unsigned long address, struct pt_regs *regs)
+ 	struct mm_struct *mm;
+ 	struct vm_area_struct *vma;
+ 	unsigned long error_code;
++	siginfo_t info;
+ 	int fault;
+ 
+ 	tsk = current;
++
++	/* FIXME: We fault-in kernel-space virtual memory on-demand */
++
+ 	mm = tsk->mm;
+ 	error_code = __read_cp_op(p0.c3, 1);
++	info.si_code = SEGV_MAPERR;
+ 
+ 	if (!mm)
+ 		/* If we have no user context, we must not take the fault.. */
+-		__fixup_exception(regs);
++		__fixup_exception(regs, address);
+ 
+ 	vma = find_vma(mm, address);
+-	if (!vma)
+-		BUG();
++	if (!vma) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
+ 	if (vma->vm_start <= address)
+ 		goto good_area;
+-	if (!(vma->vm_flags & VM_GROWSDOWN))
+-		BUG();
+-	if (expand_stack(vma, address))
+-		BUG();
++	if (!(vma->vm_flags & VM_GROWSDOWN)) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
++	if (expand_stack(vma, address)) {
++		do_bad_area(address, info.si_code, regs);
++		return;
++	}
+ 
+ /*
+  * Ok, we have a good vm_area for this memory access, so
+  * we can handle it..
+  */
+ good_area:
++	info.si_code = SEGV_ACCERR;
+ 	if (error_code == 7) {
+-		if (!(vma->vm_flags & VM_WRITE))
+-			BUG();
++		if (!(vma->vm_flags & VM_WRITE)) {
++			do_bad_area(address, info.si_code, regs);
++			return;
++		}
++	} else {
++		if (!(vma->vm_flags & VM_READ)) {
++			do_bad_area(address, info.si_code, regs);
++			return;
++		}
+ 	}
+ 
+ 	/*
+@@ -111,8 +193,12 @@ good_area:
+ 	 */
+ 	fault = handle_mm_fault(mm, vma, address,
+ 				(error_code == 7) ? FAULT_FLAG_WRITE : 0);
+-	if (unlikely(fault & VM_FAULT_ERROR))
+-		BUG();
++	if (unlikely(fault & VM_FAULT_ERROR)) {
++		if (fault & VM_FAULT_SIGBUS)
++			do_sigbus(address, regs);
++		else
++			BUG();
++	}
+ 
+ 	if (fault & VM_FAULT_MAJOR)
+ 		tsk->maj_flt++;
+-- 
+1.7.9.5
+

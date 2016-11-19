@@ -1,0 +1,36 @@
+From 17e77d6f579a41c5bac8a0f61ed4df7bae9d9ade Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 21 Nov 2011 14:00:57 +0800
+Subject: [PATCH 079/641] UniCore64: replace UData with _AC macro
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index 01b3aeb..e598aea 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -6,15 +6,11 @@
+ #ifndef __UNICORE64_ARCH_BITFIELD_H__
+ #define __UNICORE64_ARCH_BITFIELD_H__
+ 
+-#ifndef __ASSEMBLY__
+-#define UData(Data)	((unsigned long) (Data))
+-#else
+-#define UData(Data)	(Data)
+-#endif
++#include <linux/const.h>
+ 
+ #define FIELD(val, vmask, vshift)		\
+-		(((val) & ((UData(1) << (vmask)) - 1)) << (vshift))
++		(((val) & ((_AC(1, UL) << (vmask)) - 1)) << (vshift))
+ #define FMASK(vmask, vshift)			\
+-		(((UData(1) << (vmask)) - 1) << (vshift))
++		(((_AC(1, UL) << (vmask)) - 1) << (vshift))
+ 
+ #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
+-- 
+1.7.9.5
+

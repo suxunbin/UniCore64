@@ -1,0 +1,36 @@
+From 199a042cf1e8dbff4c88bbc14f9a26b2e9be70d6 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Mon, 10 Oct 2011 17:14:02 +0800
+Subject: [PATCH 011/641] UniCore64:Add Micro elf_check_arch
+
+Fixed error:
+ fs/binfmt_elf.c: In function 'load_elf_interp':
+ fs/binfmt_elf.c:395:2: error: implicit declaration of function 'elf_check_arch'
+
+UniCore32 implemente this function in kernel/elf.c
+UniCore64 implemente it as tile does
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/elf.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/elf.h b/arch/unicore64/include/asm/elf.h
+index 9a21afe..30dcbb9 100644
+--- a/arch/unicore64/include/asm/elf.h
++++ b/arch/unicore64/include/asm/elf.h
+@@ -25,4 +25,11 @@ typedef struct fpu_regs elf_fpregset_t;
+ #define ELF_HWCAP              0
+ #endif
+ 
++/*
++* This is used to ensure we don't load something for the wrong architecture.
++*/
++#define elf_check_arch(x)  \
++	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
++	(x)->e_machine == EM_UNICORE64)
++
+ #endif /* __ASM_UNICORE64_ELF_H__ */
+-- 
+1.7.9.5
+

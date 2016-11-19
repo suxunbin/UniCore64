@@ -1,0 +1,48 @@
+From 2d5a8a494c450eef00e21aad6986200bdaf8318e Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Fri, 30 Nov 2012 11:29:25 +0800
+Subject: [PATCH 482/641] UniCore64: Add support for itimer interrupt
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index aab14bd..7fda299 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -209,14 +209,30 @@ ENTRY(__vec_int_puv3)
+ ENDPROC(__vec_int_puv3)
+ 
+ ENTRY(__vec_int_itimer)
++	movc		CP0_SYSU, r0, #4
++	dmov		r0, bsr
++	dand		r0, r0, #7
++	cmpsub.a	r0, #1
++	movc		r0, CP0_SYSU, #4
++	beq		user_entry
+ 	__push		sp				@ push r29(sp)
+ 	__push		lr				@ push r30(lr)
++	b		start_save
++user_entry:
++	std.wu		sp, [sp-], #8
++	std.wu		lr, [sp-], #8
++start_save:
+ 	__context_save
+ 
+ 	@ void __itimer_irqhandler(struct pt_regs *regs)
+ 	dmov		r0, sp
+ 	call		__itimer_irqhandler
+ 
++	ldd		r17, [sp+], #240	@ get bsr
++	dand		r17, r17, #7
++	cmpsub.a	r17, #1
++	beq		ret_syscall
++
+ 	__context_restore
+ 	__pop		lr				@ pop r30(lr)
+ 	__pop		sp				@ pop r29(sp)
+-- 
+1.7.9.5
+

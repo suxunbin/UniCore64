@@ -1,0 +1,45 @@
+From 9bfa93c35636aabe197eda0f6673b2da963b425f Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Thu, 8 Mar 2012 15:59:44 +0800
+Subject: [PATCH 323/641] UniCore64: initialize the min_low_pfn and
+ max_low_pfn
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/init.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/mm/init.c b/arch/unicore64/mm/init.c
+index e0a2ed4..5b486ef 100644
+--- a/arch/unicore64/mm/init.c
++++ b/arch/unicore64/mm/init.c
+@@ -52,14 +52,22 @@ static void __init memblock_init(void)
+ static void __init max_pfn_init(void)
+ {
+ 	struct memblock_region *reg;
+-	unsigned long last_pfn;
++	unsigned long start_pfn, last_pfn;
+ 
+-	/* Find the PFN for the last page in the system. */
++	/*
++	 * Find the first and last PFN for low memory, and
++	 * the PFN for the last page in the system.
++	 */
++	min_low_pfn = -1UL;
+ 	for_each_memblock(memory, reg) {
++		start_pfn = memblock_region_memory_base_pfn(reg);
+ 		last_pfn = memblock_region_memory_end_pfn(reg);
+-		if (max_pfn < last_pfn)
+-			max_pfn = last_pfn;
++		if (min_low_pfn > start_pfn)
++			min_low_pfn = start_pfn;
++		if (max_low_pfn < last_pfn)
++			max_low_pfn = last_pfn;
+ 	}
++	max_pfn = max_low_pfn;
+ }
+ 
+ void __init setup_arch_memory(void)
+-- 
+1.7.9.5
+

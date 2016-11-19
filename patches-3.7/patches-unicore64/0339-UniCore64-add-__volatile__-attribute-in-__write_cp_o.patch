@@ -1,0 +1,27 @@
+From 0f2dd81bf0bd5216ebf68ead92902b0db18f6980 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 23 Apr 2012 10:54:23 +0800
+Subject: [PATCH 339/641] UniCore64: add __volatile__ attribute in
+ __write_cp_op
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index d9c2945..cd424a1 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -19,7 +19,7 @@
+ 
+ #define __write_cp_op(reg_value, reg, op_no)				\
+ 	({								\
+-		__asm__("movc	" __stringify(reg)			\
++		__asm__ __volatile("movc	" __stringify(reg)	\
+ 			", %0, #" __stringify(op_no)			\
+ 		    : : "r" (reg_value));				\
+ 	})
+-- 
+1.7.9.5
+

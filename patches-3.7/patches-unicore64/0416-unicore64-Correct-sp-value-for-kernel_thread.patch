@@ -1,0 +1,32 @@
+From cea68cb945117da1af5453e9a6c7ea6f65c654c4 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 6 Sep 2012 18:31:56 +0800
+Subject: [PATCH 416/641] unicore64: Correct sp value for kernel_thread
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/process.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 35a74e7..6792443 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -50,8 +50,13 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 
+ 	*childregs = *regs;
+ 	childregs->UC64_R00 = 0;
+-	childregs->UC64_R29 = stack_start;
++	if (stack_start) {
++		BUG();
++	} else { /* For kernel_thread, useless pt_regs will be kept in stack */
++		childregs->UC64_R29 = (unsigned long)childregs;
++	}
+ 
++	/* cpu_context is used for __switch_to */
+ 	p->thread.cpu_context.r29 = (unsigned long)childregs;
+ 	p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
+ 
+-- 
+1.7.9.5
+

@@ -1,0 +1,27 @@
+From c470e314f3888c98a5df9da83e0a979bc573fb35 Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 10 Jan 2012 16:37:53 +0800
+Subject: [PATCH 189/641] UniCore64: Fix checkpatch warning in kernel head.S
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/head.S |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 9b5897c..fa69e960 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -87,7 +87,8 @@ ENTRY(__head_pgtable_init)
+ 	std	r0, [r1]
+ 
+ 	/*
+-	 * Step three: clear 4k level-two page table from first direct-mapped pmd
++	 * Step three: clear 4k level-two page table from first
++	 * direct-mapped pmd
+ 	 */
+ 	dmovl	r0, #UC64_PM_PGTABLE_DMAP_PMD
+ 	dmov	r1, #0
+-- 
+1.7.9.5
+

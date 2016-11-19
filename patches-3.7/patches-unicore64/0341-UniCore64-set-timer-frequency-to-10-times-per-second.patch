@@ -1,0 +1,50 @@
+From bd1f2c417b89663d7113efcf2a995cb8b77282c8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 16 May 2012 16:00:04 +0800
+Subject: [PATCH 341/641] UniCore64: set timer frequency to 10 times per
+ second for fpga
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild  |    1 +
+ arch/unicore64/include/asm/timex.h |   10 ++++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 67d2a41..84be9cd 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -47,6 +47,7 @@ generic-y += shmbuf.h
+ generic-y += shmparam.h
+ generic-y += siginfo.h
+ generic-y += signal.h
++generic-y += sizes.h
+ generic-y += socket.h
+ generic-y += sockios.h
+ generic-y += stat.h
+diff --git a/arch/unicore64/include/asm/timex.h b/arch/unicore64/include/asm/timex.h
+index 10b25cb..ee5311a 100644
+--- a/arch/unicore64/include/asm/timex.h
++++ b/arch/unicore64/include/asm/timex.h
+@@ -1,9 +1,15 @@
+ #ifndef __UNICORE64_ASM_TIMEX_H__
+ #define __UNICORE64_ASM_TIMEX_H__
+ 
++#include <asm/sizes.h>
++
+ #ifdef CONFIG_ARCH_FPGA
+-/* in FPGA, OST clock is 32K */
+-#   define CLOCK_TICK_RATE		(32*1024)
++/*
++ * In FPGA, itimer clock is 5M. It takes too much time to handle regular timer
++ * interrupts in a second. Set CLOCK_TICK_RATE at X*5M to have 10 interrupts
++ * a second instead.
++ */
++#	define CLOCK_TICK_RATE		((CONFIG_HZ / 10) * (5 * SZ_1M))
+ #endif /* CONFIG_ARCH_FPGA */
+ 
+ #include <asm-generic/timex.h>
+-- 
+1.7.9.5
+

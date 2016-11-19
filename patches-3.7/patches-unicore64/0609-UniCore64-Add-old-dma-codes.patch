@@ -1,0 +1,253 @@
+From a6accfbed04421964b40afd7610e549c2c6a3c01 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 06:23:01 +0800
+Subject: [PATCH 609/641] UniCore64: Add old dma codes
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/dma-mapping.h |   94 ++++++++++++++++++++-----
+ arch/unicore64/mm/Makefile               |    1 +
+ arch/unicore64/mm/dma-mapping.c          |  113 ++++++++++++++++++++++++++++++
+ 3 files changed, 191 insertions(+), 17 deletions(-)
+ create mode 100644 arch/unicore64/mm/dma-mapping.c
+
+diff --git a/arch/unicore64/include/asm/dma-mapping.h b/arch/unicore64/include/asm/dma-mapping.h
+index fb9cad7..b543009 100644
+--- a/arch/unicore64/include/asm/dma-mapping.h
++++ b/arch/unicore64/include/asm/dma-mapping.h
+@@ -1,27 +1,87 @@
+ #ifndef __UNICORE64_ASM_DMA_MAPPING_H__
+ #define __UNICORE64_ASM_DMA_MAPPING_H__
+ 
+-extern struct dma_map_ops swiotlb_dma_map_ops;
++#ifndef __ASSEMBLY__
+ 
+-#define get_dma_ops(dev)		(&swiotlb_dma_map_ops)
++/*
++ * Optional coherency support.  Currently used only by selected
++ * Intel XSC3-based systems.
++ */
++#ifndef arch_is_coherent
++#define arch_is_coherent()		1
++#endif
+ 
+-#define dma_supported(d, m)			\
+-		(get_dma_ops(dev)->dma_supported((d), (m)))
+-#define dma_alloc_coherent(d, s, h, f)		\
+-		(get_dma_ops(dev)->alloc((d), (s), (h), (f), NULL))
+-#define dma_free_coherent(d, s, a, h)		\
+-		(get_dma_ops(dev)->free((d), (s), (a), (h), NULL))
++/*
++ * The DMA mask corresponding to the maximum bus address allocatable
++ * using GFP_DMA.  The default here places no restriction on DMA
++ * allocations.  This must be the smallest DMA mask in the system,
++ * so a successful GFP_DMA allocation will always satisfy this.
++ */
++#ifndef ISA_DMA_THRESHOLD
++#define ISA_DMA_THRESHOLD	(0xffffffffULL)
++#endif
+ 
+-#define dma_alloc_noncoherent(d, s, h, f)	\
+-		dma_alloc_coherent((d), (s), (h), (f))
+-#define dma_free_noncoherent(d, s, a, h)	\
+-		dma_free_coherent((d), (s), (a), (h))
++#endif
+ 
+-extern bool dma_capable(struct device *dev, dma_addr_t addr, size_t size);
+-extern dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr);
+-extern phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr);
+-extern void dma_mark_clean(void *addr, size_t size);
++static inline void *dma_alloc_noncoherent(struct device *dev, size_t size,
++		dma_addr_t *handle, gfp_t gfp)
++{
++	return NULL;
++}
+ 
+-#include <asm-generic/dma-mapping-common.h>
++static inline void dma_free_noncoherent(struct device *dev, size_t size,
++		void *cpu_addr, dma_addr_t handle)
++{
++
++}
++
++static inline int dma_supported(struct device *dev, u64 mask)
++{
++	if (mask < ISA_DMA_THRESHOLD)
++		return 0;
++	return 1;
++}
++
++static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
++{
++	return (dma_addr_t)__va((unsigned long)(addr));
++}
++
++static inline dma_addr_t page_to_dma(struct device *dev, struct page *page)
++{
++	return (dma_addr_t)__pa((unsigned long)page_address(page));
++}
++
++static inline dma_addr_t dma_map_page(struct device *dev, struct page *page,
++	     unsigned long offset, size_t size, enum dma_data_direction dir)
++{
++	return page_to_dma(dev, page) + offset;
++}
++
++static inline void dma_unmap_page(struct device *dev, dma_addr_t handle,
++		size_t size, enum dma_data_direction dir)
++{
++	/* do nothing */
++}
++
++static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
++{
++	return dma_addr == ~0;
++}
++
++
++extern void dma_free_coherent(struct device *, size_t, void *, dma_addr_t);
++extern void *dma_alloc_coherent(struct device *, size_t, dma_addr_t *, gfp_t);
++/*
++ * The scatter list versions of the above methods.
++ */
++extern int dma_map_sg(struct device *, struct scatterlist *, int,
++		enum dma_data_direction);
++extern void dma_unmap_sg(struct device *, struct scatterlist *, int,
++		enum dma_data_direction);
++extern void dma_sync_sg_for_cpu(struct device *, struct scatterlist *, int,
++		enum dma_data_direction);
++extern void dma_sync_sg_for_device(struct device *, struct scatterlist *, int,
++		enum dma_data_direction);
+ 
+ #endif /* __UNICORE64_ASM_DMA_MAPPING_H__ */
+diff --git a/arch/unicore64/mm/Makefile b/arch/unicore64/mm/Makefile
+index a5f9ddf..bca3257 100644
+--- a/arch/unicore64/mm/Makefile
++++ b/arch/unicore64/mm/Makefile
+@@ -6,3 +6,4 @@ CFLAGS_REMOVE_pgtable.o		:= -pg
+ obj-y				:= fault.o ioremap.o init.o
+ obj-y				+= mmu.o pgtable.o
+ obj-$(CONFIG_SWIOTLB)		+= dma-swiotlb.o
++obj-y				+= dma-mapping.o
+diff --git a/arch/unicore64/mm/dma-mapping.c b/arch/unicore64/mm/dma-mapping.c
+new file mode 100644
+index 0000000..bc90ddb
+--- /dev/null
++++ b/arch/unicore64/mm/dma-mapping.c
+@@ -0,0 +1,113 @@
++/*
++ * linux/arch/unicore/mm/dma-mapping.c
++ *
++ * Code specific to PKUnity SoC and UniCore ISA
++ * Fragments that appear the same as the files in arm or x86
++ *
++ * Copyright (C) 2001-2008 GUAN Xue-tao
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  DMA uncached mapping support.
++ */
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++
++/*
++ * free a page as defined by the above mapping.
++ * Must not be called with IRQs disabled.
++ */
++void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr_t handle)
++{
++	WARN_ON(irqs_disabled());
++
++	if (arch_is_coherent()) { //always true
++		kfree(cpu_addr);
++		return;
++	}
++}
++EXPORT_SYMBOL(dma_free_coherent);
++
++/*
++ * Allocate DMA-coherent memory space and return both the kernel remapped
++ * virtual and bus address for that space.
++ */
++void *
++dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp)
++{
++	if (arch_is_coherent()) { //always true
++		void *virt;
++
++		virt = kmalloc(size, gfp);
++		if (!virt)
++			return NULL;
++		*handle =  virt_to_dma(dev, virt);
++
++		return virt;
++	}
++}
++EXPORT_SYMBOL(dma_alloc_coherent);
++
++/**
++ * dma_map_sg - map a set of SG buffers for streaming mode DMA
++ * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
++ * @sg: list of buffers
++ * @nents: number of buffers to map
++ * @dir: DMA transfer direction
++ *
++ * Map a set of buffers described by scatterlist in streaming mode for DMA.
++ * This is the scatter-gather version of the dma_map_single interface.
++ * Here the scatter gather list elements are each tagged with the
++ * appropriate dma address and length.  They are obtained via
++ * sg_dma_{address,length}.
++ *
++ * Device ownership issues as mentioned for dma_map_single are the same
++ * here.
++ */
++int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
++		enum dma_data_direction dir)
++{
++	struct scatterlist *s;
++	int i, j;
++
++	for_each_sg(sg, s, nents, i) {
++		s->dma_address = dma_map_page(dev, sg_page(s), s->offset,
++						s->length, dir);
++		if (dma_mapping_error(dev, s->dma_address))
++		{
++			
++			goto bad_mapping;
++		}
++	}
++	return nents;
++
++ bad_mapping:
++	for_each_sg(sg, s, i, j)
++		dma_unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir);
++	return 0;
++}
++EXPORT_SYMBOL(dma_map_sg);
++
++/**
++ * dma_unmap_sg - unmap a set of SG buffers mapped by dma_map_sg
++ * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
++ * @sg: list of buffers
++ * @nents: number of buffers to unmap (returned from dma_map_sg)
++ * @dir: DMA transfer direction (same as was passed to dma_map_sg)
++ *
++ * Unmap a set of streaming mode DMA translations.  Again, CPU access
++ * rules concerning calls here are the same as for dma_unmap_single().
++ */
++void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
++		enum dma_data_direction dir)
++{
++	struct scatterlist *s;
++	int i;
++
++	for_each_sg(sg, s, nents, i)
++		dma_unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir);
++}
++EXPORT_SYMBOL(dma_unmap_sg);
+-- 
+1.7.9.5
+

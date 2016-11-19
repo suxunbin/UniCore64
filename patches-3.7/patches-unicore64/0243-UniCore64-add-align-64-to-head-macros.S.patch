@@ -1,0 +1,26 @@
+From 4892b34b4281208d7e92bda7b5fde8a0b1f46794 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 18 Jan 2012 05:50:33 +0800
+Subject: [PATCH 243/641] UniCore64: add align 64 to head-macros.S
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/head-macros.S |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/head-macros.S b/arch/unicore64/include/arch/head-macros.S
+index 9f62845..51f513a 100644
+--- a/arch/unicore64/include/arch/head-macros.S
++++ b/arch/unicore64/include/arch/head-macros.S
+@@ -32,6 +32,8 @@
+ 	dmov	r1, #0
+ 	adr	lr, 1002f
+ 	b	memset
++
++	__epip4d_align64
+ 1001:
+ 	.dword	__bss_start
+ 	.dword	_end
+-- 
+1.7.9.5
+

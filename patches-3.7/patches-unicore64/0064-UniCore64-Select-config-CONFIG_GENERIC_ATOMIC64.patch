@@ -1,0 +1,34 @@
+From 1c5d573caee133550d74992520d17cefdcf77a07 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Wed, 2 Nov 2011 20:12:03 +0800
+Subject: [PATCH 064/641] UniCore64: Select config CONFIG_GENERIC_ATOMIC64
+
+Fixed errors:
+vmscan.c:(.text+0xdc57): undefined reference to `atomic64_read'
+swap.c:(.text+0xb19c): undefined reference to `atomic64_add'
+fork.c:(.text+0x4e9c): undefined reference to `atomic64_add_unless'
+workqueue.c:(.text+0x18773): undefined reference to `atomic64_set'
+page_alloc.c:(.text+0x7880): undefined reference to `atomic64_sub'
+block/built-in.o: In function `put_io_context': (.text+0x71f4): undefined reference to `atomic64_sub_return'
+mm/built-in.o: In function `bdi_setup_and_register': (.text+0x152d1): undefined reference to `atomic64_add_return'
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index 5e870dd..888607b 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -15,6 +15,7 @@ config UNICORE64
+ 
+ config 64BIT
+ 	def_bool y
++	select GENERIC_ATOMIC64
+ 
+ config ARCH_DMA_ADDR_T_64BIT
+ 	def_bool y
+-- 
+1.7.9.5
+

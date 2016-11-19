@@ -1,0 +1,27 @@
+From 7fd5775d125d947aa60b20ec9bbd66bac31b1cd2 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Wed, 7 Mar 2012 21:26:34 +0800
+Subject: [PATCH 320/641] UniCore64: Add the console params in CONFIG_CMDLINE
+
+Add the console params, and the we can register console when
+parsing early params.
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 71047a0..2f8f9b1 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -13,3 +13,6 @@ CONFIG_VGA_CONSOLE=n
+ ### Kernel hacking
+ CONFIG_DEBUG_KERNEL=y
+ CONFIG_DEBUG_OCD=y
++
++### Boot options
++CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel"
+-- 
+1.7.9.5
+

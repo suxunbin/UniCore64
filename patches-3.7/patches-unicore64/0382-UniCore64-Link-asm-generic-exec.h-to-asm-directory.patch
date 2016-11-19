@@ -1,0 +1,25 @@
+From 6e77c3654e08453a9864d1a41423807d53cf4f94 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 13 Jun 2012 17:10:21 +0800
+Subject: [PATCH 382/641] UniCore64: Link asm-generic/exec.h to asm directory
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 8cc3a00..973cd3b 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -17,6 +17,7 @@ generic-y += div64.h
+ generic-y += dma.h
+ generic-y += emergency-restart.h
+ generic-y += errno.h
++generic-y += exec.h
+ generic-y += fcntl.h
+ generic-y += ftrace.h
+ generic-y += futex.h
+-- 
+1.7.9.5
+

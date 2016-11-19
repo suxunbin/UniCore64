@@ -1,0 +1,36 @@
+From 05d3ab5cad03ed2e0bb45ad8a1a1b58558a7e591 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Thu, 15 Dec 2011 15:48:31 +0800
+Subject: [PATCH 176/641] UniCore64: Add asm-mmuops.h kernel-doc support
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ Documentation/DocBook/unicore64-kernel.tmpl |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/DocBook/unicore64-kernel.tmpl b/Documentation/DocBook/unicore64-kernel.tmpl
+index e77b30e..00d5eb3 100644
+--- a/Documentation/DocBook/unicore64-kernel.tmpl
++++ b/Documentation/DocBook/unicore64-kernel.tmpl
+@@ -84,6 +84,18 @@
+ !Parch/unicore64/include/arch/hwdef-pgtable.h HWDEF_PGTABLE_H_PMD
+ !Parch/unicore64/include/arch/hwdef-pgtable.h HWDEF_PGTABLE_H_PTE
+ 		</sect2>
++		<sect2 id="sect1_1_5">
++			<title>MMU operations</title>
++			<screen>
++			See file: arch/unicore64/include/arch/asm-mmuops.h
++			</screen>
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_INVALIDATE_DCACHE
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_FLUSH_DCACHE
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_INVALIDATE_ICACHE
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_INVALIDATE_TLB
++!Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_SET_PGD
++		</sect2>
+     	</sect1>
+ </chapter>
+ 
+-- 
+1.7.9.5
+

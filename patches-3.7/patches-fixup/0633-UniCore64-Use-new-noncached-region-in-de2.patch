@@ -1,0 +1,26 @@
+From 63875c6a976635ec9976dcf9bd03623b4bd9dc23 Mon Sep 17 00:00:00 2001
+From: Zhan Yuefeng <zhanyuefeng@mprc.pku.edu.cn>
+Date: Thu, 15 May 2014 03:51:56 +0800
+Subject: [PATCH 633/641] UniCore64: Use new noncached region in de2
+
+---
+ drivers/video/fb-puv4.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/video/fb-puv4.c b/drivers/video/fb-puv4.c
+index a1b064c..2f8c8aa 100644
+--- a/drivers/video/fb-puv4.c
++++ b/drivers/video/fb-puv4.c
+@@ -377,8 +377,7 @@ static int __init unifb_probe(struct platform_device *dev)
+ 	/*
+ 	 * For real video cards we use ioremap.
+ 	 */
+-	videomemory = (void *)__get_free_pages(GFP_KERNEL | __GFP_COMP,
+-				get_order(videomemorysize));
++	videomemory = (void *)UC64_VM_FRAME_START;
+ 
+ 	if (!videomemory)
+ 		goto err;
+-- 
+1.7.9.5
+

@@ -1,0 +1,38 @@
+From 0ea86f44f3429a36d9acfec58864861619ba4802 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Tue, 18 Dec 2012 16:56:31 +0800
+Subject: [PATCH 508/641] unicore64: Define UNLOCK_TOKEN
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/spinlock_types.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/spinlock_types.h b/arch/unicore64/include/asm/spinlock_types.h
+index 7f763c5..12434d2 100644
+--- a/arch/unicore64/include/asm/spinlock_types.h
++++ b/arch/unicore64/include/asm/spinlock_types.h
+@@ -7,17 +7,18 @@
+ 
+ #define LOCK_TOKEN		(1)
+ #define WRLOCK_TOKEN		__BP(31)
++#define UNLOCK_TOKEN		(0)
+ 
+ typedef struct {
+ 	volatile unsigned int lock;
+ } arch_spinlock_t;
+ 
+-#define __ARCH_SPIN_LOCK_UNLOCKED	{ 0 }
++#define __ARCH_SPIN_LOCK_UNLOCKED	{ UNLOCK_TOKEN }
+ 
+ typedef struct {
+ 	volatile unsigned int lock;
+ } arch_rwlock_t;
+ 
+-#define __ARCH_RW_LOCK_UNLOCKED		{ 0 }
++#define __ARCH_RW_LOCK_UNLOCKED	{ UNLOCK_TOKEN }
+ 
+ #endif /* __UNICORE64_ASM_SPINLOCK_TYPES_H__ */
+-- 
+1.7.9.5
+

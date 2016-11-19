@@ -1,0 +1,48 @@
+From c220d2e9c83b4a948e8e7ffcd58711f939b29704 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 7 Jun 2012 15:14:46 +0800
+Subject: [PATCH 369/641] UniCore64: add un-alignment sticky error handling
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |    3 +++
+ arch/unicore64/mm/fault.c                       |   10 +++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index c5c04ce..2dba8c6 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -165,4 +165,7 @@
+ #define CP0_CPUID_CACHE_WRITEBACK		__BF(1, 1, 26)
+ #define CP0_CPUID_CACHE_WRITETHROUGH		__BF(1, 1, 27)
+ 
++#define CP0_TRAP_STAT_SELECT			__BS(4, 0)
++#define CP0_TRAP_STAT_UNALIGN			__BF(1, 1, 4)
++
+ #endif /* __UNICORE64_ARCH_HWDEF_CP0_SYSCTRL_H__ */
+diff --git a/arch/unicore64/mm/fault.c b/arch/unicore64/mm/fault.c
+index 2e71e44..e3b3d60 100644
+--- a/arch/unicore64/mm/fault.c
++++ b/arch/unicore64/mm/fault.c
+@@ -95,8 +95,16 @@ void __do_itrap(unsigned long addr, struct pt_regs *regs)
+ 
+ void __do_dtrap(unsigned long addr, struct pt_regs *regs)
+ {
+-	struct __trap_info *info = __dtrap_info + __dtrap_stat();
++	struct __trap_info *info;
++	int dtno;
+ 
++	dtno = __dtrap_stat();
++	if (dtno & CP0_TRAP_STAT_UNALIGN) {
++		pr_err("Error: DTRAP occured with Un-Alignment Sticky!\n");
++		dtno &= CP0_TRAP_STAT_SELECT;
++	}
++
++	info = __dtrap_info + dtno;
+ 	if (info->fn) {
+ 		info->fn(addr, regs);
+ 		return;
+-- 
+1.7.9.5
+

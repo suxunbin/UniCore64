@@ -1,0 +1,27 @@
+From eec7bf5939d55487e11b82858727b3742275d220 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 4 Nov 2011 12:07:20 +0800
+Subject: [PATCH 072/641] UniCore64: enable head-y in arch/unicore64/Makefile
+ to solve undefined reference to swapper_pg_dir
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/Makefile b/arch/unicore64/Makefile
+index 5d9d364..79fa2d5 100644
+--- a/arch/unicore64/Makefile
++++ b/arch/unicore64/Makefile
+@@ -26,7 +26,7 @@ OBJCOPYFLAGS		:= -O binary -R .note -R .note.gnu.build-id -R .comment -S
+ # Never use hard float in kernel
+ KBUILD_CFLAGS		+= -msoft-float
+ 
+-#head-y			:= arch/unicore64/kernel/head.o
++head-y			:= arch/unicore64/kernel/head.o
+ #head-y			+= arch/unicore64/kernel/init_task.o
+ 
+ core-y			+= arch/unicore64/kernel/
+-- 
+1.7.9.5
+

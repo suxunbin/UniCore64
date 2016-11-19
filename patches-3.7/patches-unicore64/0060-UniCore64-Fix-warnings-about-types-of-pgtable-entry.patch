@@ -1,0 +1,55 @@
+From 54e3a4825b52fca157977f6dc823d2b29135c208 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Wed, 2 Nov 2011 16:06:47 +0800
+Subject: [PATCH 060/641] UniCore64: Fix warnings about types of pgtable entry
+
+Fixed warnings:
+mm/memory.c: In function 'pgd_clear_bad':
+mm/memory.c:402:2: warning: format '%016lx' expects type 'long unsigned int', but argument 4 has type 'u64'
+mm/memory.c: In function 'pud_clear_bad':
+mm/memory.c:408:2: warning: format '%016lx' expects type 'long unsigned int', but argument 4 has type 'u64'
+mm/memory.c: In function 'pmd_clear_bad':
+mm/memory.c:414:2: warning: format '%016lx' expects type 'long unsigned int', but argument 4 has type 'u64'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/page.h |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index 305ccac..5a98e65 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -33,10 +33,10 @@
+ 
+ #ifdef STRICT_MM_TYPECHECKS
+ /* These are used to make use of C type-checking.. */
+-typedef struct { u64 pte; } pte_t;
+-typedef struct { u64 pmd; } pmd_t;
+-typedef struct { u64 pgd; } pgd_t;
+-typedef struct { u64 pgprot; } pgprot_t;
++typedef struct { unsigned long pte; } pte_t;
++typedef struct { unsigned long pmd; } pmd_t;
++typedef struct { unsigned long pgd; } pgd_t;
++typedef struct { unsigned long pgprot; } pgprot_t;
+ 
+ #define pte_val(x)	((x).pte)
+ #define pmd_val(x)	((x).pmd)
+@@ -50,10 +50,10 @@ typedef struct { u64 pgprot; } pgprot_t;
+ 
+ #else /* STRICT_MM_TYPECHECKS */
+ /* .. while these make it easier on the compiler */
+-typedef u64 pte_t;
+-typedef u64 pmd_t;
+-typedef u64 pgd_t;
+-typedef u64 pgprot_t;
++typedef unsigned long pte_t;
++typedef unsigned long pmd_t;
++typedef unsigned long pgd_t;
++typedef unsigned long pgprot_t;
+ 
+ #define pte_val(x)	(x)
+ #define pmd_val(x)	(x)
+-- 
+1.7.9.5
+

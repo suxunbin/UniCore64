@@ -1,0 +1,83 @@
+From aeb6d627644206d2dac0111d2aa2902c10906d7c Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 10 Dec 2011 19:12:22 +0800
+Subject: [PATCH 150/641] UniCore64: adjust hwdef-cpu.h kernel-doc contents
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ Documentation/DocBook/unicore64-kernel.tmpl |    2 ++
+ arch/unicore64/include/arch/hwdef-cpu.h     |   29 ++++++++++++++++++---------
+ 2 files changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/DocBook/unicore64-kernel.tmpl b/Documentation/DocBook/unicore64-kernel.tmpl
+index 27f8d65..c53f1d0 100644
+--- a/Documentation/DocBook/unicore64-kernel.tmpl
++++ b/Documentation/DocBook/unicore64-kernel.tmpl
+@@ -51,6 +51,8 @@
+ 			See file: arch/unicore64/include/arch/hwdef-cpu.h
+ 			</screen>
+ !Parch/unicore64/include/arch/hwdef-cpu.h HWDEF_CPU_H
++!Parch/unicore64/include/arch/hwdef-cpu.h HWDEF_CPU_H_ASR
++!Parch/unicore64/include/arch/hwdef-cpu.h HWDEF_CPU_H_AFR
+ 		</sect2>
+     	</sect1>
+ </chapter>
+diff --git a/arch/unicore64/include/arch/hwdef-cpu.h b/arch/unicore64/include/arch/hwdef-cpu.h
+index 9bc2bae..2d06515 100644
+--- a/arch/unicore64/include/arch/hwdef-cpu.h
++++ b/arch/unicore64/include/arch/hwdef-cpu.h
+@@ -5,6 +5,12 @@
+  * DOC: HWDEF_CPU_H
+  * This file defines the bit pattern for the processor status registers
+  * and the processor flag registers.
++ */
++#include <arch/bitfield.h>
++
++/**
++ * DOC: HWDEF_CPU_H_ASR
++ * Following ASR_* macros are defined:
+  *
+  * \\\\lt:programlisting\\\\gt:
+  * -
+@@ -24,17 +30,8 @@
+  * ASR_INTR_DEV:	outer device interrupt
+  * ASR_INTR_PFM:	performance monitor interrupt
+  * -
+- * AFR_MASK:		AFR flag bit mask
+- * AFR_V_BIT:		overflow flag bit
+- * AFR_C_BIT:		carry flag bit
+- * AFR_Z_BIT:		zero flag bit
+- * AFR_S_BIT:		negative flag bit
+- * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-
+-#include <arch/bitfield.h>
+-
+ #define ASR_MODE_MASK		BFMASK(3, 0)
+ #define ASR_MODE_USER		BFIELD(1, 1, 0)
+ #define ASR_MODE_PRIV		BFIELD(1, 1, 1)
+@@ -51,6 +48,20 @@
+ #define ASR_INTR_DEV		BFIELD(1, 1, 9)
+ #define ASR_INTR_PFM		BFIELD(1, 1, 10)
+ 
++/**
++ * DOC: HWDEF_CPU_H_AFR
++ * Following AFR_* macros are defined:
++ *
++ * \\\\lt:programlisting\\\\gt:
++ * -
++ * AFR_MASK:		AFR flag bit mask
++ * AFR_V_BIT:		overflow flag bit
++ * AFR_C_BIT:		carry flag bit
++ * AFR_Z_BIT:		zero flag bit
++ * AFR_S_BIT:		negative flag bit
++ * -
++ * \\\\lt:/programlisting\\\\gt:
++ */
+ #define AFR_MASK		BFMASK(4, 0)
+ #define AFR_V_BIT		BFIELD(1, 1, 0)
+ #define AFR_C_BIT		BFIELD(1, 1, 1)
+-- 
+1.7.9.5
+

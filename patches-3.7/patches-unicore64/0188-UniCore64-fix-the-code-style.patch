@@ -1,0 +1,28 @@
+From 821879b67225a4eacdf43678c7f3b889126696a5 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Wed, 11 Jan 2012 10:50:53 +0800
+Subject: [PATCH 188/641] UniCore64: fix the code style
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/setup.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 94a9b07..8fd78cc 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -28,9 +28,8 @@ static void __init setup_arch_param(char **cmdline_p)
+ 	setup_arch_devtree(boot_command_line);
+ #endif
+ 
+-	if (boot_command_line[0]) {
++	if (boot_command_line[0])
+ 		strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
+-	}
+ 	strlcat(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+ 
+ 	strlcpy(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+-- 
+1.7.9.5
+

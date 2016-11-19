@@ -1,0 +1,47 @@
+From 3d7df640b01dd84d3d437743eec20381d9212336 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 8 Jun 2012 11:41:40 +0800
+Subject: [PATCH 372/641] UniCore64: enable alignment trap
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/head.S |    3 +++
+ arch/unicore64/mm/Kconfig    |    8 ++++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 814aeb2..275d318 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -43,6 +43,9 @@ ENTRY(stext)
+ 
+ 	movc		r0, CP0_CTRLREG, #0
+ 	dor		r0, r0, #CP0_CTRLREG_MMU
++#ifdef	CONFIG_ALIGNMENT_TRAP
++	dor		r0, r0, #CP0_CTRLREG_ALIGN
++#endif
+ 	movc		CP0_CTRLREG, r0, #0
+ 
+ 	ldd		sp, __priv_sp
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+index b8357a6..4f7abfb 100644
+--- a/arch/unicore64/mm/Kconfig
++++ b/arch/unicore64/mm/Kconfig
+@@ -25,6 +25,14 @@ config CPU_DCACHE_DISABLE
+ 	  It unsure, say N.
+ 	  Please see web page at <http://www.pkunity.com/>
+ 
++config ALIGNMENT_TRAP
++	def_bool y
++	help
++	  UniCore processors can not fetch/store information which is not
++	  naturally aligned on the bus, i.e., a 8 byte fetch must start at an
++	  address divisible by 8. However, this is necessary for correct
++	  operation of some network protocols.
++
+ config SWIOTLB
+ 	def_bool y
+ 
+-- 
+1.7.9.5
+

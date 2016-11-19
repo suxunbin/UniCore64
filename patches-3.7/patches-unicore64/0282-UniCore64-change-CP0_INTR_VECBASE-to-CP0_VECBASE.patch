@@ -1,0 +1,54 @@
+From 216d94a040e24d9da3a3eca35afa0f54d95526f8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 14:51:43 +0800
+Subject: [PATCH 282/641] UniCore64: change CP0_INTR_VECBASE to CP0_VECBASE
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |    2 +-
+ arch/unicore64/kernel/cpu-uc64.c                |    2 +-
+ arch/unicore64/kernel/traps.c                   |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index c077b0f..5f013f6 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -37,7 +37,7 @@
+ #define CP0_DCACHE		p0.c6
+ #define CP0_ICACHE		p0.c7
+ #define CP0_MRAR		p0.c8
+-#define CP0_INTR_VECBASE	p0.c9
++#define CP0_VECBASE		p0.c9
+ #define CP0_INTR		p0.c10
+ #define CP0_RWMARGIN		p0.c11
+ 
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index 3d6e335..593f51d 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -237,7 +237,7 @@ void __show_cp0_regs(void)
+ 			__read_cp_op(CP0_MRAR, 14),
+ 			__read_cp_op(CP0_MRAR, 15));
+ 
+-	pr_emerg(" INTR_VECBASE: %16lx", __read_cp(CP0_INTR_VECBASE));
++	pr_emerg(" VECBASE: %16lx", __read_cp(CP0_VECBASE));
+ 	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR, 0));
+ 	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR, 7));
+ 
+diff --git a/arch/unicore64/kernel/traps.c b/arch/unicore64/kernel/traps.c
+index 4435e0a..f5942d9e 100644
+--- a/arch/unicore64/kernel/traps.c
++++ b/arch/unicore64/kernel/traps.c
+@@ -10,7 +10,7 @@
+  */
+ void __init trap_init(void)
+ {
+-	__write_cp(__vectors_table, CP0_INTR_VECBASE);
++	__write_cp(__vectors_table, CP0_VECBASE);
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

@@ -1,0 +1,57 @@
+From f05178e18c2e3268db2a04e67a3780dc3c88534e Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Tue, 1 Nov 2011 13:48:22 +0800
+Subject: [PATCH 056/641] UniCore64: Add function __const_udelay
+
+Fixed error:
+elfcore.c:(.text+0x91ac): undefined reference to `__const_udelay'
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/Makefile     |    2 +-
+ arch/unicore64/lib/Makefile |    1 +
+ arch/unicore64/lib/delay.c  |   11 +++++++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/lib/Makefile
+ create mode 100644 arch/unicore64/lib/delay.c
+
+diff --git a/arch/unicore64/Makefile b/arch/unicore64/Makefile
+index 4f9bbce..5d9d364 100644
+--- a/arch/unicore64/Makefile
++++ b/arch/unicore64/Makefile
+@@ -32,7 +32,7 @@ KBUILD_CFLAGS		+= -msoft-float
+ core-y			+= arch/unicore64/kernel/
+ core-y			+= arch/unicore64/mm/
+ 
+-#libs-y			+= arch/unicore64/lib/
++libs-y			+= arch/unicore64/lib/
+ 
+ all:	vmlinux
+ 
+diff --git a/arch/unicore64/lib/Makefile b/arch/unicore64/lib/Makefile
+new file mode 100644
+index 0000000..eb0e16d
+--- /dev/null
++++ b/arch/unicore64/lib/Makefile
+@@ -0,0 +1 @@
++lib-y			:= delay.o
+diff --git a/arch/unicore64/lib/delay.c b/arch/unicore64/lib/delay.c
+new file mode 100644
+index 0000000..7cd9bdc
+--- /dev/null
++++ b/arch/unicore64/lib/delay.c
+@@ -0,0 +1,11 @@
++#include <linux/delay.h>
++
++/**
++ * __const_udelay() -
++ * @xloops:
++ */
++inline void __const_udelay(unsigned long xloops)
++{
++	/* FIXME */
++	BUG();
++}
+-- 
+1.7.9.5
+

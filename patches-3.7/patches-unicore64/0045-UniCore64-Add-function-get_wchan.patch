@@ -1,0 +1,35 @@
+From f8277f81fea6e5efaca929d222516610b4833cda Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Mon, 31 Oct 2011 11:29:02 +0800
+Subject: [PATCH 045/641] UniCore64: Add function get_wchan
+
+Fixed error:
+file-mmu.c:(.text+0x60a7c): undefined reference to `get_wchan'
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/process.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 3b436ef..59eba48 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -70,3 +70,14 @@ void machine_power_off(void)
+  * Function pointers to optional machine specific functions
+  */
+ void (*pm_power_off)(void) = NULL;
++
++/**
++ * get_wchan() -
++ * @p:
++ */
++unsigned long get_wchan(struct task_struct *p)
++{
++	/* FIXME */
++	BUG();
++	return 0;
++}
+-- 
+1.7.9.5
+

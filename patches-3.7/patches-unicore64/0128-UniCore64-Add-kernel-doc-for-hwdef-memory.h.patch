@@ -1,0 +1,71 @@
+From 5231091d33873b726d6ba03a6fec0abf6a2974a8 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Fri, 9 Dec 2011 16:38:41 +0800
+Subject: [PATCH 128/641] UniCore64: Add kernel-doc for hwdef-memory.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |   45 +++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 93be733..da70b01 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -9,29 +9,32 @@
+  * Use the 38:37 bits(the higher bits are extended the same as the
+  * 38th bit) to divide it in 4 parts as below:
+  *
+- *  [38:37]bits			         Address Range		Size
+- *		+---------------+
+- *		|		|      0xffffffff_ffffffff
+- *	11b	| Kernel space	|     |				128GB
+- *		|		|      0xffffffe0_00000000
+- *		+---------------+
+- *		|		|      0xffffffdf_ffffffff
+- *	10b	|   Reserved	|     |				128GB
+- *		|		|      0xffffffc0_00000000
+- *		+---------------+
+- *		~     Hole	~	For sign-expanion
+- *		+---------------+
+- *		|		|      0x0000003f_ffffffff
+- *	01b	|   Reserved	|     |				128GB
+- *		|		|      0x00000020_00000000
+- *		+---------------+
+- *		|		|      0x0000001f_ffffffff
+- *	00b	|  User space	|     |				128GB
+- *		|		|      0x00000000_00000000
+- *		+---------------+
+- *
++ * \\\\lt:programlisting\\\\gt:
++ * -
++ * -[38:37]bits                         Address Range           Size
++ * -            +---------------+
++ * -            |               |      0xffffffff_ffffffff
++ * -    11b     | Kernel space  |     |                         128GB
++ * -            |               |      0xffffffe0_00000000
++ * -            +---------------+
++ * -            |               |      0xffffffdf_ffffffff
++ * -    10b     |   Reserved    |     |                         128GB
++ * -            |               |      0xffffffc0_00000000
++ * -            +---------------+
++ * -            ~     Hole      ~      For sign-expanion
++ * -            +---------------+
++ * -            |               |      0x0000003f_ffffffff
++ * -    01b     |   Reserved    |     |                         128GB
++ * -            |               |      0x00000020_00000000
++ * -            +---------------+
++ * -            |               |      0x0000001f_ffffffff
++ * -    00b     |  User space   |     |                         128GB
++ * -            |               |      0x00000000_00000000
++ * -            +---------------+
++ * -
+  * In the Kernel space, the first 64GB(physical space is 64G) space
+  * is Direct Mapping space.
++ * \\\\lt:/programlisting\\\\gt:
+  */
+ 
+ /* virtual address of USER space */
+-- 
+1.7.9.5
+

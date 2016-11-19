@@ -1,0 +1,59 @@
+From 81d0910bec86822e505c86901f3356da332be236 Mon Sep 17 00:00:00 2001
+From: Li Binbin <libinbin@mprc.pku.edu.cn>
+Date: Sat, 26 Apr 2014 00:42:28 +0800
+Subject: [PATCH 614/641] unicore64: Add get_wchan implementation
+
+Signed-off-by: Li Binbin <libinbin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 ++
+ arch/unicore64/kernel/process.c        |   21 +++++++++++++++++++--
+ 2 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index f3b889f..457bf3f 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -39,6 +39,8 @@ struct thread_struct {
+ #define INIT_THREAD		{ }
+ 
+ #define thread_saved_pc(tsk)	((tsk)->thread.cpu_context.r30)
++#define thread_saved_sp(tsk)	((tsk)->thread.cpu_context.r29)
++#define thread_saved_fp(tsk)	((tsk)->thread.cpu_context.r27)
+ 
+ #define release_thread(tsk)	do { } while (0)
+ 
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 69986d0..77374c2 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -93,8 +93,25 @@ void (*pm_power_off)(void) = NULL;
+  */
+ unsigned long get_wchan(struct task_struct *p)
+ {
+-	/* FIXME */
+-	BUG();
++	unsigned long fp, sp, lr;
++	int count = 0;
++	if (!p || p == current || p->state == TASK_RUNNING)
++		return 0;
++
++	fp = thread_saved_fp(p);
++	sp = thread_saved_sp(p);
++	do {
++		unsigned long high, low;
++		low = sp;
++		high = ALIGN(low, THREAD_SIZE);
++		if (fp < (low + 24) || (fp + 8) >= high)
++			return 0;
++		lr = *(unsigned long *)(fp - 8);
++		if (!in_sched_functions(lr))
++			return lr;
++		sp = *(unsigned long *)(fp - 16);
++		fp = *(unsigned long *)(fp - 24);
++	} while (count++ < 16);
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
+

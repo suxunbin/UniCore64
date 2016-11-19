@@ -1,0 +1,32 @@
+From ac36f5c2ad07ac903a8a46d70ed297f5cca70757 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 12 Jun 2012 08:55:58 +0800
+Subject: [PATCH 375/641] UniCore64: add __va2pa macro
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-mmuops.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-mmuops.h b/arch/unicore64/include/arch/asm-mmuops.h
+index e5e5e6a..9c67c6b 100644
+--- a/arch/unicore64/include/arch/asm-mmuops.h
++++ b/arch/unicore64/include/arch/asm-mmuops.h
+@@ -52,4 +52,14 @@ __ASMMACRO_WRAP(.macro	__set_pgd, rpgd;
+ 			movc	p0.c2, &rpgd, #0;
+ 		.endm)
+ 
++/*
++ * __va2pa -  get physical address from virtual address
++ * FIXME: There are two exceptions:
++ *   if an interrupt occurs just between ldb and movc;
++ *   if dtrap occurs at rva address.
++ */
++__ASMMACRO_WRAP(.macro	__va2pa, rva, rpa;
++			ldb	&rpa, [&rva];
++			movc	&rpa, p0.c12, #8;
++		.endm)
+ #endif /* __UNICORE64_ARCH_ASM_MMUOPS_H__ */
+-- 
+1.7.9.5
+

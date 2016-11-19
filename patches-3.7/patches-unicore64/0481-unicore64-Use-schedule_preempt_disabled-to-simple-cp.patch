@@ -1,0 +1,28 @@
+From 37267450e87420261bcfdca835edf2c3d09fa606 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 12 Dec 2012 09:34:49 +0800
+Subject: [PATCH 481/641] unicore64: Use schedule_preempt_disabled to simple
+ cpu_idle
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/process.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 68338b4..b24c00f 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -115,8 +115,6 @@ void cpu_idle(void)
+ 	/* endless idle loop with no priority at all */
+ 	while (1) {
+ 		/* FIXME: here we do some critical things */
+-		preempt_enable_no_resched();
+-		schedule();
+-		preempt_disable();
++		schedule_preempt_disabled();
+ 	}
+ }
+-- 
+1.7.9.5
+

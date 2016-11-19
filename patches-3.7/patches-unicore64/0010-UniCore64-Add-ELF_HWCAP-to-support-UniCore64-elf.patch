@@ -1,0 +1,34 @@
+From 89f77ca474fb8d460dc61598f80e7d907b1f2dd3 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Mon, 10 Oct 2011 17:14:01 +0800
+Subject: [PATCH 010/641] UniCore64:Add ELF_HWCAP to support UniCore64 elf
+
+Fixed error:
+    fs/binfmt_elf.c: In function 'create_elf_tables':
+    fs/binfmt_elf.c:221:2: error: 'ELF_HWCAP' undeclared (first use in this function)
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/elf.h |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/elf.h b/arch/unicore64/include/asm/elf.h
+index 3847867..9a21afe 100644
+--- a/arch/unicore64/include/asm/elf.h
++++ b/arch/unicore64/include/asm/elf.h
+@@ -17,4 +17,12 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
+ 
+ typedef struct fpu_regs elf_fpregset_t;
+ 
++#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
++/*
++* This yields a mask that user programs can use to figure out what
++* instruction set this cpu supports.
++*/
++#define ELF_HWCAP              0
++#endif
++
+ #endif /* __ASM_UNICORE64_ELF_H__ */
+-- 
+1.7.9.5
+

@@ -1,0 +1,84 @@
+From c76a647d51e21ede415914031811894415f409e3 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 14 Mar 2012 10:54:50 +0800
+Subject: [PATCH 326/641] UniCore64: introduce CP0_SWR for p0.c12
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |    2 ++
+ arch/unicore64/kernel/entry.S                   |   16 ++++++++--------
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 78747a0..4f382ba 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -25,6 +25,7 @@
+  * CP0 CR9:	reg. for interruption vector base
+  * CP0 CR10:	reg. for timer interrupt and interrupt information
+  * CP0 CR11:	control reg. of Read/Write Margin
++ * CP0 CR12:	reg. of software usage
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+@@ -40,6 +41,7 @@
+ #define CP0_VECBASE		p0.c9
+ #define CP0_INTR		p0.c10
+ #define CP0_RWMARGIN		p0.c11
++#define CP0_SWR			p0.c12
+ 
+ #define CP0_INTR_ITM			__BF(1, 1, 7)
+ #define CP0_INTR_LSU			__BF(1, 1, 8)
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index dbf074f..f1a92cf 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -6,8 +6,8 @@
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
+ 	.macro	__priv_context_save
+-	movc	p0.c12, r0, #0			/* save r0 for temp use */
+-	movc	p0.c12, sp, #1			/* save sp for context save */
++	movc	CP0_SWR, r0, #0			/* save r0 for temp use */
++	movc	CP0_SWR, sp, #1			/* save sp for context save */
+ 
+ 	dmov	r0, #-1
+ 	__push	r0				/* return value */
+@@ -18,9 +18,9 @@
+ 	movc	r0, CP0_EPC, #1
+ 	__push	r0				/* pc */
+ 	__push	lr				/* lr */
+-	movc	r0, p0.c12, #1
++	movc	r0, CP0_SWR, #1
+ 	__push	r0				/* sp */
+-	movc	r0, p0.c12, #0			/* restore r0 */
++	movc	r0, CP0_SWR, #0			/* restore r0 */
+ 	.irp	n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
+ 		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+ 	__push	r\n				/* save r28-r0 regs */
+@@ -33,9 +33,9 @@
+ 	__pop	r\n				/* restore r0-r28 regs */
+ 	.endr
+ 	__pop	lr				/* sp */
+-	movc	p0.c12, lr, #1
++	movc	CP0_SWR, lr, #1
+ 	__pop	lr				/* lr */
+-	movc	p0.c12, lr, #0			/* save lr for temp use */
++	movc	CP0_SWR, lr, #0			/* save lr for temp use */
+ 	__pop	lr				/* pc */
+ 	movc	CP0_EPC, lr, #1
+ 	__pop	lr				/* bsr */
+@@ -43,8 +43,8 @@
+ 	__pop	lr				/* bfr */
+ 	mov	bfr, lr
+ 
+-	movc	lr, p0.c12, #0			/* restore lr */
+-	movc	sp, p0.c12, #1			/* restore sp */
++	movc	lr, CP0_SWR, #0			/* restore lr */
++	movc	sp, CP0_SWR, #1			/* restore sp */
+ 	eret
+ 	.endm
+ 
+-- 
+1.7.9.5
+

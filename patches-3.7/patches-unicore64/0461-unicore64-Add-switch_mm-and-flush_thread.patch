@@ -1,0 +1,64 @@
+From f924d6654905f38170c3687938279e7b4d25a0a6 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 2 Nov 2012 14:19:06 +0800
+Subject: [PATCH 461/641] unicore64: Add switch_mm and flush_thread
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/mmu_context.h |   11 +++++++++--
+ arch/unicore64/kernel/process.c          |    9 +++++++++
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/mmu_context.h b/arch/unicore64/include/asm/mmu_context.h
+index ff933fe..7a35c16 100644
+--- a/arch/unicore64/include/asm/mmu_context.h
++++ b/arch/unicore64/include/asm/mmu_context.h
+@@ -2,6 +2,7 @@
+ #define __UNICORE64_ASM_MMU_CONTEXT_H__
+ 
+ #include <asm-generic/mm_hooks.h>
++#include <arch/asm-mmuops.h>
+ 
+ #define init_new_context(tsk, mm)	(0)
+ 
+@@ -11,9 +12,15 @@
+ #define activate_mm(prev, next)		switch_mm((prev), (next), NULL)
+ 
+ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+-	  struct task_struct *tsk)
++		struct task_struct *tsk)
+ {
+-	BUG();
++	if (prev != next) {
++		__asm__ __volatile__(
++				"__set_pgd	%0\n"
++				"__invalid_tlb\n"
++				: : "r" (__pa(next->pgd))
++				: "memory", "cc");
++	}
+ }
+ 
+ #endif /* __UNICORE64_ASM_MMU_CONTEXT_H__ */
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index c30ffdd..d6b0903 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -83,6 +83,15 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 	return 0;
+ }
+ 
++/*
++ * When a process does an "exec", machine state like FPU and debug
++ * registers need to be reset.  This is a hook function for that.
++ * Currently we don't have any such state to reset, so this is empty.
++ */
++void flush_thread(void)
++{
++}
++
+ /**
+  * exit_thread() - Free current thread data structures etc..
+  */
+-- 
+1.7.9.5
+

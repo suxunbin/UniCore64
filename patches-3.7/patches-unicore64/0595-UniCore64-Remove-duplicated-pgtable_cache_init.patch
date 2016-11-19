@@ -1,0 +1,24 @@
+From 094eba2d5e23c338e3c558f2718ff8a7edba1ce5 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 01:29:28 +0800
+Subject: [PATCH 595/641] UniCore64: Remove duplicated pgtable_cache_init
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgtable.h |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index 6ed9ba8..e4bc5f2 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -106,6 +106,4 @@ extern void set_pte(pte_t *ptep, pte_t pteval);
+ #define io_remap_pfn_range(vma, from, pfn, size, prot) \
+ remap_pfn_range(vma, from, pfn, size, prot)
+ 
+-#define pgtable_cache_init() do { } while (0)
+-
+ #endif /* __UNICORE64_ASM_PGTABLE_H__ */
+-- 
+1.7.9.5
+

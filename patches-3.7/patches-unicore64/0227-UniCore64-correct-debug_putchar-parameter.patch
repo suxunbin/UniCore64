@@ -1,0 +1,26 @@
+From a5528a24e83469c59153fbd58770db23ba2ab380 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 17 Jan 2012 10:36:27 +0800
+Subject: [PATCH 227/641] UniCore64: correct debug_putchar parameter
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index 9243234..84129e0 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -11,7 +11,7 @@
+ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
+ 			mov	&rt1, r0;
+ 			mov	&rt2, r1;
+-			mov	r0, #0;
++			mov	r0, #1;
+ 			mov	r1, &rchar;
+ 			bkpt;
+ 			mov	r0, &rt1;
+-- 
+1.7.9.5
+

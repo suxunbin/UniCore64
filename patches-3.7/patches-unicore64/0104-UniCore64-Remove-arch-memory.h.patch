@@ -1,0 +1,31 @@
+From 6e796fd1d9e12cf1d3193956ae46da14411ec5b6 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Wed, 30 Nov 2011 11:46:56 +0800
+Subject: [PATCH 104/641] UniCore64: Remove arch memory.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/memory.h |   11 -----------
+ 1 file changed, 11 deletions(-)
+ delete mode 100644 arch/unicore64/include/arch/memory.h
+
+diff --git a/arch/unicore64/include/arch/memory.h b/arch/unicore64/include/arch/memory.h
+deleted file mode 100644
+index 9dcf9c2..0000000
+--- a/arch/unicore64/include/arch/memory.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-#ifndef __ARCH_MEMORY_H__
+-#define __ARCH_MEMORY_H__
+-
+-#ifdef __ASSEMBLY__
+-
+-/* The byte offset of the kernel image in RAM from the start of RAM. */
+-#define KERNEL_IMAGE_START	0x0000000000408000
+-
+-#endif /* __ASSEMBLY__ */
+-
+-#endif /* __ARCH_MEMORY_H__ */
+-- 
+1.7.9.5
+

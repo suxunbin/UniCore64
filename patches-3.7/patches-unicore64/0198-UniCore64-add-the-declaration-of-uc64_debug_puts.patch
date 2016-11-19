@@ -1,0 +1,26 @@
+From 5631a99231672848521010946e4a7985f76555fd Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 17:16:42 +0800
+Subject: [PATCH 198/641] UniCore64: add the declaration of uc64_debug_puts
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index dfc1f86..0b165b7 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -12,4 +12,8 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rt;
+ 		.endm)
+ #endif /* CONFIG_DEBUG_OCD */
+ 
++#ifndef __ASSEMBLY__
++extern void uc64_debug_puts(const char *s);
++#endif /* __ASSEMBLY__ */
++
+ #endif /* __UNICORE64_ARCH_ASM_DEBUG_H__ */
+-- 
+1.7.9.5
+

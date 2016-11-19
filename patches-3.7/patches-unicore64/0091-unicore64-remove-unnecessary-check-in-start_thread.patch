@@ -1,0 +1,26 @@
+From c141fd681ba49ffba11d515da5acf4c459d2e83a Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 28 Nov 2011 17:01:07 +0800
+Subject: [PATCH 091/641] unicore64: remove unnecessary check in start_thread
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index ff8a330..b0827a2 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -48,7 +48,7 @@ extern unsigned long get_wchan(struct task_struct *p);
+ 	unsigned long *stack = (unsigned long *)sp;			\
+ 	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
+ 	regs->UC64_ASR = ASR_MODE_USER;					\
+-	regs->UC64_R31 = pc & ~1;	/* pc */                        \
++	regs->UC64_R31 = pc;		/* pc */                        \
+ 	regs->UC64_R29 = sp;		/* sp */                        \
+ 	regs->UC64_R02 = stack[2];	/* r2 (envp) */                 \
+ 	regs->UC64_R01 = stack[1];	/* r1 (argv) */                 \
+-- 
+1.7.9.5
+

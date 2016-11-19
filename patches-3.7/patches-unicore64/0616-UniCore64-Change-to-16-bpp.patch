@@ -1,0 +1,38 @@
+From 078cc46754e8ff846e9ef438f251953674621cce Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 30 Apr 2014 17:09:17 +0800
+Subject: [PATCH 616/641] UniCore64: Change to 16 bpp
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig     |    2 +-
+ arch/unicore64/configs/unicore64_smp_defconfig |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 25efed2..bb64397 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -61,6 +61,6 @@ CONFIG_DEBUG_OCD=y
+ CONFIG_DEBUG_MCOUNT=n
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-32"
++CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-16"
+ 
+ ### Kernel hacking
+diff --git a/arch/unicore64/configs/unicore64_smp_defconfig b/arch/unicore64/configs/unicore64_smp_defconfig
+index cb3c8aa..aa5eea2 100644
+--- a/arch/unicore64/configs/unicore64_smp_defconfig
++++ b/arch/unicore64/configs/unicore64_smp_defconfig
+@@ -61,6 +61,6 @@ CONFIG_DEBUG_OCD=y
+ CONFIG_DEBUG_MCOUNT=n
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-32"
++CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-16"
+ 
+ ### Kernel hacking
+-- 
+1.7.9.5
+

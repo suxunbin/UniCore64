@@ -1,0 +1,26 @@
+From 239e4bc2fc5ac34ee25f0754c767e7df098b74eb Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Mon, 27 May 2013 16:33:19 +0800
+Subject: [PATCH 540/641] unicore64: Do nothing in prepare_boot_cpu
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index 747f36a..aa2316c 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -19,8 +19,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
+ 
+ void __devinit smp_prepare_boot_cpu(void)
+ {
+-	/* FIXME */
+-	BUG();
+ }
+ 
+ void smp_send_reschedule(int cpu)
+-- 
+1.7.9.5
+

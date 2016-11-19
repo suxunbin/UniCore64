@@ -1,0 +1,45 @@
+From c1804c9d16f5314fdcfb5c2602d15b6800a1c47f Mon Sep 17 00:00:00 2001
+From: GuanXuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 10 Dec 2011 13:55:25 +0800
+Subject: [PATCH 143/641] UniCore64: introduce UC64_PM2VM and UC64_PAGE_SIZE
+ to hwdef-memory.h
+
+Signed-off-by: GuanXuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index f880578..ff6dd83 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -2,6 +2,7 @@
+ #define __UNICORE64_ARCH_HWDEF_MEMORY_H__
+ 
+ #include <arch/bitfield.h>
++#include <arch/hwdef-pgtable.h>
+ 
+ /**
+  * DOC: HWDEF_MEMORY_H
+@@ -59,13 +60,14 @@
+ #define UC64_PM_START			HEX64(00000000, 00000000)
+ #define UC64_PM_END			HEX64(0000000f, ffffffff)
+ 
++#define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
++
+ /* The byte offset of the kernel image in RAM from the start of RAM. */
+ #define UC64_PM_KIMAGE_START		HEX64(00000000, 00408000)
+-#define UC64_VM_KIMAGE_START		(UC64_VM_KERNEL_START + \
+-						UC64_PM_KIMAGE_START)
++#define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
+ 
+ /* physical and virtual address of the initial page table */
+-#define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - 0x1000)
+-#define UC64_VM_PGTABLE_PGD		(UC64_VM_KIMAGE_START - 0x1000)
++#define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - UC64_PAGE_SIZE)
++#define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+-- 
+1.7.9.5
+

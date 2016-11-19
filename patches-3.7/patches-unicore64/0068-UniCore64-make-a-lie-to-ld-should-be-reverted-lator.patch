@@ -1,0 +1,28 @@
+From 7df051f043c782cb3fa2899c36752443d7b5b45d Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 3 Nov 2011 09:25:18 +0800
+Subject: [PATCH 068/641] UniCore64: make a lie to ld, should be reverted
+ lator
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/vmlinux.lds.S |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/vmlinux.lds.S b/arch/unicore64/kernel/vmlinux.lds.S
+index 4b21400..f6d73c0 100644
+--- a/arch/unicore64/kernel/vmlinux.lds.S
++++ b/arch/unicore64/kernel/vmlinux.lds.S
+@@ -4,7 +4,8 @@
+ #include <asm/page.h>
+ #include <asm/cache.h>
+ 
+-OUTPUT_ARCH(unicore64)
++OUTPUT_ARCH(i386:x86-64)
++/* OUTPUT_ARCH(unicore64) */
+ ENTRY(stext)
+ 
+ jiffies = jiffies_64;
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From 0a104fc6936a4d2436a9ea1a822189cbdb25db71 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 19 Dec 2012 10:49:00 +0800
+Subject: [PATCH 498/641] unicore64: Add __volatile__ to __halt
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-common.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index b5f77057..65f7bc6 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -37,7 +37,7 @@ __ASMMACRO_WRAP(.macro	__irq_enable;
+ 			dmov	asr, r16;
+ 		.endm)
+ 
+-#define __halt()			__asm__("__halt")
++#define __halt()			__asm__ __volatile__("__halt")
+ 
+ /*
+  * We use "____" prefix(4 '_') only for debug:
+-- 
+1.7.9.5
+

@@ -1,0 +1,28 @@
+From 93927ec3569a203fbbf1ef552c88afdf49511c45 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 20 Jun 2012 10:31:58 +0800
+Subject: [PATCH 393/641] UniCore64: Adjust configs for initramfs
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 6112ab1..d980cb6 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -1,8 +1,8 @@
+ ### General setup
+ CONFIG_LOCALVERSION="-uc64"
+-
++#	Initial RAM filesystem and RAM disk (initramfs/initrd) support
+ CONFIG_BLK_DEV_INITRD=y
+-CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config.helloworld"
++CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config_64"
+ 
+ ### Processor and System Type
+ #	Processor Features
+-- 
+1.7.9.5
+

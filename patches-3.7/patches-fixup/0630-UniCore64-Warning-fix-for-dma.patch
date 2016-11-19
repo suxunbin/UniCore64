@@ -1,0 +1,47 @@
+From e409a953d7fa433b921b8a796afed0ce19efe22d Mon Sep 17 00:00:00 2001
+From: Zhan Yuefeng <zhanyuefeng@mprc.pku.edu.cn>
+Date: Thu, 15 May 2014 00:19:45 +0800
+Subject: [PATCH 630/641] UniCore64: Warning fix for dma
+
+---
+ include/linux/swiotlb.h |    1 +
+ lib/swiotlb.c           |    4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 8d08b3e..98af42c 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -2,6 +2,7 @@
+ #define __LINUX_SWIOTLB_H
+ 
+ #include <linux/types.h>
++#include <linux/dma-direction.h>
+ 
+ struct device;
+ struct dma_attrs;
+diff --git a/lib/swiotlb.c b/lib/swiotlb.c
+index 7d2a45f..6f675e4 100644
+--- a/lib/swiotlb.c
++++ b/lib/swiotlb.c
+@@ -160,7 +160,7 @@ void __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+ 	 * Get the overflow emergency buffer
+ 	 */
+ #ifdef CONFIG_UNICORE64
+-	io_tlb_overflow_buffer = UC64_VM_NONCACHED_START + SZ_4M - PAGE_ALIGN(io_tlb_overflow);
++	io_tlb_overflow_buffer = (void *)(UC64_VM_NONCACHED_START + SZ_4M - PAGE_ALIGN(io_tlb_overflow));
+ #else
+ 	io_tlb_overflow_buffer = alloc_bootmem_low_pages(PAGE_ALIGN(io_tlb_overflow));
+ 	if (!io_tlb_overflow_buffer)
+@@ -190,7 +190,7 @@ swiotlb_init_with_default_size(size_t default_size, int verbose)
+ 	 * Get IO TLB memory from the low pages
+ 	 */
+ #ifdef CONFIG_UNICORE64
+-	io_tlb_start = UC64_VM_NONCACHED_START;
++	io_tlb_start = (char *)UC64_VM_NONCACHED_START;
+ #else
+ 	io_tlb_start = alloc_bootmem_low_pages(PAGE_ALIGN(bytes));
+ 	if (!io_tlb_start)
+-- 
+1.7.9.5
+

@@ -1,0 +1,27 @@
+From ee812d9044dec6157cdf33147ece9e679a01ec93 Mon Sep 17 00:00:00 2001
+From: Sun Zhichuang <sunzhichuang@mprc.pku.edu.cn>
+Date: Tue, 28 Aug 2012 15:13:48 +0800
+Subject: [PATCH 451/641] UniCore64: Fixed the BUG in MACRO pmd_offset
+
+Signed-off-by: Sun Zhichuang <sunzhichuang@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgtable.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index a4c4433..99e3a39 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -36,7 +36,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
+ 
+ #define pmd_offset(pudp, addr)			\
+-	((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + pmd_index(addr))
++	__va((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + pmd_index(addr))
+ 
+ #define pte_offset_kernel(pmdp, addr)		\
+ 	__va((pte_t *)(pmd_val(*(pmdp)) & PAGE_MASK) + pte_index(addr))
+-- 
+1.7.9.5
+

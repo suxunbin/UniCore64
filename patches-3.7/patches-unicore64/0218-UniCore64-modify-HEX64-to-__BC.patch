@@ -1,0 +1,110 @@
+From 5e717e153adf8f11dbdf02791e47a0fed319fa06 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 16 Jan 2012 09:24:26 +0800
+Subject: [PATCH 218/641] UniCore64: modify HEX64 to __BC
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h     |    5 ++---
+ arch/unicore64/include/arch/hwdef-memory.h |   30 ++++++++++++++--------------
+ 2 files changed, 17 insertions(+), 18 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index cd5bc53..36677ff 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -20,9 +20,8 @@
+ #define __BF(_val, _len, _sft)	(((_val) << (_sft)) & __BM(_len, _sft))
+ 
+ /*
+- * To define 64-bit addresses:
+- *   HEX64(1f, ffffffff) means 0x1fffffffff
++ * __BC: concatenate _hi and _lo to define 64-bit addresses:
+  */
+-#define HEX64(hi, lo)		_AC(0x ## hi ## lo, UL)
++#define __BC(_hi, _lo)		_AC(0x ## _hi ## _lo, UL)
+ 
+ #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 75801ca..bd6f55d 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -44,27 +44,27 @@
+  */
+ 
+ /* virtual address of USER space */
+-#define UC64_VM_USER_START		HEX64(00000000, 00000000)
+-#define UC64_VM_USER_END		HEX64(0000001f, ffffffff)
++#define UC64_VM_USER_START		__BC(00000000, 00000000)
++#define UC64_VM_USER_END		__BC(0000001f, ffffffff)
+ /* virtual address of KERNEL space */
+-#define UC64_VM_KERNEL_START		HEX64(ffffffe0, 00000000)
+-#define UC64_VM_KERNEL_END		HEX64(ffffffff, ffffffff)
++#define UC64_VM_KERNEL_START		__BC(ffffffe0, 00000000)
++#define UC64_VM_KERNEL_END		__BC(ffffffff, ffffffff)
+ 
+ /* virtual address of direct mapping space */
+ #define UC64_VM_DMAP_START		UC64_VM_KERNEL_START
+-#define UC64_VM_DMAP_END		HEX64(ffffffef, ffffffff)
++#define UC64_VM_DMAP_END		__BC(ffffffef, ffffffff)
+ 
+ /* FIXME */
+-#define UC64_VM_VMALLOC_START		HEX64(00000001, 00000000)
+-#define UC64_VM_VMALLOC_END		HEX64(00000002, 00000000)
++#define UC64_VM_VMALLOC_START		__BC(00000001, 00000000)
++#define UC64_VM_VMALLOC_END		__BC(00000002, 00000000)
+ 
+ /**
+  * DOC: HWDEF_MEMORY_H_PM
+  * We have 36-bit pm address which means 64GB physical space
+  * as below:
+  */
+-#define UC64_PM_START			HEX64(00000000, 00000000)
+-#define UC64_PM_END			HEX64(0000000f, ffffffff)
++#define UC64_PM_START			__BC(00000000, 00000000)
++#define UC64_PM_END			__BC(0000000f, ffffffff)
+ 
+ #define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
+ 
+@@ -73,7 +73,7 @@
+  * We must make sure that UC64_VM_KIMAGE_START is correctly set.
+  * Currently, we expect the least significant 24 bits to be 0x408000.
+  */
+-#define UC64_PM_KIMAGE_START		HEX64(00000000, 00408000)
++#define UC64_PM_KIMAGE_START		__BC(00000000, 00408000)
+ #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
+ 
+ /*
+@@ -81,13 +81,13 @@
+  * We must make sure that UC64_VM_DTB_START is correctly set.
+  * Currently, we expect the least significant 24 bits to be 0x401000.
+  */
+-#define UC64_PM_DTB_START		HEX64(00000000, 00401000)
++#define UC64_PM_DTB_START		__BC(00000000, 00401000)
+ #define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
+ 
+ /*
+  * This page is reserved for zero page.
+  */
+-#define UC64_PM_ZEROPAGE		HEX64(00000000, 00404000)
++#define UC64_PM_ZEROPAGE		__BC(00000000, 00404000)
+ #define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+ 
+ /*
+@@ -103,10 +103,10 @@
+ #define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
+ 
+ /* The byte offset of zImage in RAM from the start of RAM. */
+-#define UC64_PM_ZIMAGE_START		HEX64(00000000, 03000000)
++#define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
+ 
+ /* The address of stack and heap. */
+-#define UC64_PM_ZIMAGE_SP		HEX64(00000000, 03e00000)
+-#define UC64_PM_ZIMAGE_HEAP		HEX64(00000000, 04000000)
++#define UC64_PM_ZIMAGE_SP		__BC(00000000, 03e00000)
++#define UC64_PM_ZIMAGE_HEAP		__BC(00000000, 04000000)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+-- 
+1.7.9.5
+

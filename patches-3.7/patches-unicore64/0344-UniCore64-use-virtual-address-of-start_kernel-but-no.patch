@@ -1,0 +1,30 @@
+From 46b9d6337fc9d4fc147e3b769ed8ea3ab2dfd123 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 16 May 2012 16:54:48 +0800
+Subject: [PATCH 344/641] UniCore64: use virtual address of start_kernel, but
+ not relative address
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/head.S |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index b2178e7..7be5eda 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -49,7 +49,9 @@ ENTRY(stext)
+ 
+ 	__head_clear_bss
+ 
+-	b	start_kernel
++	/* We must get the VA of start_kernel, and avoid using RA. */
++	ldd	r0, =start_kernel
++	jump	r0
+ ENDPROC(stext)
+ 
+ 	____align64
+-- 
+1.7.9.5
+

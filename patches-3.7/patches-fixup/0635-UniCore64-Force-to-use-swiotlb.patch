@@ -1,0 +1,41 @@
+From 5f24d797d09e201b8635479c89024366c72886c7 Mon Sep 17 00:00:00 2001
+From: Zhan Yuefeng <zhanyuefeng@mprc.pku.edu.cn>
+Date: Thu, 15 May 2014 08:57:28 +0800
+Subject: [PATCH 635/641] UniCore64: Force to use swiotlb
+
+---
+ lib/swiotlb.c                            |    9 ++++++++-
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/lib/swiotlb.c b/lib/swiotlb.c
+index 5fdd85b..ee1b3c7 100644
+--- a/lib/swiotlb.c
++++ b/lib/swiotlb.c
+@@ -594,9 +594,10 @@ swiotlb_alloc_coherent(struct device *hwdev, size_t size,
+ {
+ 	dma_addr_t dev_addr;
+ 	void *ret;
+-	int order = get_order(size);
+ 	u64 dma_mask = DMA_BIT_MASK(32);
+ 
++#ifndef CONFIG_UNICORE64
++	int order = get_order(size);
+ 	if (hwdev && hwdev->coherent_dma_mask)
+ 		dma_mask = hwdev->coherent_dma_mask;
+ 
+@@ -608,6 +609,12 @@ swiotlb_alloc_coherent(struct device *hwdev, size_t size,
+ 		free_pages((unsigned long) ret, order);
+ 		ret = NULL;
+ 	}
++#else
++	if (hwdev)
++		dma_mask = hwdev->coherent_dma_mask;
++	ret = NULL;
++#endif
++
+ 	if (!ret) {
+ 		/*
+ 		 * We are either out of memory or the device can't DMA to
+-- 
+1.7.9.5
+

@@ -1,0 +1,40 @@
+From 9c4d76183237fb50b3e0885d4ac84110fa45ff24 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 21 Aug 2013 14:49:14 +0800
+Subject: [PATCH 564/641] unicore64: Set ASR share bit
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/head-macros.S |    2 +-
+ arch/unicore64/include/asm/processor.h    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/head-macros.S b/arch/unicore64/include/arch/head-macros.S
+index 05c89df..d8ee45f 100644
+--- a/arch/unicore64/include/arch/head-macros.S
++++ b/arch/unicore64/include/arch/head-macros.S
+@@ -13,7 +13,7 @@
+  * .... .... ..10 0000
+  */
+ .macro	__head_init
+-	dmovl		r16, #ASR_MODE_PRIV | ASR_INTR_SELECT
++	dmovl		r16, #ASR_MODE_PRIV | ASR_INTR_SELECT | ASR_T_BIT
+ 	dmov		asr, r16
+ 	dmov		r16, #CP0_CTRLREG_DEFAULT
+ 	movc		CP0_CTRLREG, r16, #0
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index 46f1546..f3b889f 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -61,7 +61,7 @@ extern unsigned long get_wchan(struct task_struct *p);
+ ({									\
+ 	unsigned long *stack = (unsigned long *)sp;			\
+ 	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
+-	regs->UC64_ASR = ASR_MODE_USER;					\
++	regs->UC64_ASR = ASR_MODE_USER | ASR_T_BIT;				\
+ 	regs->UC64_R31 = pc;		/* pc */                        \
+ 	regs->UC64_R29 = sp;		/* sp */                        \
+ 	regs->UC64_R02 = stack[2];	/* r2 (envp) */                 \
+-- 
+1.7.9.5
+

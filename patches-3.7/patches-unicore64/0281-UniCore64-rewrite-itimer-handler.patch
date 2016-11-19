@@ -1,0 +1,215 @@
+From c5bae37e356392d32bef1a62eabf417129814ccd Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 14:48:45 +0800
+Subject: [PATCH 281/641] UniCore64: rewrite itimer handler
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |   10 +++-
+ arch/unicore64/kernel/cpu-uc64.c                |    4 +-
+ arch/unicore64/kernel/entry.S                   |   10 ++--
+ arch/unicore64/kernel/time.c                    |   71 ++++++++++-------------
+ 4 files changed, 48 insertions(+), 47 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 165ebb3..c077b0f 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -38,9 +38,17 @@
+ #define CP0_ICACHE		p0.c7
+ #define CP0_MRAR		p0.c8
+ #define CP0_INTR_VECBASE	p0.c9
+-#define CP0_INTR_STAT		p0.c10
++#define CP0_INTR		p0.c10
+ #define CP0_RWMARGIN		p0.c11
+ 
++#define CP0_INTR_ITM			__BF(1, 1, 7)
++#define CP0_INTR_LSU			__BF(1, 1, 8)
++#define CP0_INTR_IK1			__BF(1, 1, 9)
++#define CP0_INTR_IK2			__BF(1, 1, 10)
++#define CP0_INTR_IK3			__BF(1, 1, 11)
++#define CP0_INTR_IK4			__BF(1, 1, 12)
++#define CP0_INTR_IPM			__BF(1, 1, 13)
++
+ /**
+  * DOC: HWDEF_COPRO_H_CP0_CTRLREG
+  * Following bit field definitions for control register in CP0 are defined:
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index 550f705..3d6e335 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -238,8 +238,8 @@ void __show_cp0_regs(void)
+ 			__read_cp_op(CP0_MRAR, 15));
+ 
+ 	pr_emerg(" INTR_VECBASE: %16lx", __read_cp(CP0_INTR_VECBASE));
+-	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR_STAT, 0));
+-	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR_STAT, 7));
++	pr_emerg(" INTR_TYPE: %16lx", __read_cp_op(CP0_INTR, 0));
++	pr_emerg(" INTR_PRIO: %16lx\n", __read_cp_op(CP0_INTR, 7));
+ 
+ 	pr_emerg(" R/W Margin: %16lx", __read_cp(CP0_RWMARGIN));
+ }
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index fa8f6d1..c61193d 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -86,14 +86,14 @@ ENTRY(__vec_int_puv3)
+ 	eret
+ ENDPROC(__vec_int_puv3)
+ 
+-ENTRY(__vec_int_ost)
++ENTRY(__vec_int_itimer)
+ 	__priv_context_save
+ 
+-	call	uc64_inner_timer_irqhandler
++	call	__itimer_irqhandler
+ 
+ 	__priv_context_restore
+ 	eret
+-ENDPROC(__vec_int_ost)
++ENDPROC(__vec_int_itimer)
+ 
+ 	.p2align	L1_CACHE_SHIFT
+ ENTRY(__vectors_table)
+@@ -105,8 +105,8 @@ ENTRY(__vectors_table)
+ 	call	__vec_invalid	/* 0x14: FPU_EXC */
+ 	call	__vec_invalid	/* 0x18: INT_KERNEL */
+ 	call	__vec_invalid	/* 0x1c: INT_FAULT */
+-	call	__vec_invalid	/* 0x20: INT_TIMER */
++	b	__vec_int_itimer	/* 0x20: INT_TIMER */
+ 	b	__vec_int_puv3	/* 0x24: INT_PE */
+-	b	__vec_int_ost	/* 0x28: INT_OST */
++	call	__vec_invalid	/* 0x28: INT_OST */
+ 	call	__vec_invalid	/* 0x2c: INT_PM */
+ ENDPROC(__vectors_table)
+diff --git a/arch/unicore64/kernel/time.c b/arch/unicore64/kernel/time.c
+index f015830..fa43993 100644
+--- a/arch/unicore64/kernel/time.c
++++ b/arch/unicore64/kernel/time.c
+@@ -5,53 +5,46 @@
+ #include <linux/irq.h>
+ #include <linux/clockchips.h>
+ 
+-#include <arch/hwdef-copro.h>
++#include <arch/hwdef-cp0-sysctrl.h>
+ 
+-#define INNER_TIMER_MATCHREG		p1.c0
+-#define INNER_TIMER_COUNTER		p1.c1
+-#define INNER_TIMER_STATUS		p1.c2
+-#define INNER_TIMER_IRQENABLE		p1.c3
++#define __itimer_read_counter()		__read_cp_op(CP0_INTR, 1)
++#define __itimer_write_counter(cnt)	__write_cp_op(cnt, CP0_INTR, 1)
+ 
+-#define uc64_inner_timer_irq_enable()					\
+-		__write_cp(__read_cp(INNER_TIMER_IRQENABLE) | 1,	\
+-				INNER_TIMER_IRQENABLE)
+-
+-#define uc64_inner_timer_irq_disable()					\
+-		__write_cp(__read_cp(INNER_TIMER_IRQENABLE) & ~1,	\
+-				INNER_TIMER_IRQENABLE)
+-
+-#define uc64_inner_timer_status_clear()					\
+-		__write_cp(__read_cp(INNER_TIMER_STATUS) & ~1,		\
+-				INNER_TIMER_STATUS)
++#define __itimer_irq_enable()					\
++	__write_uc64(__read_uc64(asr) | ASR_INTR_ITM, asr)
++#define __itimer_irq_disable()					\
++	__write_uc64(__read_uc64(asr) & ~ASR_INTR_ITM, asr)
++#define __itimer_irq_clear()					\
++	__write_cp(__read_cp(CP0_INTR) & ~CP0_INTR_ITM, CP0_INTR)
+ 
+ #define MIN_COUNTER_DELTA			(2)
+ 
+-static cycle_t uc64_inner_timer_read(struct clocksource *cs)
++static cycle_t __itimer_read(struct clocksource *cs)
+ {
+-	return	__read_cp(INNER_TIMER_COUNTER);
++	return	__itimer_read_counter();
+ }
+ 
+-static int uc64_inner_timer_set_next_event(unsigned long delta,
++static int __itimer_set_next_event(unsigned long delta,
+ 		struct clock_event_device *c)
+ {
+ 	unsigned long next, count;
+ 
+-	uc64_inner_timer_irq_enable();
++	__itimer_irq_enable();
+ 
+-	next = __read_cp(INNER_TIMER_COUNTER) + delta;
+-	__write_cp(next, INNER_TIMER_MATCHREG);
+-	count = __read_cp(INNER_TIMER_COUNTER);
++	next = __itimer_read_counter() + delta;
++	__itimer_write_counter(next);
++	count = __itimer_read_counter();
+ 
+ 	return (signed)(next - count) <= MIN_COUNTER_DELTA ? -ETIME : 0;
+ }
+ 
+-static void uc64_inner_timer_set_mode(enum clock_event_mode mode,
++static void __itimer_set_mode(enum clock_event_mode mode,
+ 		struct clock_event_device *c)
+ {
+ 	switch (mode) {
+ 	case CLOCK_EVT_MODE_ONESHOT:
+-		uc64_inner_timer_irq_disable();
+-		uc64_inner_timer_status_clear();
++		__itimer_irq_disable();
++		__itimer_irq_clear();
+ 		break;
+ 
+ 	case CLOCK_EVT_MODE_UNUSED:
+@@ -62,27 +55,27 @@ static void uc64_inner_timer_set_mode(enum clock_event_mode mode,
+ 	}
+ }
+ 
+-static struct clock_event_device uc64_inner_timer_ce = {
++static struct clock_event_device __itimer_ce = {
+ 	.name		= "uc64-inner-timer-clock-event-device",
+ 	.features	= CLOCK_EVT_FEAT_ONESHOT,
+-	.set_next_event	= uc64_inner_timer_set_next_event,
+-	.set_mode	= uc64_inner_timer_set_mode,
++	.set_next_event	= __itimer_set_next_event,
++	.set_mode	= __itimer_set_mode,
+ };
+ 
+-static struct clocksource uc64_inner_timer_cs = {
++static struct clocksource __itimer_cs = {
+ 	.name		= "uc64-inner-timer-clocksource",
+-	.read		= uc64_inner_timer_read,
++	.read		= __itimer_read,
+ 	.mask		= CLOCKSOURCE_MASK(64),
+ 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+ 
+-void uc64_inner_timer_irqhandler(void)
++void __itimer_irqhandler(void)
+ {
+ 	/* Disarm the compare/match, signal the event. */
+-	uc64_inner_timer_irq_disable();
+-	uc64_inner_timer_status_clear();
++	__itimer_irq_disable();
++	__itimer_irq_clear();
+ 
+-	uc64_inner_timer_ce.event_handler(&uc64_inner_timer_ce);
++	__itimer_ce.event_handler(&__itimer_ce);
+ }
+ 
+ /**
+@@ -91,9 +84,9 @@ void uc64_inner_timer_irqhandler(void)
+ void __init time_init(void)
+ {
+ 	/* hardware initialization */
+-	uc64_inner_timer_irq_disable();
+-	uc64_inner_timer_status_clear();
++	__itimer_irq_disable();
++	__itimer_irq_clear();
+ 
+-	clockevents_calc_mult_shift(&uc64_inner_timer_ce, CLOCK_TICK_RATE, 5);
+-	clocksource_register_hz(&uc64_inner_timer_cs, CLOCK_TICK_RATE);
++	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_TICK_RATE, 5);
++	clocksource_register_hz(&__itimer_cs, CLOCK_TICK_RATE);
+ }
+-- 
+1.7.9.5
+

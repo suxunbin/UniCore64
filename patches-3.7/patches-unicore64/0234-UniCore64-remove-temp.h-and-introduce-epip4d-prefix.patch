@@ -1,0 +1,65 @@
+From cfcd2e7d57d12a218bc56a8a5a7e1b4b19e617f0 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 17 Jan 2012 22:32:21 +0800
+Subject: [PATCH 234/641] UniCore64: remove temp.h and introduce epip4d prefix
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-common.h |    5 +++++
+ arch/unicore64/include/arch/temp.h       |    8 --------
+ arch/unicore64/kernel/head.S             |    3 +--
+ 3 files changed, 6 insertions(+), 10 deletions(-)
+ delete mode 100644 arch/unicore64/include/arch/temp.h
+
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index 069272b..b30f64e 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -26,4 +26,9 @@ __ASMMACRO_WRAP(.macro	uc64_pop, rt;
+ 			ldd.w	&rt, [sp]+, #8;
+ 		.endm)
+ 
++/* epip for debug: all should be removed definitely */
++#ifdef __ASSEMBLY__
++#define __epip4d_align64	.align 3
++#endif /* __ASSEMBLY__ */
++
+ #endif /* __UNICORE64_ARCH_ASM_COMMON_H__ */
+diff --git a/arch/unicore64/include/arch/temp.h b/arch/unicore64/include/arch/temp.h
+deleted file mode 100644
+index 309de8d..0000000
+--- a/arch/unicore64/include/arch/temp.h
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#ifndef __UNICORE64_ARCH_TEMP_H__
+-#define __UNICORE64_ARCH_TEMP_H__
+-
+-#ifdef __ASSEMBLY__
+-#define __temp_align64	.align 3
+-#endif /* __ASSEMBLY__ */
+-
+-#endif /* __UNICORE64_ARCH_TEMP_H__ */
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 5963ba0..1b23f56 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -14,7 +14,6 @@
+ #include <arch/hwdef-copro.h>
+ #include <arch/asm-mmuops.h>
+ #include <arch/head-macros.S>
+-#include <arch/temp.h>
+ 
+ /**
+  * DOC: swapper_pg_dir
+@@ -56,7 +55,7 @@ ENTRY(stext)
+ 	b	start_kernel
+ ENDPROC(stext)
+ 
+-	__temp_align64
++	__epip4d_align64
+ __priv_sp:
+ 	.dword	init_thread_union + (THREAD_SIZE - 8)
+ 
+-- 
+1.7.9.5
+

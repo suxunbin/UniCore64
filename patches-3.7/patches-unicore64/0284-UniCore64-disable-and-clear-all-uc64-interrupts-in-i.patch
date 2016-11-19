@@ -1,0 +1,36 @@
+From 5ef4b61b7d8167d46397bce8b2fd7c01730c1248 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 15:11:03 +0800
+Subject: [PATCH 284/641] UniCore64: disable and clear all uc64 interrupts in
+ init_IRQ
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/irq.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/irq.c b/arch/unicore64/kernel/irq.c
+index 33908e6..d2fe5aa 100644
+--- a/arch/unicore64/kernel/irq.c
++++ b/arch/unicore64/kernel/irq.c
+@@ -1,11 +1,15 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ 
++#include <arch/hwdef-cpu.h>
++#include <arch/hwdef-cp0-sysctrl.h>
++
+ /**
+  * init_IRQ() -
+  */
+ void __init init_IRQ(void)
+ {
+-	/* FIXME */
+-	BUG();
++	/* Disable and clear all uc64 interrupts */
++	__write_uc64(__read_uc64(asr) | ASR_INTR_SELECT, asr);
++	__write_cp(0, CP0_INTR);
+ }
+-- 
+1.7.9.5
+

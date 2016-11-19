@@ -1,0 +1,68 @@
+From d0c8f82dc90f36883384cecc56244a6dd0d2aff7 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 28 May 2014 15:50:53 +0800
+Subject: [PATCH 636/641] UniCore64: Add cacheflush.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild       |    1 -
+ arch/unicore64/include/asm/cacheflush.h |   35 +++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/include/asm/cacheflush.h
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index dbcd03a..04db279 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -5,7 +5,6 @@ generic-y += bitops.h
+ generic-y += bug.h
+ generic-y += bugs.h
+ generic-y += cache.h
+-generic-y += cacheflush.h
+ generic-y += checksum.h
+ generic-y += cmpxchg-local.h
+ generic-y += cputime.h
+diff --git a/arch/unicore64/include/asm/cacheflush.h b/arch/unicore64/include/asm/cacheflush.h
+new file mode 100644
+index 0000000..732f6c8
+--- /dev/null
++++ b/arch/unicore64/include/asm/cacheflush.h
+@@ -0,0 +1,35 @@
++#ifndef __UNICORE64_ASM_CACHEFLUSH_H__
++#define __UNICORE64_ASM_CACHEFLUSH_H__
++
++/* Keep includes the same across arches.  */
++#include <linux/mm.h>
++#include <arch/asm-mmuops.h>
++
++#define flush_cache_all()			\
++	do {					\
++		__flush_dcache();		\
++		__invalid_icache();		\
++	} while (0)
++#define flush_cache_mm(mm)			flush_cache_all()
++#define flush_cache_dup_mm(mm)			flush_cache_all()
++#define flush_cache_range(vma, start, end)	flush_cache_all()
++#define flush_cache_page(vma, vmaddr, pfn)	flush_cache_all()
++#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
++#define flush_dcache_page(page)			__flush_dcache()
++#define flush_dcache_mmap_lock(mapping)		do { } while (0)
++#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
++#define flush_icache_range(start, end)		flush_cache_all()
++#define flush_icache_page(vma,pg)		flush_cache_all()
++#define flush_icache_user_range(vma,pg,adr,len)	flush_cache_all()
++#define flush_cache_vmap(start, end)		do { } while (0)
++#define flush_cache_vunmap(start, end)		do { } while (0)
++
++#define copy_to_user_page(vma, page, vaddr, dst, src, len)	\
++	do {							\
++		memcpy(dst, src, len);				\
++		flush_icache_user_range(vma, page, vaddr, len);	\
++	} while (0)
++#define copy_from_user_page(vma, page, vaddr, dst, src, len)	\
++	memcpy(dst, src, len)
++
++#endif /* __UNICORE64_ASM_CACHEFLUSH_H__ */
+-- 
+1.7.9.5
+

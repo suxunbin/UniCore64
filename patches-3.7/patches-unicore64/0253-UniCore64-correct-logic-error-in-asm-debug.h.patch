@@ -1,0 +1,37 @@
+From b5380b89f25f098e8425ea17f83a6b1659aff6e3 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 18 Jan 2012 16:10:05 +0800
+Subject: [PATCH 253/641] UniCore64: correct logic error in asm-debug.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index 7eeb4e3..de3b29e 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -12,8 +12,8 @@
+ __ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
+ 			mov	&rt1, r0;
+ 			mov	&rt2, r1;
+-			mov	r0, #1;
+ 			mov	r1, &rchar;
++			mov	r0, #1;
+ 			bkpt;
+ 			mov	r0, &rt1;
+ 			mov	r1, &rt2;
+@@ -22,8 +22,8 @@ __ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
+ __ASMMACRO_WRAP(.macro	__putdata, rdata, rt1, rt2;
+ 			mov	&rt1, r0;
+ 			mov	&rt2, r1;
+-			mov	r0, #0;
+ 			mov	r1, &rdata;
++			mov	r0, #0;
+ 			bkpt;
+ 			mov	r0, &rt1;
+ 			mov	r1, &rt2;
+-- 
+1.7.9.5
+

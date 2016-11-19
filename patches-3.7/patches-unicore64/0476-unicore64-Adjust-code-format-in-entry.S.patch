@@ -1,0 +1,55 @@
+From 14f98a8604beafd2e2d91646a758a2c876dea3c5 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 20 Nov 2012 19:46:10 +0800
+Subject: [PATCH 476/641] unicore64: Adjust code format in entry.S
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |   26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 53bc36e..3c256de 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -101,24 +101,24 @@ ENTRY(__vec_jepriv)
+ 	/*
+ 	 * Get the system call number.
+ 	 */
+-	movc	r16, CP0_TRAPADDR, #1		@ saved in epc reg
+-	dsub r16, r16, #4
+-	ldw r16, [r16+], #0
++	movc		r16, CP0_TRAPADDR, #1	@ saved in epc reg
++	dsub		r16, r16, #4
++	ldw		r16, [r16+], #0
+ 
+ 	__irq_enable
+ 
+-	ldd	r17, =sys_call_table		@ load syscall table pointer
++	ldd		r17, =sys_call_table	@ load syscall table pointer
+ 
+-	dmovl	r18, #0xffffff		@ mask off SWI op-code
+-	dand	r16, r16, r18		@ mask off SWI op-code
++	dmovl		r18, #0xffffff		@ mask off SWI op-code
++	dand		r16, r16, r18		@ mask off SWI op-code
+ 
+-	dlsl r16, r16, #3
+-	ldd	r18, [r17+], r16	@ call sys_* routine
+-	std.w	r5, [sp-], #8		@ push fifth and sixth args
+-	std.w	r4, [sp-], #8
+-	call.r r18
+-	dadd	sp, sp, #16
+-	std.w	r0, [sp+], #0
++	dlsl		r16, r16, #3
++	ldd		r18, [r17+], r16	@ call sys_* routine
++	std.w		r5, [sp-], #8		@ push fifth and sixth args
++	std.w		r4, [sp-], #8
++	call.r		r18
++	dadd		sp, sp, #16
++	std.w		r0, [sp+], #0
+ 
+ ret_syscall:
+ 	__irq_disable
+-- 
+1.7.9.5
+

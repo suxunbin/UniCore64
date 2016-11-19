@@ -1,0 +1,26 @@
+From 9b036b484341e081f2a13545cfa78f7cc89f40b8 Mon Sep 17 00:00:00 2001
+From: Sun Zhichuang <sunzhichuang@mprc.pku.edu.cn>
+Date: Wed, 5 Dec 2012 14:20:52 +0800
+Subject: [PATCH 479/641] UniCore64: Add __GFP_ZERO in pte_alloc_one
+
+Signed-off-by: Sun Zhichuang <sunzhichuang@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index 14632b7..e51a4e2 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -66,7 +66,7 @@ void pte_free_kernel(struct mm_struct *mm, pte_t *p)
+  */
+ pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	struct page *pte = alloc_page(GFP_KERNEL);
++	struct page *pte = alloc_page(GFP_KERNEL | __GFP_ZERO);
+ 
+ 	if (pte)
+ 		pgtable_page_ctor(pte);
+-- 
+1.7.9.5
+

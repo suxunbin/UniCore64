@@ -1,0 +1,41 @@
+From 6474d7a30336a2cc6b9c17b6f27b688bb949c95b Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 5 May 2014 22:37:24 +0800
+Subject: [PATCH 620/641] UniCore64: Disable BK3710_PIOMODE
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/ata/libata-core.c |    3 ---
+ drivers/ata/pata_bk3710.c |    2 +-
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 21af8e2..3cc7096 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -4257,9 +4257,6 @@ static unsigned long ata_dev_blacklisted(const struct ata_device *dev)
+ 
+ static int ata_dma_blacklisted(const struct ata_device *dev)
+ {
+-#ifdef CONFIG_PATA_BK3710
+-	return 1;
+-#endif
+ 	/* We don't support polling DMA.
+ 	 * DMA blacklist those ATAPI devices with CDB-intr (and use PIO)
+ 	 * if the LLDD handles only interrupts in the HSM_ST_LAST state.
+diff --git a/drivers/ata/pata_bk3710.c b/drivers/ata/pata_bk3710.c
+index 6753311..eeb0efa 100644
+--- a/drivers/ata/pata_bk3710.c
++++ b/drivers/ata/pata_bk3710.c
+@@ -24,7 +24,7 @@
+ 
+ #define BK3710_IDESTAT 0x47
+ 
+-#define BK3710_PIOMODE 1
++/* #define BK3710_PIOMODE 1 */
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-- 
+1.7.9.5
+

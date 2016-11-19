@@ -1,0 +1,93 @@
+From 98d5b3edc65ef230b92457a7e9629c2d0d574d85 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 4 Jun 2012 10:57:25 +0800
+Subject: [PATCH 359/641] UniCore64: prototype for ret_from_fork
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/asm-offsets.c |    3 ++-
+ arch/unicore64/kernel/entry.S       |   21 +++++++++++++++++++--
+ arch/unicore64/kernel/process.c     |    2 +-
+ 3 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/kernel/asm-offsets.c b/arch/unicore64/kernel/asm-offsets.c
+index ef5c659..bb6f61f 100644
+--- a/arch/unicore64/kernel/asm-offsets.c
++++ b/arch/unicore64/kernel/asm-offsets.c
+@@ -11,8 +11,8 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
+-#include <linux/sched.h>
+ #include <linux/kbuild.h>
++#include <linux/sched.h>
+ 
+ int main(void)
+ {
+@@ -23,5 +23,6 @@ int main(void)
+ 	OFFSET(THREAD_KSP,		thread_struct, ksp);
+ 	BLANK();
+ 
++	OFFSET(THREAD_INFO_FLAGS,	thread_info, flags);
+ 	return 0;
+ }
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 5253ef0..e0caf7c 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -1,10 +1,17 @@
+ #include <linux/linkage.h>
++#include <generated/asm-offsets.h>
++#include <asm/thread_info.h>
+ #include <asm/cache.h>
+ #include <arch/asm-common.h>
+ #include <arch/asm-debug.h>
+ #include <arch/asm-mmuops.h>
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
++	.macro	__thread_info, rd
++	dasr		&rd, sp, #13
++	dlsl		&rd, sp, #13
++	.endm
++
+ 	.macro	__priv_context_save
+ 	@ step 1: save r0 and sp to keep their original values
+ 	movc	CP0_SWR, r0, #4
+@@ -66,8 +73,18 @@
+  * ret_from_fork - This is how we return from a fork.
+  */
+ ENTRY(ret_from_fork)
+-	call	schedule_tail
+-	/* TODO */
++	call		schedule_tail
++1001:	disable_irq
++	__thread_info	r17
++	ldw		r18, [r17+], #THREAD_INFO_FLAGS
++	and		r0, r18, #TIF_NEED_RESCHED
++	cmpsub.a	r0, #0
++	adr		lr, 1001b
++	bne		schedule		@ return to 1001b
++	cmpsub.a	r18, #0
++	bne		__vec_invalid		@ print error information
++	__priv_context_restore
++	eret
+ ENDPROC(ret_from_fork)
+ 
+ ENTRY(__vec_invalid)
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 1e18e02..30ebdd8 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -50,8 +50,8 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 
+ 	*childregs = *regs;
+ 	childregs->UC64_R00 = 0;
++	childregs->UC64_R29 = stack_start;
+ 
+-	p->thread.usp = stack_start;
+ 	p->thread.ksp = (unsigned long)childregs;
+ 	p->thread.pc = (unsigned long)ret_from_fork;
+ 
+-- 
+1.7.9.5
+

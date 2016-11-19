@@ -1,0 +1,26 @@
+From a802e1b531353859f8a9fcf5e0a2419f44b1e522 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 10 Jan 2013 11:45:31 +0800
+Subject: [PATCH 535/641] unicore64: Correct TASK_UNMAPPED_BASE value
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index 93d8c7a..46f1546 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -4,7 +4,7 @@
+ #ifdef __KERNEL__
+ 
+ #define TASK_SIZE		UC64_VM_USER_END
+-#define TASK_UNMAPPED_BASE	UC64_VM_USER_END /* FIXME */
++#define TASK_UNMAPPED_BASE	(PAGE_ALIGN(TASK_SIZE / 4))
+ 
+ #define STACK_TOP		TASK_SIZE
+ #define STACK_TOP_MAX		TASK_SIZE
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From 4a4072898c89b2f14a4baac40171a599a02a6dce Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 06:15:46 +0800
+Subject: [PATCH 607/641] UniCore64: Add PATA IOMEM bases
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/puv4-iomem.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/puv4-iomem.h b/arch/unicore64/include/arch/puv4-iomem.h
+index 13a0be2..61ccbce 100644
+--- a/arch/unicore64/include/arch/puv4-iomem.h
++++ b/arch/unicore64/include/arch/puv4-iomem.h
+@@ -50,6 +50,8 @@
+ #define PUV4_NAND_BASE			(PUV4_AHB_BASE + 0x900000) /* AHB-12 */
+ #define PUV4_H264D_BASE			(PUV4_AHB_BASE + 0xA00000) /* AHB-13 */
+ #define PUV4_H264E_BASE			(PUV4_AHB_BASE + 0xB00000) /* AHB-14 */
++#define PUV4_UNIPATAS_BASE		(PUV4_AHB_BASE + 0xd00000) /* AHB-15 */
++#define PUV4_UNIPATAE_BASE		(PUV4_AHB_BASE + 0xd01000) /* AHB-16 */
+ 
+ /*
+  * PUV4 Peripheral Bus Addresses (APB): 0xEE000000 - 0xEFFFFFFF (128MB)
+-- 
+1.7.9.5
+

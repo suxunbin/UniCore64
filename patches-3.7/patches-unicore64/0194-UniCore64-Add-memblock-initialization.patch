@@ -1,0 +1,42 @@
+From 7c0b6c07e5c76c16c89db6f85249320c747d90c2 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 16:05:54 +0800
+Subject: [PATCH 194/641] UniCore64: Add memblock initialization
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/init.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/unicore64/mm/init.c b/arch/unicore64/mm/init.c
+index 092195c..f8b36e9 100644
+--- a/arch/unicore64/mm/init.c
++++ b/arch/unicore64/mm/init.c
+@@ -1,4 +1,7 @@
+ #include <linux/kernel.h>
++#include <linux/memblock.h>
++
++#include <asm/sections.h>
+ 
+ /**
+  * mem_init() -
+@@ -20,6 +23,15 @@ void free_initmem(void)
+ 
+ void __init setup_arch_memory(void)
+ {
++	/* Reserve the kernel text, kernel data and initrd with memblock. */
++	memblock_reserve(__pa(_text), _end - _text);
++
++	/* Reserve the page tables. */
++	memblock_reserve(__pa(swapper_pg_dir), PAGE_SIZE);
++
++	memblock_allow_resize();
++	memblock_dump_all();
++
+ 	/* FIXME */
+ 	BUG();
+ }
+-- 
+1.7.9.5
+

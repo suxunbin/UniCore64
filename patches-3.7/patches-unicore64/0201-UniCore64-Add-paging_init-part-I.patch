@@ -1,0 +1,97 @@
+From acd478d402de8e16b0a10f58fc7088cfec17d0cf Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 17:21:36 +0800
+Subject: [PATCH 201/641] UniCore64: Add paging_init(), part I
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    8 ++++++++
+ arch/unicore64/mm/init.c                |    4 ++--
+ arch/unicore64/mm/mmu.c                 |   27 +++++++++++++++++++++++++++
+ 3 files changed, 37 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index c39dfde..0fcb09b 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -7,6 +7,14 @@
+ extern void setup_arch_cpuinfo(void);
+ extern void setup_arch_memory(void);
+ 
++extern void paging_init(void);
++
++/*
++ * Convert a physical address to a Page Frame Number and back
++ */
++#define	__phys_to_pfn(paddr)	((paddr) >> PAGE_SHIFT)
++#define	__pfn_to_phys(pfn)	((pfn) << PAGE_SHIFT)
++
+ #ifdef CONFIG_OF_EARLY_FLATTREE
+ extern void setup_arch_devtree(char *cmdline);
+ #else
+diff --git a/arch/unicore64/mm/init.c b/arch/unicore64/mm/init.c
+index f8b36e9..af98387 100644
+--- a/arch/unicore64/mm/init.c
++++ b/arch/unicore64/mm/init.c
+@@ -2,6 +2,7 @@
+ #include <linux/memblock.h>
+ 
+ #include <asm/sections.h>
++#include <asm/setup_arch.h>
+ 
+ /**
+  * mem_init() -
+@@ -32,6 +33,5 @@ void __init setup_arch_memory(void)
+ 	memblock_allow_resize();
+ 	memblock_dump_all();
+ 
+-	/* FIXME */
+-	BUG();
++	paging_init();
+ }
+diff --git a/arch/unicore64/mm/mmu.c b/arch/unicore64/mm/mmu.c
+index 83c2cab..675603e 100644
+--- a/arch/unicore64/mm/mmu.c
++++ b/arch/unicore64/mm/mmu.c
+@@ -1,4 +1,7 @@
+ #include <linux/mm.h>
++#include <linux/memblock.h>
++
++#include <asm/setup_arch.h>
+ 
+ /*
+  * empty_zero_page is a special page that is used for
+@@ -6,6 +9,30 @@
+  */
+ struct page *empty_zero_page;
+ 
++static void __init *early_alloc(unsigned long sz)
++{
++	void *ptr = __va(memblock_alloc(sz, sz));
++	memset(ptr, 0, sz);
++	return ptr;
++}
++
++/*
++ * paging_init() sets up the page tables, initialises the zone memory
++ * maps, and sets up the zero page, bad page and bad page tables.
++ */
++void __init paging_init(void)
++{
++	void *zero_page;
++
++	/* allocate the zero page. */
++	zero_page = early_alloc(PAGE_SIZE);
++
++	empty_zero_page = virt_to_page(zero_page);
++
++	/* FIXME*/
++	BUG();
++}
++
+ /**
+  * update_mmu_cache() - checks the page table entry for validity
+  * @vma:
+-- 
+1.7.9.5
+

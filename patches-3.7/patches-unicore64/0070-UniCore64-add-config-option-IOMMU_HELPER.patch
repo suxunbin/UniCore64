@@ -1,0 +1,30 @@
+From d19a291958a66a48113f43e9ef39691fa25b680a Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Thu, 3 Nov 2011 12:15:52 +0800
+Subject: [PATCH 070/641] UniCore64: add config option IOMMU_HELPER
+
+Fixed error:
+lib/built-in.o: In function `swiotlb_tbl_map_single':
+(.text+0x4e8d): undefined reference to `iommu_is_span_boundary'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/Kconfig |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+index 72e798b..673eded 100644
+--- a/arch/unicore64/mm/Kconfig
++++ b/arch/unicore64/mm/Kconfig
+@@ -26,5 +26,8 @@ config CPU_DCACHE_DISABLE
+ config SWIOTLB
+ 	def_bool y
+ 
++config IOMMU_HELPER
++	def_bool SWIOTLB
++
+ config NEED_SG_DMA_LENGTH
+ 	def_bool SWIOTLB
+-- 
+1.7.9.5
+

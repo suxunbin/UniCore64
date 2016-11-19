@@ -1,0 +1,61 @@
+From d97ee189f2434fa1fb8825c3da501dee5ba5ec6c Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 10:01:09 +0800
+Subject: [PATCH 276/641] UniCore64: rewrite irqflags.h with __read_uc64 and
+ __write_uc64
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cpu.h |    1 +
+ arch/unicore64/include/asm/irqflags.h   |   16 ++--------------
+ 2 files changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cpu.h b/arch/unicore64/include/arch/hwdef-cpu.h
+index 4fbfe14..8ac0a62 100644
+--- a/arch/unicore64/include/arch/hwdef-cpu.h
++++ b/arch/unicore64/include/arch/hwdef-cpu.h
+@@ -6,6 +6,7 @@
+  * This file defines the bit pattern for the processor status registers
+  * and the processor flag registers.
+  */
++#include <linux/stringify.h>
+ #include <arch/bitfield.h>
+ 
+ /**
+diff --git a/arch/unicore64/include/asm/irqflags.h b/arch/unicore64/include/asm/irqflags.h
+index 6b1ce0b..77631af 100644
+--- a/arch/unicore64/include/asm/irqflags.h
++++ b/arch/unicore64/include/asm/irqflags.h
+@@ -32,11 +32,7 @@
+  */
+ static inline unsigned long arch_local_save_flags(void)
+ {
+-	unsigned long temp;
+-
+-	__asm__("dmov %0, asr" : "=r" (temp));
+-
+-	return temp & ASR_INTR_SELECT;
++	return __read_uc64(asr) & ASR_INTR_SELECT;
+ }
+ 
+ /**
+@@ -45,15 +41,7 @@ static inline unsigned long arch_local_save_flags(void)
+  */
+ static inline void arch_local_irq_restore(unsigned long flags)
+ {
+-	unsigned long temp;
+-
+-	__asm__(
+-		"dmov	%0, asr\n"
+-		"dandn	%0, %0, %2\n"
+-		"dor	%0, %0, %1\n"
+-		"dmov	asr, %0"
+-		: "=&r" (temp)
+-		: "r" (flags), "i" (ASR_INTR_SELECT));
++	__write_uc64((__read_uc64(asr) & ~ASR_INTR_SELECT) | (flags), asr);
+ }
+ 
+ #include <asm-generic/irqflags.h>
+-- 
+1.7.9.5
+

@@ -1,0 +1,25 @@
+From 9c9ad0f2da21c4d0d2a35fb00b810f36e1650887 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sun, 2 Mar 2014 00:45:30 +0800
+Subject: [PATCH 569/641] UniCore64: remove warning information for pgd_free
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index f67cfc4..8f6ec93 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -25,7 +25,6 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
+ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ {
+ 	/* FIXME */
+-	printk("Warning:pgd_free doesn't do anything now!");
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

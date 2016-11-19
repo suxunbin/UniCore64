@@ -1,0 +1,68 @@
+From 0ce2e2cd7a8133a6d6a332afbee64f0b8209f8fb Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Tue, 19 Jun 2012 11:07:12 +0800
+Subject: [PATCH 392/641] UniCore64: Add helloworld initramfs
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig |    3 +++
+ arch/unicore64/kernel/devtree.c            |    9 +++++++++
+ arch/unicore64/mm/init.c                   |    8 ++++++++
+ 3 files changed, 20 insertions(+)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index d58dba4..6112ab1 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -1,6 +1,9 @@
+ ### General setup
+ CONFIG_LOCALVERSION="-uc64"
+ 
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="/pub/initramfs/initramfs_config.helloworld"
++
+ ### Processor and System Type
+ #	Processor Features
+ CONFIG_ARCH_FPGA=y
+diff --git a/arch/unicore64/kernel/devtree.c b/arch/unicore64/kernel/devtree.c
+index 7e5d669..b77b5f8 100644
+--- a/arch/unicore64/kernel/devtree.c
++++ b/arch/unicore64/kernel/devtree.c
+@@ -11,6 +11,15 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
+ 	memblock_add(base, size);
+ }
+ 
++#ifdef CONFIG_BLK_DEV_INITRD
++void __init early_init_dt_setup_initrd_arch(unsigned long start,
++					    unsigned long end)
++{
++	/* FIXME */
++	BUG();
++}
++#endif
++
+ /**
+  * irq_create_of_mapping - Hook to resolve OF irq specifier into a Linux irq#
+  * @controller:
+diff --git a/arch/unicore64/mm/init.c b/arch/unicore64/mm/init.c
+index 5b486ef..8b49fd7 100644
+--- a/arch/unicore64/mm/init.c
++++ b/arch/unicore64/mm/init.c
+@@ -25,6 +25,14 @@ void free_initmem(void)
+ 	BUG();
+ }
+ 
++#ifdef CONFIG_BLK_DEV_INITRD
++void free_initrd_mem(unsigned long start, unsigned long end)
++{
++	/* FIXME */
++	BUG();
++}
++#endif
++
+ static void __init zone_sizes_init(void)
+ {
+ 	unsigned long zone_sizes[MAX_NR_ZONES];
+-- 
+1.7.9.5
+

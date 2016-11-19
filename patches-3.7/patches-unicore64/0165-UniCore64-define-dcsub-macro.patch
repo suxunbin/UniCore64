@@ -1,0 +1,25 @@
+From 12cb28e04b807c043d6661cfe56b8b62e2ccf4f2 Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Tue, 13 Dec 2011 17:57:13 +0800
+Subject: [PATCH 165/641] UniCore64: define dcsub macro
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-common.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index 11a67c6..13d81f0 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -4,6 +4,7 @@
+ #include <linux/stringify.h>
+ 
+ #define csub		cmpsub
++#define dcsub		dcmpsub
+ 
+ /*
+  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
+-- 
+1.7.9.5
+

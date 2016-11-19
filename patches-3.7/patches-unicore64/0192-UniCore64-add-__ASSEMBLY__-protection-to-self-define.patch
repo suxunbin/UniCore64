@@ -1,0 +1,31 @@
+From c727967184e2a76432c1ca5c96fb9c1a5f1c4773 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 11 Jan 2012 16:57:53 +0800
+Subject: [PATCH 192/641] UniCore64: add __ASSEMBLY__ protection to
+ self-defined instructions
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-common.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index 2b60dd8..fadad48 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -3,10 +3,12 @@
+ 
+ #include <linux/stringify.h>
+ 
++#ifdef __ASSEMBLY__
+ #define csub		cmpsub
+ #define dcsub		dcmpsub
+ #define push_lr		std.w	lr, [sp-], #8
+ #define pop_lr		ldd.w	lr, [sp]+, #8
++#endif /* __ASSEMBLY__ */
+ 
+ /*
+  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
+-- 
+1.7.9.5
+

@@ -1,0 +1,168 @@
+From 89340b2faedfa5b127a5753d0ddf66200a7ac53b Mon Sep 17 00:00:00 2001
+From: Zhang Huan <zhanghuan@mprc.pku.edu.cn>
+Date: Sat, 19 Apr 2014 02:43:44 +0800
+Subject: [PATCH 591/641] de2 architecture
+
+signed-off-by: Ma Lina <malina@mprc.pku.edu.cn>
+---
+ drivers/video/Kconfig                      |    5 ++
+ drivers/video/Makefile                     |    1 +
+ drivers/video/unifb2.c                     |  118 ++++++++++++++++++++++++++++
+ 4 files changed, 130 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/video/unifb2.c
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index d08d799..21aca42 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -5,6 +5,11 @@
+ menu "Graphics support"
+ 	depends on HAS_IOMEM
+ 
++config FB_PUV4_DE2
++        bool
++        default y
++        select FB_SYS_FOPS
++
+ config HAVE_FB_ATMEL
+ 	bool
+ 
+diff --git a/drivers/video/Makefile b/drivers/video/Makefile
+index 23e948e..76a9ab6 100644
+--- a/drivers/video/Makefile
++++ b/drivers/video/Makefile
+@@ -146,6 +146,7 @@ obj-$(CONFIG_FB_MSM)              += msm/
+ obj-$(CONFIG_FB_NUC900)           += nuc900fb.o
+ obj-$(CONFIG_FB_JZ4740)		  += jz4740_fb.o
+ obj-$(CONFIG_FB_PUV3_UNIGFX)      += fb-puv3.o
++obj-$(CONFIG_FB_PUV4_DE2)         += unifb2.o
+ 
+ # Platform or fallback drivers go here
+ obj-$(CONFIG_FB_UVESA)            += uvesafb.o
+diff --git a/drivers/video/unifb2.c b/drivers/video/unifb2.c
+new file mode 100644
+index 0000000..0554750
+--- /dev/null
++++ b/drivers/video/unifb2.c
+@@ -0,0 +1,118 @@
++#include <linux/fb.h>
++#include <mach/hardware.h>
++
++static unsigned long unifb_regs[30];
++/* create fb0 framebuffer by default */
++static int unifb_enable __initdata = 1;
++
++struct pkunity_de2 {
++	struct fb_info *info;
++	struct fb_var_screeninfo old_var[2];
++	int id;
++};
++
++static const struct fb_videomode unifb_modes[] = {
++	/* 640x480-60 VESA */
++	{ "640x480@60",    60,  640,  480,  39721,  48,  16,  33, 10,  96, \
++	2, 0, FB_VMODE_NONINTERLACED, FB_MODE_IS_VESA },
++};
++
++#define VIDEOMEMSIZE	(31*1024*1024)
++/* 31 MB for each channel of unifb(total 64MB),
++ * the rest of 2MB for hardware cursor */
++static void *videomemory;
++static u_long videomemorysize = VIDEOMEMSIZE;
++
++static struct fb_var_screeninfo unifb_default = {
++	.xres =		640,
++	.yres =		480,
++	.xres_virtual =	640,
++	.yres_virtual =	480,
++	.bits_per_pixel = 32,
++	.red =		{ 16, 8, 0 },
++	.green =	{ 8,  8, 0 },
++	.blue =		{ 0,  8, 0 },
++	.activate =	FB_ACTIVATE_NOW,
++	.height =	-1,
++	.width =	-1,
++	.pixclock =	39721,
++	.left_margin =	48,
++	.right_margin =	16,
++	.upper_margin =	33,
++	.lower_margin =	10,
++	.hsync_len =	96,
++	.vsync_len =	2,
++	.vmode =	FB_VMODE_NONINTERLACED,
++};
++
++static struct fb_fix_screeninfo unifb_fix = {
++	.id =		"DE2 FB",
++	.type =		FB_TYPE_PACKED_PIXELS,
++	.visual =	FB_VISUAL_TRUECOLOR,
++	.xpanstep =	1,
++	.ypanstep =	1,
++	.ywrapstep =	1,
++	.accel =	FB_ACCEL_NONE,
++};
++
++static u_long get_line_length(int xres_virtual, int bpp)
++{
++	return 0;
++}
++
++static int unifb_check_var(struct fb_var_screeninfo *var,
++			 struct fb_info *info)
++{
++	return 0;
++}
++
++static int unifb_set_par(struct fb_info *info)
++{
++	return 0;
++}
++
++#ifndef MODULE
++static int __init unifb_setup(char *options)
++{
++	return 1;
++}
++#endif  /*  MODULE  */
++
++static struct fb_ops unifb_ops = {
++	.fb_read        = fb_sys_read,
++	.fb_write       = fb_sys_write,
++	.fb_check_var	= unifb_check_var,
++	.fb_set_par	= unifb_set_par,
++};
++
++/*
++ *  Initialisation
++ */
++static int __init unifb_probe(struct platform_device *dev)
++{
++	return 0;
++}
++
++static struct platform_driver unifb_driver = {
++	.probe	 = unifb_probe,
++	.driver  = {
++		.name	= "unifb",
++	},
++};
++
++static struct platform_device *unifb_device;
++
++static int __init unifb_init(void)
++{
++	return 0;
++}
++module_init(unifb_init);
++
++#ifdef MODULE
++static void __exit unifb_exit(void)
++{
++}
++module_exit(unifb_exit);
++
++MODULE_LICENSE("GPL v2");
++#endif				/* MODULE */
+-- 
+1.7.9.5
+

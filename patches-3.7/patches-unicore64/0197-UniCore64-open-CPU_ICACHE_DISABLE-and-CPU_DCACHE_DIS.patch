@@ -1,0 +1,29 @@
+From cc8dc562956e5ec44eadf32a1bc90b5fa02581b7 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 16:36:55 +0800
+Subject: [PATCH 197/641] UniCore64: open CPU_ICACHE_DISABLE and
+ CPU_DCACHE_DISABLE
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 71047a0..eba650b 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -4,8 +4,8 @@ CONFIG_LOCALVERSION="-uc64"
+ ### Processor and System Type
+ #	Processor Features
+ CONFIG_ARCH_FPGA=y
+-CONFIG_CPU_ICACHE_DISABLE=y
+-CONFIG_CPU_DCACHE_DISABLE=y
++CONFIG_CPU_ICACHE_DISABLE=n
++CONFIG_CPU_DCACHE_DISABLE=n
+ 
+ #	Console display driver support
+ CONFIG_VGA_CONSOLE=n
+-- 
+1.7.9.5
+

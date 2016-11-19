@@ -1,0 +1,28 @@
+From cfb605368eed3da6b91e20eae8d74f0e361002e8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 2 Jan 2013 11:46:46 +0800
+Subject: [PATCH 524/641] unicore64: Add FPGA keyboard support
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/input/serio/i8042.h                 |    2 +-
+ 7 files changed, 55 insertions(+), 3 deletions(-)
+ create mode 100644 arch/unicore64/include/arch/puv4-regs-ps2.h
+ create mode 100644 arch/unicore64/include/mach/hardware.h
+
+diff --git a/drivers/input/serio/i8042.h b/drivers/input/serio/i8042.h
+index 3452708..0069112 100644
+--- a/drivers/input/serio/i8042.h
++++ b/drivers/input/serio/i8042.h
+@@ -26,7 +26,7 @@
+ #include "i8042-sparcio.h"
+ #elif defined(CONFIG_X86) || defined(CONFIG_IA64)
+ #include "i8042-x86ia64io.h"
+-#elif defined(CONFIG_UNICORE32)
++#elif defined(CONFIG_UNICORE32) || defined(CONFIG_UNICORE64)
+ #include "i8042-unicore32io.h"
+ #else
+ #include "i8042-io.h"
+-- 
+1.7.9.5
+

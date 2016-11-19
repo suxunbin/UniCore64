@@ -1,0 +1,24 @@
+From adeb244df8acbdeafe9d41837314ad02b4f035ca Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Fri, 14 Sep 2012 18:00:21 +0800
+Subject: [PATCH 454/641] UniCore64: Add a blank cpu_idle()
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/process.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index a8029c5..c30ffdd 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -146,5 +146,5 @@ unsigned long get_wchan(struct task_struct *p)
+ void cpu_idle(void)
+ {
+ 	/* FIXME */
+-	BUG();
++	pr_info("cpu_idle is doing nothing now.\n");
+ }
+-- 
+1.7.9.5
+

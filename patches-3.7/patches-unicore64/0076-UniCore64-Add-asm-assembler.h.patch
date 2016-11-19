@@ -1,0 +1,31 @@
+From 7cc51b87bd7ccaf0cd6e430c1774a00b85dfe0fe Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Wed, 16 Nov 2011 20:35:23 +0800
+Subject: [PATCH 076/641] UniCore64: Add asm assembler.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/assembler.h |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+ create mode 100644 arch/unicore64/include/asm/assembler.h
+
+diff --git a/arch/unicore64/include/asm/assembler.h b/arch/unicore64/include/asm/assembler.h
+new file mode 100644
+index 0000000..11691b9
+--- /dev/null
++++ b/arch/unicore64/include/asm/assembler.h
+@@ -0,0 +1,11 @@
++#ifndef __ASSEMBLY__
++#error "Only include this from assembly code"
++#endif
++
++#define csub		cmpsub
++
++	.macro	nop8
++	.rept	8
++		nop
++	.endr
++	.endm
+-- 
+1.7.9.5
+

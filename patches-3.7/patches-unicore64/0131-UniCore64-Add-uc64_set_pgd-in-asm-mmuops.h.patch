@@ -1,0 +1,29 @@
+From 3f07bb3223b35f582569d499cf25894c7fb0001d Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Fri, 9 Dec 2011 18:11:25 +0800
+Subject: [PATCH 131/641] UniCore64: Add uc64_set_pgd in asm-mmuops.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-mmuops.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-mmuops.h b/arch/unicore64/include/arch/asm-mmuops.h
+index f9e9a03..4756604 100644
+--- a/arch/unicore64/include/arch/asm-mmuops.h
++++ b/arch/unicore64/include/arch/asm-mmuops.h
+@@ -57,4 +57,11 @@ __ASMMACRO_WRAP(.macro	uc64_enable_icache, rt;
+ #endif
+ 		.endm)
+ 
++/**
++ * uc64_set_pgd -  set pgd address
++ */
++__ASMMACRO_WRAP(.macro	uc64_set_pgd, rpgd;
++			movc	p0.c2, &rpgd, #0;
++		.endm)
++
+ #endif /* __UNICORE64_ARCH_ASM_MMUOPS_H__ */
+-- 
+1.7.9.5
+

@@ -1,0 +1,63 @@
+From a1e59003057e4680972bb481fa1ec7a085e0502f Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Thu, 11 Oct 2012 21:54:12 +0800
+Subject: [PATCH 432/641] UniCore64: Add atomic operations
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/atomic.h |   43 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/atomic.h b/arch/unicore64/include/asm/atomic.h
+index 47a3941..df6d814 100644
+--- a/arch/unicore64/include/asm/atomic.h
++++ b/arch/unicore64/include/asm/atomic.h
+@@ -1,2 +1,45 @@
++#ifndef __UNICORE64_ASM_ATOMIC_H__
++#define __UNICORE64_ASM_ATOMIC_H__
++
++#include <arch/asm-debug.h>
++
++#ifdef CONFIG_SMP
++#ifndef atomic_add_return
++#define atomic_add_return(i, v)		\
++	({					\
++		(v)->counter += i;		\
++		uc64_debug_putx(0xdead0011);	\
++		0;				\
++	})
++#endif
++
++#ifndef atomic_sub_return
++#define atomic_sub_return(i, v)		\
++	({					\
++		(v)->counter -= i;		\
++		uc64_debug_putx(0xdead0012);	\
++		0;				\
++	})
++#endif
++
++#ifndef atomic_clear_mask
++#define atomic_clear_mask(i, v)		\
++	({					\
++		uc64_debug_putx(0xdead0013);	\
++		0;				\
++	})
++#endif
++
++#ifndef atomic_set_mask
++#define atomic_set_mask(i, v)			\
++	({					\
++		uc64_debug_putx(0xdead0014);	\
++		0;				\
++	})
++#endif
++#endif /* CONFIG_SMP */
++
+ #include <asm-generic/atomic64.h>
+ #include <asm-generic/atomic.h>
++
++#endif /* __UNICORE64_ASM_ATOMIC_H__ */
+-- 
+1.7.9.5
+

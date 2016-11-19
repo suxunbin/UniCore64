@@ -1,0 +1,88 @@
+From 3d47c85e2e6140922ca72ca7d246dfa4d9b8b851 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 13 Jun 2012 17:08:23 +0800
+Subject: [PATCH 381/641] UniCore64: Use gerenic init_task and add
+ PREEMPT_ACTIVE definition
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/thread_info.h |    6 +++++
+ arch/unicore64/kernel/Makefile           |    2 +-
+ arch/unicore64/kernel/init_task.c        |   35 ------------------------------
+ 3 files changed, 7 insertions(+), 36 deletions(-)
+ delete mode 100644 arch/unicore64/kernel/init_task.c
+
+diff --git a/arch/unicore64/include/asm/thread_info.h b/arch/unicore64/include/asm/thread_info.h
+index a7f316b..cad9798 100644
+--- a/arch/unicore64/include/asm/thread_info.h
++++ b/arch/unicore64/include/asm/thread_info.h
+@@ -50,6 +50,12 @@ static inline struct thread_info *current_thread_info(void)
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
++/*
++ * We use bit 30 of the preempt_count to indicate that kernel
++ * preemption is occurring.
++ */
++#define PREEMPT_ACTIVE		0x40000000
++
+ /* thread information flags: */
+ #define TIF_SIGPENDING		0 /* signal pending */
+ #define TIF_NEED_RESCHED	1 /* rescheduling necessary */
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+index 211b87a..1ae5aeb 100644
+--- a/arch/unicore64/kernel/Makefile
++++ b/arch/unicore64/kernel/Makefile
+@@ -2,7 +2,7 @@
+ # Makefile for the arch/unicore64/kernel.
+ #
+ obj-y			:= head.o entry.o switch_to.o
+-obj-y			+= init_task.o irq.o
++obj-y			+= irq.o
+ obj-y			+= process.o ptrace.o
+ obj-y			+= setup.o sys.o
+ obj-y			+= time.o traps.o
+diff --git a/arch/unicore64/kernel/init_task.c b/arch/unicore64/kernel/init_task.c
+deleted file mode 100644
+index 364d7ed..0000000
+--- a/arch/unicore64/kernel/init_task.c
++++ /dev/null
+@@ -1,35 +0,0 @@
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/init_task.h>
+-#include <linux/mqueue.h>
+-#include <linux/hardirq.h>
+-
+-/**
+- * union init_thread_union - Initial thread structure.
+- *
+- * We need to make sure that this is 8192-byte aligned due to the
+- * way process stacks are handled. This is done by making sure
+- * the linker maps this in the .text segment right after head.S,
+- * and making head.S ensure the proper alignment.
+- *
+- * The things we do for performance..
+- */
+-union thread_union init_thread_union __init_task_data = {
+-	INIT_THREAD_INFO(init_task) };
+-
+-/**
+- * struct init_signals -
+- */
+-static struct signal_struct init_signals = INIT_SIGNALS(init_signals);
+-
+-/**
+- * struct init_sighand -
+- */
+-static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
+-
+-/**
+- * struct init_task - Initial task structure.
+- *
+- * All other task structs will be allocated on slabs in fork.c
+- */
+-struct task_struct init_task = INIT_TASK(init_task);
+-- 
+1.7.9.5
+

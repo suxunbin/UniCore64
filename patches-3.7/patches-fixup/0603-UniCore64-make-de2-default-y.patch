@@ -1,0 +1,25 @@
+From 7403b98dde889ae1cd3e3d6b274091ad6eccbea2 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 01:59:00 +0800
+Subject: [PATCH 603/641] UniCore64: make de2 default y
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/video/Kconfig                          |    1 +
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index 0d0c23b..eecf00d 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -2419,6 +2419,7 @@ config FB_PUV3_UNIGFX
+ 
+ config FB_PUV4_DE2
+ 	bool
++	default y
+ 	depends on FB && UNICORE64 && ARCH_PUV4
+ 	select FB_SYS_FOPS
+ 	select FB_SYS_FILLRECT
+-- 
+1.7.9.5
+

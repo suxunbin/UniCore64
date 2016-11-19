@@ -1,0 +1,70 @@
+From 3848fd8d1c63856024dedf7e5b69f4a42d54dc64 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Wed, 30 Nov 2011 17:23:54 +0800
+Subject: [PATCH 106/641] UniCore64 Add unicore64-kernel.tmpl Modify Makefile
+
+Signed-off-by: Cao Song <caosong@mprc.pku.edu.cn>
+---
+ Documentation/DocBook/unicore64-kernel.tmpl |   50 +++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/DocBook/unicore64-kernel.tmpl
+
+diff --git a/Documentation/DocBook/unicore64-kernel.tmpl b/Documentation/DocBook/unicore64-kernel.tmpl
+new file mode 100644
+index 0000000..a0f2def
+--- /dev/null
++++ b/Documentation/DocBook/unicore64-kernel.tmpl
+@@ -0,0 +1,50 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN">
++
++<book id="unicore64-kernel">
++<bookinfo>
++	<title>Linux kernel for UniCore64 Architecture</title>
++	<authorgroup>
++		<author>
++    		<firstname>Guan</firstname>
++		<surname>Xuetao</surname>
++		<affiliation>
++			<address>
++				<email>gxt@mprc.pku.edu.cn</email>
++			</address>
++		</affiliation>
++		</author>
++	</authorgroup>
++	<copyright>
++		<year>2011</year>
++			<holder>
++				Micro Processor Research and Development Center
++				of Peking University
++			</holder>
++	</copyright>
++	<legalnotice>
++		<para>
++			This documentation is the manual for
++			UniCore64 kernel interface.
++		</para>
++	</legalnotice>
++</bookinfo>
++
++<toc></toc>
++
++<chapter id="chapter1">
++	<title>Fundamental definitions</title>
++	<para>
++		Fundamental definitions.
++	</para>
++
++	<sect1 id="sect1_1">
++		<title>Hardware definitions</title>
++		<sect2 id="sect1_1_1">
++			<title>CPU Core</title>
++!Parch/unicore64/include/arch/hwdef-cpu.h HWDEF_CPU_H
++		</sect2>
++    	</sect1>
++</chapter>
++
++</book>
+-- 
+1.7.9.5
+

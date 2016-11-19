@@ -1,0 +1,115 @@
+From ecae6b01582e55d35bc3b5f2a2d852125779cfcf Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 19 Dec 2012 21:04:35 +0800
+Subject: [PATCH 510/641] unicore64: Use lock tokens
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/spinlock.h |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/spinlock.h b/arch/unicore64/include/asm/spinlock.h
+index f3fb815..d7d0b19 100644
+--- a/arch/unicore64/include/asm/spinlock.h
++++ b/arch/unicore64/include/asm/spinlock.h
+@@ -6,6 +6,7 @@
+ #endif
+ 
+ #include <linux/spinlock_types.h>
++#include <linux/stringify.h>
+ 
+ /* In order to support __lock_aligned in <asm-generic/bitops/atomic.h>,
+    We need it here. */
+@@ -23,14 +24,14 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+ 
+ 	__asm__ __volatile__(
+ 		"1:	llw		%0, [%1]\n"
+-		"	cmpsub.a	%0, #0\n"
++		"	cmpsub.a	%0, #" __stringify(UNLOCK_TOKEN) "\n"
+ 		"	bne		1b\n"
+-		"	mov		%0, %2\n"
++		"	mov		%0, #" __stringify(LOCK_TOKEN) "\n"
+ 		"	scw		%0, [%1]\n"
+ 		"	cmpsub.a	%0, #0\n"
+ 		"	beq		1b"
+ 		: "=&r" (tmp)
+-		: "r" (&lock->lock), "r" (LOCK_TOKEN)
++		: "r" (&lock->lock)
+ 		: "cc", "memory");
+ 
+ 	smp_mb();
+@@ -40,7 +41,7 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
+ {
+ 	smp_mb();
+ 
+-	lock->lock = 0;
++	lock->lock = UNLOCK_TOKEN;
+ }
+ 
+ static inline int arch_spin_trylock(arch_spinlock_t *lock)
+@@ -49,14 +50,14 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
+ 
+ 	__asm__ __volatile__(
+ 		"	llw		%0, [%1]\n"
+-		"	cmpsub.a	%0, #0\n"
++		"	cmpsub.a	%0, #" __stringify(UNLOCK_TOKEN) "\n"
+ 		"	cmovne		%0, #0\n"
+ 		"	bne		1f\n"
+-		"	mov		%0, %2\n"
++		"	mov		%0, #" __stringify(LOCK_TOKEN) "\n"
+ 		"	scw		%0, [%1]\n"
+ 		"1:"
+ 		: "=&r" (tmp)
+-		: "r" (&lock->lock), "r" (LOCK_TOKEN)
++		: "r" (&lock->lock)
+ 		: "cc", "memory");
+ 
+ 	if (tmp)
+@@ -71,7 +72,7 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
+ 
+ 	__asm__ __volatile__(
+ 		"1:	llw		%0, [%1]\n"
+-		"	cmpsub.a	%0, #0\n"
++		"	cmpsub.a	%0, #" __stringify(UNLOCK_TOKEN) "\n"
+ 		"	bsl		1b\n"
+ 		"	add		%0, %0, #1\n"
+ 		"	scw		%0, [%1]\n"
+@@ -117,14 +118,14 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
+ 
+ 	__asm__ __volatile__(
+ 		"1:	llw		%0, [%1]\n"
+-		"	cmpsub.a	%0, #0\n"
++		"	cmpsub.a	%0, #" __stringify(UNLOCK_TOKEN) "\n"
+ 		"	bne		1b\n"
+-		"	mov		%0, %2\n"
++		"	movl		%0, #" __stringify(WRLOCK_TOKEN) "\n"
+ 		"	scw		%0, [%1]\n"
+ 		"	cmpsub.a	%0, #0\n"
+ 		"	beq		1b"
+ 		: "=&r" (tmp)
+-		: "r" (&rw->lock), "r" (WRLOCK_TOKEN)
++		: "r" (&rw->lock)
+ 		: "cc", "memory");
+ 
+ 	smp_mb();
+@@ -134,7 +135,7 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
+ {
+ 	smp_mb();
+ 
+-	rw->lock = 0;
++	rw->lock = UNLOCK_TOKEN;
+ }
+ 
+ static inline int arch_write_trylock(arch_rwlock_t *rw)
+@@ -151,7 +152,7 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
+ #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+ #define arch_spin_is_locked(x)			\
+ 	({					\
+-		((x)->lock != 0);		\
++		((x)->lock != UNLOCK_TOKEN);	\
+ 	})
+ #define arch_spin_unlock_wait(lock) \
+ 	do { while (arch_spin_is_locked(lock)) cpu_relax(); } while (0)
+-- 
+1.7.9.5
+

@@ -1,0 +1,51 @@
+From 93fb26689371726a99fe62301e5baeffcc5be8eb Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 3 Apr 2013 11:42:52 +0800
+Subject: [PATCH 548/641] unicore64: Modify OST and itimer rate
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/timex.h |   12 ++++++++----
+ arch/unicore64/kernel/time.c       |    2 +-
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/timex.h b/arch/unicore64/include/asm/timex.h
+index ee5311a..61710f8 100644
+--- a/arch/unicore64/include/asm/timex.h
++++ b/arch/unicore64/include/asm/timex.h
+@@ -5,11 +5,15 @@
+ 
+ #ifdef CONFIG_ARCH_FPGA
+ /*
+- * In FPGA, itimer clock is 5M. It takes too much time to handle regular timer
+- * interrupts in a second. Set CLOCK_TICK_RATE at X*5M to have 10 interrupts
+- * a second instead.
++ * In FPGA, itimer clock is 3.75M. It takes too much time to handle regular
++ * timer interrupts in a second. Set CLOCK_EVENT_TICK_RATE at X*3.75M to have
++ * 10 interrupts a second instead.
++ *
++ * OST clock rate is 32K. CLOCK_TICK_RATE must be modified in the same way with
++ * CLOCK_EVENT_TICK_RATE.
+  */
+-#	define CLOCK_TICK_RATE		((CONFIG_HZ / 10) * (5 * SZ_1M))
++#define CLOCK_EVENT_TICK_RATE		((CONFIG_HZ / 10) * (3840 * SZ_1K))
++#define CLOCK_TICK_RATE		((CONFIG_HZ / 10) * (32 * SZ_1K))
+ #endif /* CONFIG_ARCH_FPGA */
+ 
+ #include <asm-generic/timex.h>
+diff --git a/arch/unicore64/kernel/time.c b/arch/unicore64/kernel/time.c
+index 0bc2eca4..3173441 100644
+--- a/arch/unicore64/kernel/time.c
++++ b/arch/unicore64/kernel/time.c
+@@ -130,7 +130,7 @@ void __init time_init(void)
+ 	__itimer_irq_disable();
+ 	__itimer_irq_clear();
+ 
+-	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_TICK_RATE, 5);
++	clockevents_calc_mult_shift(&__itimer_ce, CLOCK_EVENT_TICK_RATE, 5);
+ 
+ 	__itimer_ce.max_delta_ns =
+ 		clockevent_delta2ns(MAX_COUNTER_DELTA, &__itimer_ce);
+-- 
+1.7.9.5
+

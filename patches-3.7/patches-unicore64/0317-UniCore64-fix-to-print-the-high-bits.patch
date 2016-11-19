@@ -1,0 +1,37 @@
+From 6cdd9db58f06a1474a54a8a2ae6daa0a010feced Mon Sep 17 00:00:00 2001
+From: caosong <caosong@mprc.pku.edu.cn>
+Date: Tue, 6 Mar 2012 09:26:21 +0800
+Subject: [PATCH 317/641] UniCore64: fix to print the high bits
+
+Signed-off-by: caosong <caosong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index d0b81ac..b84f76a 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -20,13 +20,13 @@ __ASMMACRO_WRAP(.macro	__putchar, rchar, rt1, rt2;
+ 		.endm)
+ 
+ __ASMMACRO_WRAP(.macro	__putdata, rdata, rt1, rt2;
+-			mov	&rt1, r0;
+-			mov	&rt2, r1;
+-			mov	r1, &rdata;
+-			mov	r0, #0;
++			dmov	&rt1, r0;
++			dmov	&rt2, r1;
++			dmov	r1, &rdata;
++			dmov	r0, #0;
+ 			bkpt;
+-			mov	r0, &rt1;
+-			mov	r1, &rt2;
++			dmov	r0, &rt1;
++			dmov	r1, &rt2;
+ 		.endm)
+ #endif /* CONFIG_DEBUG_OCD */
+ 
+-- 
+1.7.9.5
+

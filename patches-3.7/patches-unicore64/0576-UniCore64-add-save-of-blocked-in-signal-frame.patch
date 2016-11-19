@@ -1,0 +1,42 @@
+From 86be44f3c626575d3684d46af885b2ec5e3ecde1 Mon Sep 17 00:00:00 2001
+From: Qin Rui <qinrui12@mprc.pku.edu.cn>
+Date: Tue, 2 Jul 2013 10:36:47 +0800
+Subject: [PATCH 576/641] UniCore64:add save of blocked in signal frame
+
+Signed-off-by: Qin Rui <qinrui12@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/signal.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/unicore64/kernel/signal.c b/arch/unicore64/kernel/signal.c
+index 183c2f1..d729a40 100644
+--- a/arch/unicore64/kernel/signal.c
++++ b/arch/unicore64/kernel/signal.c
+@@ -26,6 +26,8 @@ SYSCALL_DEFINE0(rt_sigreturn)
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+ 
++	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
++		goto badframe;
+ 	set_current_blocked(&set);
+ 
+ 	if (__copy_from_user(regs, &frame->uc.uc_mcontext.regs,
+@@ -55,6 +57,7 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 	struct rt_sigframe  *frame;
+ 	int err = 0;
+ 	unsigned long sp = regs->UC64_R29;
++	sigset_t *oldset = sigmask_to_save();
+ 
+ 	frame = (void __user *)((sp - sizeof(*frame)) & ~7);
+ 
+@@ -68,6 +71,7 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 
+ 	err |= __copy_to_user(&frame->uc.uc_mcontext.regs, regs,
+ 				sizeof(struct pt_regs));
++	err |= __copy_to_user(&frame->uc.uc_sigmask, oldset, sizeof(*oldset));
+ 
+ 	/*Save jepriv code in frame->retcode*/
+ 	err |= __put_user(0xf000008b, &(frame->retcode));
+-- 
+1.7.9.5
+

@@ -1,0 +1,117 @@
+From afea4232af36d1771d113157ecc729dc6cc79a96 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 31 May 2012 11:06:26 +0800
+Subject: [PATCH 352/641] UniCore64-bugfix: fix the reprint problem
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/uncompress.h        |    2 +-
+ arch/unicore64/include/arch/asm-debug.h |    4 +++-
+ arch/unicore64/kernel/early_printk.c    |    2 +-
+ arch/unicore64/lib/debug.S              |   36 +++++++++++++++++--------------
+ 4 files changed, 25 insertions(+), 19 deletions(-)
+
+diff --git a/arch/unicore64/boot/uncompress.h b/arch/unicore64/boot/uncompress.h
+index ead3e64..589ae3be 100644
+--- a/arch/unicore64/boot/uncompress.h
++++ b/arch/unicore64/boot/uncompress.h
+@@ -16,7 +16,7 @@ extern char input_data_end[];
+ #ifndef ARCH_HAVE_DECOMP_PUTS
+ #define arch_decomp_puts(p)
+ #else
+-#define arch_decomp_puts(p)	uc64_debug_puts(p)
++#define arch_decomp_puts(p)	uc64_debug_puts(p, UC64_DEBUG_PUTS_MAXLEN)
+ #endif
+ 
+ #ifndef ARCH_HAVE_DECOMP_ERROR
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index 25f9fb7..ff4449f 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -26,8 +26,10 @@ __ASMMACRO_WRAP(.macro	__putdata, rdata;
+ 		.endm)
+ #endif /* CONFIG_DEBUG_OCD */
+ 
++#define UC64_DEBUG_PUTS_MAXLEN		256
++
+ #ifndef __ASSEMBLY__
+-extern void uc64_debug_puts(const char *s);
++extern void uc64_debug_puts(const char *s, unsigned len);
+ extern void uc64_debug_putx(unsigned long x);
+ #endif /* __ASSEMBLY__ */
+ 
+diff --git a/arch/unicore64/kernel/early_printk.c b/arch/unicore64/kernel/early_printk.c
+index 68e8838..cf7b0a3 100644
+--- a/arch/unicore64/kernel/early_printk.c
++++ b/arch/unicore64/kernel/early_printk.c
+@@ -5,7 +5,7 @@
+ 
+ static void early_ocd_write(struct console *con, const char *s, unsigned n)
+ {
+-	uc64_debug_puts(s);
++	uc64_debug_puts(s, n);
+ }
+ 
+ static struct console early_ocd_console = {
+diff --git a/arch/unicore64/lib/debug.S b/arch/unicore64/lib/debug.S
+index b65e5d7..c80cc12 100644
+--- a/arch/unicore64/lib/debug.S
++++ b/arch/unicore64/lib/debug.S
+@@ -2,33 +2,37 @@
+ #include <arch/asm-common.h>
+ #include <arch/asm-debug.h>
+ 
+-#define UC64_DEBUG_PUTS_MAX	256
+-
+ /**
+- * uc64_debug_puts - print a string less than 256.
++ * uc64_debug_puts - print a string
+  * r0: the address of the string
+- * r1: the max length of the string
++ * r1: the length of the string
++ *
++ * The pseudo-logic of this function is:
++ *	if (r1 > maxlen)	print error infomation;
++ *	while (*r0 && r1-- > 0) {
++ *		__putchar(*r0);
++ *		r0++;
++ *	}
+  */
+ ENTRY(uc64_debug_puts)
+-	dmov	r1, #UC64_DEBUG_PUTS_MAX
++	dcmpsub.a	r1, #UC64_DEBUG_PUTS_MAXLEN
++	beb		1001f
++
++	adr		r0, 1003f
+ 
+-1001:	ldb.w	r2, [r0]+, #1
++1001:	ldb.w		r2, [r0]+, #1
+ 	dcmpsub.a	r2, #0
+-	beq	1003f
++	beq		1002f
+ 
+ 	__putchar	r2
+ 
+-	dsub.a	r1, r1, #1
+-	bsl	1002f
+-	b	1001b
+-
+-1002:	adr	r0, 1004f
+-	b	uc64_debug_puts
++	dsub.a		r1, r1, #1
++	beq		1002f
++	b		1001b
+ 
+-1003:	return
++1002:	return
+ 
+-1004:
+-	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
++1003:	.asciz	"\nWarning: String is too long in uc64_debug_puts.\n"
+ ENDPROC(uc64_debug_puts)
+ 
+ /**
+-- 
+1.7.9.5
+

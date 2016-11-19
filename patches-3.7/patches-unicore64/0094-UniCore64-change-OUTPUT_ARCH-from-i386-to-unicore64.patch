@@ -1,0 +1,27 @@
+From 3d5ff6e26c773f94a9eaf6c90a5e578eee8a4d27 Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Tue, 29 Nov 2011 10:36:31 +0800
+Subject: [PATCH 094/641] UniCore64: change OUTPUT_ARCH from i386 to unicore64
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/vmlinux.lds.S |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/vmlinux.lds.S b/arch/unicore64/kernel/vmlinux.lds.S
+index f6d73c0..4b21400 100644
+--- a/arch/unicore64/kernel/vmlinux.lds.S
++++ b/arch/unicore64/kernel/vmlinux.lds.S
+@@ -4,8 +4,7 @@
+ #include <asm/page.h>
+ #include <asm/cache.h>
+ 
+-OUTPUT_ARCH(i386:x86-64)
+-/* OUTPUT_ARCH(unicore64) */
++OUTPUT_ARCH(unicore64)
+ ENTRY(stext)
+ 
+ jiffies = jiffies_64;
+-- 
+1.7.9.5
+

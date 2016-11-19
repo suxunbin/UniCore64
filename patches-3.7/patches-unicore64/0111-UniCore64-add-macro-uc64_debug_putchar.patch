@@ -1,0 +1,35 @@
+From 5d1c77e63e5e0bdbadb12a1ebadc020f3616c9b7 Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Fri, 2 Dec 2011 16:33:02 +0800
+Subject: [PATCH 111/641] UniCore64: add macro uc64_debug_putchar
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 arch/unicore64/include/arch/asm-debug.h
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+new file mode 100644
+index 0000000..dfc1f86
+--- /dev/null
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -0,0 +1,15 @@
++#ifndef __UNICORE64_ARCH_ASM_DEBUG_H__
++#define __UNICORE64_ARCH_ASM_DEBUG_H__
++
++#include <arch/asm-common.h>
++
++/**
++  * uc64_debug_putchar - prints a 8 bits char
++  */
++#ifdef	CONFIG_DEBUG_OCD
++__ASMMACRO_WRAP(.macro	uc64_debug_putchar, rt;
++			movc	p6.c0, &rt, #1;
++		.endm)
++#endif /* CONFIG_DEBUG_OCD */
++
++#endif /* __UNICORE64_ARCH_ASM_DEBUG_H__ */
+-- 
+1.7.9.5
+

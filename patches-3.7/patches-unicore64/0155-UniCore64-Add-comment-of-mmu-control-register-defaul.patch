@@ -1,0 +1,26 @@
+From f555bbd4a57e2215c1f40f55c643668f7be7d252 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Mon, 12 Dec 2011 11:45:15 +0800
+Subject: [PATCH 155/641] UniCore64: Add comment of mmu control register
+ default value
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index c4490b8..f51acd4 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -58,6 +58,7 @@
+  * CP0_CTRLREG_ICACHE:		Icache enable
+  * CP0_CTRLREG_SAVEPOWER:	Save power enable
+  * CP0_CTRLREG_WRITEBACK:	Dcache write mechanism: write back
++ * CP0_CTRLREG_DEFAULT:		MMU control register's default value
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-- 
+1.7.9.5
+

@@ -1,0 +1,45 @@
+From 4127dd87bf3a7ba53cb04c2f609f052b36c06c43 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Fri, 2 Dec 2011 18:11:16 +0800
+Subject: [PATCH 115/641] UniCore64: Modify DocBook unicore64-kernel.tmpl
+
+Modify the align of some explaination. And add a paragraph of
+explaination for the sect.
+Signed-off-by: Cao Song <caosong@mprc.pku.edu.cn>
+---
+ Documentation/DocBook/unicore64-kernel.tmpl |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/DocBook/unicore64-kernel.tmpl b/Documentation/DocBook/unicore64-kernel.tmpl
+index a0f2def..27f8d65 100644
+--- a/Documentation/DocBook/unicore64-kernel.tmpl
++++ b/Documentation/DocBook/unicore64-kernel.tmpl
+@@ -3,7 +3,7 @@
+ 
+ <book id="unicore64-kernel">
+ <bookinfo>
+-	<title>Linux kernel for UniCore64 Architecture</title>
++	<title>Linux Kernel for UniCore64 Architecture</title>
+ 	<authorgroup>
+ 		<author>
+     		<firstname>Guan</firstname>
+@@ -40,8 +40,16 @@
+ 
+ 	<sect1 id="sect1_1">
+ 		<title>Hardware definitions</title>
++		<para>
++		The hardware definition is association about the
++		features of the UniCore64 Architecture, such as
++		CPU core,  coprocessors, etc.
++		</para>
+ 		<sect2 id="sect1_1_1">
+ 			<title>CPU Core</title>
++			<screen>
++			See file: arch/unicore64/include/arch/hwdef-cpu.h
++			</screen>
+ !Parch/unicore64/include/arch/hwdef-cpu.h HWDEF_CPU_H
+ 		</sect2>
+     	</sect1>
+-- 
+1.7.9.5
+

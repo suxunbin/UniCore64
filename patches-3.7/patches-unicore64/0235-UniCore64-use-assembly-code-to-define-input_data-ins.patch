@@ -1,0 +1,45 @@
+From bc39914e6160db1cf14a36aeb8daf0ec3af604c7 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 17 Jan 2012 22:36:28 +0800
+Subject: [PATCH 235/641] UniCore64: use assembly code to define input_data
+ instead of lds method
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/boot-head.S |    6 +++++-
+ arch/unicore64/boot/boot.lds.S  |    4 ----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/boot/boot-head.S b/arch/unicore64/boot/boot-head.S
+index d8282a3..fe33f71 100644
+--- a/arch/unicore64/boot/boot-head.S
++++ b/arch/unicore64/boot/boot-head.S
+@@ -75,5 +75,9 @@ dtb_data:
+ 	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
+ dtb_data_end:
+ 
+-	.section .piggydata
++	__epip4d_align64
++	.globl	input_data
++input_data:
+ 	.incbin "arch/unicore64/boot/piggy.bin"
++	.globl	input_data_end
++input_data_end:
+diff --git a/arch/unicore64/boot/boot.lds.S b/arch/unicore64/boot/boot.lds.S
+index 4a5c4b2..22f171e 100644
+--- a/arch/unicore64/boot/boot.lds.S
++++ b/arch/unicore64/boot/boot.lds.S
+@@ -23,10 +23,6 @@ SECTIONS
+ 		*(.rodata)
+ 		*(.rodata.*)
+ 
+-		input_data = .;
+-		*(.piggydata)
+-		input_data_end = .;
+-
+ 		. = ALIGN(4);
+ 	}
+ 
+-- 
+1.7.9.5
+

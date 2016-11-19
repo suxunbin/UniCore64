@@ -1,0 +1,38 @@
+From cbaac0daa10b5aca9eaa1acd1d965285596e9468 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 26 Oct 2012 17:39:09 +0800
+Subject: [PATCH 450/641] unicore64: Adjust __pmd_free_tlb
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgalloc.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/pgalloc.h b/arch/unicore64/include/asm/pgalloc.h
+index 9014f6a..3afc7d8 100644
+--- a/arch/unicore64/include/asm/pgalloc.h
++++ b/arch/unicore64/include/asm/pgalloc.h
+@@ -18,15 +18,15 @@ extern void pmd_free(struct mm_struct *, pmd_t *);
+ 
+ extern void pud_populate(struct mm_struct *, pud_t *, pmd_t *);
+ 
++#define __pmd_free_tlb(tlb, pmdp, addr)				\
++	do {							\
++		tlb_remove_page((tlb), virt_to_page(pmdp));	\
++	} while (0)
++
+ #define __pte_free_tlb(tlb, ptep, addr)				\
+ 	do {							\
+ 		pgtable_page_dtor(ptep);			\
+ 		tlb_remove_page((tlb), (ptep));			\
+ 	} while (0)
+-#define __pmd_free_tlb(tlb, pmdp, addr)				\
+-	do {							\
+-		pgtable_page_dtor(pmdp);			\
+-		tlb_remove_page((tlb), (pmdp));			\
+-	} while (0)
+ 
+ #endif /* __UNICORE64_ASM_PGALLOC_H__ */
+-- 
+1.7.9.5
+

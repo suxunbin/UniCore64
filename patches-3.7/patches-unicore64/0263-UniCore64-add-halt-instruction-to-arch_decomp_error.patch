@@ -1,0 +1,45 @@
+From c7389ec3ecd36c4443244cdf6223a2c27e02a19e Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 19 Jan 2012 14:07:26 +0800
+Subject: [PATCH 263/641] UniCore64: add halt instruction to arch_decomp_error
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/uncompress.c |    5 +----
+ arch/unicore64/boot/uncompress.h |    4 +++-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/boot/uncompress.c b/arch/unicore64/boot/uncompress.c
+index e6ac385..8979d28 100644
+--- a/arch/unicore64/boot/uncompress.c
++++ b/arch/unicore64/boot/uncompress.c
+@@ -19,10 +19,7 @@ static void error(char *x)
+ 	arch_decomp_puts(x);
+ 	arch_decomp_puts("\n\n -- System halted");
+ 
+-	arch_decomp_error(x);
+-
+-	for (;;)
+-		;
++	arch_decomp_error();
+ }
+ 
+ /**
+diff --git a/arch/unicore64/boot/uncompress.h b/arch/unicore64/boot/uncompress.h
+index 759b5d3..7ac51e3 100644
+--- a/arch/unicore64/boot/uncompress.h
++++ b/arch/unicore64/boot/uncompress.h
+@@ -20,7 +20,9 @@ extern char input_data_end[];
+ #endif
+ 
+ #ifndef ARCH_HAVE_DECOMP_ERROR
+-#define arch_decomp_error(x)
++#define arch_decomp_error()
++#else
++#define arch_decomp_error()	__asm__("halt")
+ #endif
+ 
+ #ifndef ARCH_HAVE_DECOMP_SETUP
+-- 
+1.7.9.5
+

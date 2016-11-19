@@ -1,0 +1,39 @@
+From 82d367f1a7d5c0fb52197a8f6acc635b8ae056ac Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Thu, 16 Feb 2012 11:29:11 +0800
+Subject: [PATCH 301/641] UniCore64: Add UC64_PAGE_SELECT
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-pgtable.h |    1 +
+ arch/unicore64/kernel/head.S                |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index 64675b6..605eb06 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -17,6 +17,7 @@
+ #define UC64_PAGE_BITS		(12)
+ #define UC64_PAGE_SIZE		__BP(UC64_PAGE_BITS)
+ #define UC64_PAGE_MASK		__BM(UC64_PAGE_BITS, 0)
++#define UC64_PAGE_SELECT	__BS(UC64_PAGE_BITS, 0)
+ 
+ #define UC64_PTE_BITS		(UC64_PAGE_BITS - UC64_PGTBL_ENTRY_BITS)
+ #define UC64_PTE_SIZE		__BP(UC64_PTE_BITS)
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index d21fee4..8cfacbb 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -77,7 +77,7 @@ ENTRY(__head_pgtable_init)
+ 	dmovl	r1, #UC64_VM_KERNEL_START
+ 	dasr	r1, r1, #UC64_PGD_SHIFT
+ 	dlsl	r1, r1, #UC64_PGTBL_ENTRY_BITS
+-	dmovl	r2, #UC64_PAGE_MASK
++	dmovl	r2, #UC64_PAGE_SELECT
+ 	dand	r1, r1, r2
+ 	dmovl	r2, #UC64_PM_PGTABLE_PGD
+ 	dadd	r1, r1, r2
+-- 
+1.7.9.5
+

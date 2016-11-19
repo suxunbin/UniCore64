@@ -1,0 +1,27 @@
+From 5ff2d1b0b6235f8d7ba36352dbccc0af1d8a5bd6 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 5 May 2014 22:44:23 +0800
+Subject: [PATCH 622/641] Revert "UniCore64: Make SWIOTLB configable"
+
+This reverts commit 0b2274290cf5e37ee523d8887295a9b94ec3b83b.
+---
+ arch/unicore64/mm/Kconfig |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+index ff8747f..4f7abfb 100644
+--- a/arch/unicore64/mm/Kconfig
++++ b/arch/unicore64/mm/Kconfig
+@@ -34,8 +34,7 @@ config ALIGNMENT_TRAP
+ 	  operation of some network protocols.
+ 
+ config SWIOTLB
+-#	def_bool y
+-	bool "SW IO TLB"
++	def_bool y
+ 
+ config IOMMU_HELPER
+ 	def_bool SWIOTLB
+-- 
+1.7.9.5
+

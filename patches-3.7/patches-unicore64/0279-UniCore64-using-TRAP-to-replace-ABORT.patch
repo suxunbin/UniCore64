@@ -1,0 +1,28 @@
+From 70945d3155481d1a590ccb6f35a7927a979d67a4 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 10:43:05 +0800
+Subject: [PATCH 279/641] UniCore64: using TRAP to replace ABORT
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 616453a..15337c1 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -31,8 +31,8 @@
+ #define CP0_CPUID		p0.c0
+ #define CP0_CTRLREG		p0.c1
+ #define CP0_TTB_ASID		p0.c2
+-#define CP0_ABORT_STAT		p0.c3
+-#define CP0_DABORT_VADDR	p0.c4
++#define CP0_TRAP_STAT		p0.c3
++#define CP0_DTRAP_VADDR		p0.c4
+ #define CP0_TLB			p0.c5
+ #define CP0_DCACHE		p0.c6
+ #define CP0_ICACHE		p0.c7
+-- 
+1.7.9.5
+

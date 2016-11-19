@@ -1,0 +1,27 @@
+From 108f8103910aac6524c66b584d0b51a98274c928 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Thu, 29 Sep 2011 16:13:59 +0800
+Subject: [PATCH 006/641] UniCore64:Add definition of PTRS_PER_PTE
+
+Fixed error :fs/proc/task_mmu.c:62:4: error: 'PTRS_PER_PTE' undeclared (first use in this function)
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgtable.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index ed94e6a..50ca2c5 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -29,6 +29,7 @@
+ 
+ #define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+ #define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PTRS_PER_PTE		(PAGE_SIZE / sizeof(pte_t))
+ 
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ 
+-- 
+1.7.9.5
+

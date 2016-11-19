@@ -1,0 +1,76 @@
+From c71555a767642fdb4c88506296f2750eeaf90447 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 13 May 2014 23:56:01 +0800
+Subject: [PATCH 626/641] UniCore64: create 4M noncached region for swiotlb
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ lib/swiotlb.c                              |   16 ++++++++++++++++
+ 5 files changed, 34 insertions(+)
+
+diff --git a/lib/swiotlb.c b/lib/swiotlb.c
+index f114bf6..7d2a45f 100644
+--- a/lib/swiotlb.c
++++ b/lib/swiotlb.c
+@@ -159,9 +159,13 @@ void __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+ 	/*
+ 	 * Get the overflow emergency buffer
+ 	 */
++#ifdef CONFIG_UNICORE64
++	io_tlb_overflow_buffer = UC64_VM_NONCACHED_START + SZ_4M - PAGE_ALIGN(io_tlb_overflow);
++#else
+ 	io_tlb_overflow_buffer = alloc_bootmem_low_pages(PAGE_ALIGN(io_tlb_overflow));
+ 	if (!io_tlb_overflow_buffer)
+ 		panic("Cannot allocate SWIOTLB overflow buffer!\n");
++#endif
+ 	if (verbose)
+ 		swiotlb_print_info();
+ }
+@@ -185,9 +189,13 @@ swiotlb_init_with_default_size(size_t default_size, int verbose)
+ 	/*
+ 	 * Get IO TLB memory from the low pages
+ 	 */
++#ifdef CONFIG_UNICORE64
++	io_tlb_start = UC64_VM_NONCACHED_START;
++#else
+ 	io_tlb_start = alloc_bootmem_low_pages(PAGE_ALIGN(bytes));
+ 	if (!io_tlb_start)
+ 		panic("Cannot allocate SWIOTLB buffer");
++#endif
+ 
+ 	swiotlb_init_with_tbl(io_tlb_start, io_tlb_nslabs, verbose);
+ }
+@@ -195,7 +203,11 @@ swiotlb_init_with_default_size(size_t default_size, int verbose)
+ void __init
+ swiotlb_init(int verbose)
+ {
++#ifdef CONFIG_UNICORE64
++	swiotlb_init_with_default_size(SZ_4M - io_tlb_overflow, verbose);
++#else
+ 	swiotlb_init_with_default_size(64 * (1<<20), verbose);	/* default to 64MB */
++#endif
+ }
+ 
+ /*
+@@ -325,14 +337,18 @@ void __init swiotlb_free(void)
+ 		free_pages((unsigned long)io_tlb_start,
+ 			   get_order(io_tlb_nslabs << IO_TLB_SHIFT));
+ 	} else {
++#ifndef CONFIG_UNICORE64
+ 		free_bootmem_late(__pa(io_tlb_overflow_buffer),
+ 				  PAGE_ALIGN(io_tlb_overflow));
++#endif
+ 		free_bootmem_late(__pa(io_tlb_orig_addr),
+ 				  PAGE_ALIGN(io_tlb_nslabs * sizeof(phys_addr_t)));
+ 		free_bootmem_late(__pa(io_tlb_list),
+ 				  PAGE_ALIGN(io_tlb_nslabs * sizeof(int)));
++#ifndef CONFIG_UNICORE64
+ 		free_bootmem_late(__pa(io_tlb_start),
+ 				  PAGE_ALIGN(io_tlb_nslabs << IO_TLB_SHIFT));
++#endif
+ 	}
+ 	io_tlb_nslabs = 0;
+ }
+-- 
+1.7.9.5
+

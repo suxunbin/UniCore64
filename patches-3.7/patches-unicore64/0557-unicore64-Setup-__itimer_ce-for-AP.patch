@@ -1,0 +1,38 @@
+From 9f9cf95beff4b5669695fbacca249f21b4598166 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Tue, 28 May 2013 16:21:51 +0800
+Subject: [PATCH 557/641] unicore64: Setup __itimer_ce for AP
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/smp.h |    2 ++
+ arch/unicore64/kernel/smp.c      |    2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/smp.h b/arch/unicore64/include/asm/smp.h
+index a9dc6ca..aff9c63 100644
+--- a/arch/unicore64/include/asm/smp.h
++++ b/arch/unicore64/include/asm/smp.h
+@@ -12,4 +12,6 @@
+ extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+ extern void arch_send_call_function_single_ipi(int cpu);
+ 
++extern void setup_itimer(void);
++
+ #endif /* __UNICORE64_ASM_SMP_H__ */
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index 30cbc5e..5f47b85 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -225,6 +225,8 @@ void __init secondary_start_kernel(void)
+ 
+ 	preempt_disable();
+ 
++	setup_itimer();
++
+ 	smp_secondary_alive = 1;
+ 
+ 	cpu_idle();
+-- 
+1.7.9.5
+

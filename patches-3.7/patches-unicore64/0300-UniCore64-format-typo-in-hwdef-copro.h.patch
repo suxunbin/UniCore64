@@ -1,0 +1,26 @@
+From e77437c8a1e37bb8cbb110a328df7e16174c4f0f Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 9 Feb 2012 14:09:44 +0800
+Subject: [PATCH 300/641] UniCore64: format typo in hwdef-copro.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index e83d85f..2b0cf24 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -8,7 +8,7 @@
+  */
+ #include <linux/stringify.h>
+ 
+-#define __read_cp_op(reg, op_no)						\
++#define __read_cp_op(reg, op_no)					\
+ 	({								\
+ 		unsigned long __val;					\
+ 		__asm__("movc	%0, " __stringify(reg)			\
+-- 
+1.7.9.5
+

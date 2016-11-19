@@ -1,0 +1,32 @@
+From 7db8710d74e449198c898c6d0fee90e845965948 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Thu, 11 Oct 2012 22:00:08 +0800
+Subject: [PATCH 434/641] UniCore64: Add raw_smp_processor_id
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/smp.h |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 arch/unicore64/include/asm/smp.h
+
+diff --git a/arch/unicore64/include/asm/smp.h b/arch/unicore64/include/asm/smp.h
+new file mode 100644
+index 0000000..7cb7ac1
+--- /dev/null
++++ b/arch/unicore64/include/asm/smp.h
+@@ -0,0 +1,12 @@
++#ifndef __UNICORE64_ASM_SMP_H__
++#define __UNICORE64_ASM_SMP_H__
++
++#ifndef CONFIG_SMP
++# error "<asm/smp.h> included in non-SMP build"
++#endif
++
++#include <linux/threads.h>
++
++#define raw_smp_processor_id() (current_thread_info()->cpu)
++
++#endif /* __UNICORE64_ASM_SMP_H__ */
+-- 
+1.7.9.5
+

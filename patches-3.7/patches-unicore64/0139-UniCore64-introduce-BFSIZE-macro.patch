@@ -1,0 +1,45 @@
+From cb8f4f7e5129481d3b77dbccd83d74dbcd3d1020 Mon Sep 17 00:00:00 2001
+From: GuanXuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 10 Dec 2011 12:38:24 +0800
+Subject: [PATCH 139/641] UniCore64: introduce BFSIZE macro
+
+Signed-off-by: GuanXuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h      |    6 +++---
+ arch/unicore64/include/arch/hwdef-pgtable.h |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index 38bdab1..2d8e1a1 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -8,10 +8,10 @@
+ 
+ #include <linux/const.h>
+ 
++#define BFSIZE(vbits)		(_AC(1, UL) << (vbits))
++#define BFMASK(vmask, vshift)	(((BFSIZE(vmask)) - 1) << (vshift))
+ #define BFIELD(val, vmask, vshift)		\
+-		(((val) & ((_AC(1, UL) << (vmask)) - 1)) << (vshift))
+-#define BFMASK(vmask, vshift)			\
+-		(((_AC(1, UL) << (vmask)) - 1) << (vshift))
++		(((val) << (vshift)) & BFMASK(vmask, vshift))
+ 
+ /*
+  * To define 64-bit addresses:
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index dc6929a..5278b34 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -5,7 +5,7 @@
+ 
+ /* Hardware address translation and page table definitions. */
+ #define UC64_PAGE_BITS		(12)
+-#define UC64_PAGE_SIZE		(_AC(1, UL) << UC64_PAGE_BITS)
++#define UC64_PAGE_SIZE		BFSIZE(UC64_PAGE_BITS)
+ #define UC64_PAGE_MASK		BFMASK(UC64_PAGE_BITS, 0)
+ 
+ /* Level 1 descriptor (PGD) */
+-- 
+1.7.9.5
+

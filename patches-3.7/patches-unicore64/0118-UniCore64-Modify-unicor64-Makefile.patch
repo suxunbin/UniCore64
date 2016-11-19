@@ -1,0 +1,30 @@
+From 75db6adc5af327e476befa5f191638ec5526b7f1 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Tue, 6 Dec 2011 10:32:59 +0800
+Subject: [PATCH 118/641] UniCore64: Modify unicor64 Makefile
+
+Add the rule 'archdoc' to create the unicore64-kernel.pdf.
+Signed-off-by: Cao Song <caosong@mprc.pku.edu.cn>
+---
+ arch/unicore64/Makefile |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/unicore64/Makefile b/arch/unicore64/Makefile
+index 79fa2d5..c3e0532 100644
+--- a/arch/unicore64/Makefile
++++ b/arch/unicore64/Makefile
+@@ -36,6 +36,11 @@ libs-y			+= arch/unicore64/lib/
+ 
+ all:	vmlinux
+ 
++DOC_DIR			:= Documentation/DocBook
++archdoc:
++	$(Q)$(MAKE) $(build)=$(DOC_DIR) DOCBOOKS=unicore64-kernel.xml pdfdocs
++
+ define archhelp
+ 	echo  '  defconfig     - using arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
++	echo  '  archdoc       - Generate $(DOC_DIR)/unicore64-kernel.pdf'
+ endef
+-- 
+1.7.9.5
+

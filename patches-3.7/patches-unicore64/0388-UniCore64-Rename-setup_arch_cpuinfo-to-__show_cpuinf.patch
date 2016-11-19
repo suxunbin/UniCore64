@@ -1,0 +1,72 @@
+From e68154131dfad56184da34c3c47aa01351c13056 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 14 Jun 2012 10:55:23 +0800
+Subject: [PATCH 388/641] UniCore64: Rename setup_arch_cpuinfo to
+ __show_cpuinfo
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    2 +-
+ arch/unicore64/kernel/setup.c           |    3 ++-
+ arch/unicore64/kernel/showinfo.c        |    4 ++--
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index 3f8f254..3f7e633 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -1,7 +1,6 @@
+ #ifndef __UNICORE64_ASM_SETUP_ARCH_H__
+ #define __UNICORE64_ASM_SETUP_ARCH_H__
+ 
+-extern void setup_arch_cpuinfo(void);
+ extern void setup_arch_memory(void);
+ 
+ extern void paging_init(void);
+@@ -15,6 +14,7 @@ extern void setup_arch_devtree(char *cmdline);
+ extern char __vectors_table[];
+ 
+ extern void __show_uc64_regs(void);
++extern void __show_cpuinfo(void);
+ extern void __show_cp0_regs(void);
+ 
+ #ifdef CONFIG_OCD_CONSOLE
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 484e458..96f8d52 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -47,7 +47,8 @@ void __init setup_arch(char **cmdline_p)
+ 	atomic_notifier_chain_register(&panic_notifier_list,
+ 			&uc64_panic_block);
+ 
+-	setup_arch_cpuinfo();
++	__show_cpuinfo();
++
+ 	setup_arch_param(cmdline_p);
+ 	setup_arch_memory();
+ 	unflatten_device_tree();
+diff --git a/arch/unicore64/kernel/showinfo.c b/arch/unicore64/kernel/showinfo.c
+index 179023f..ecf07c0 100644
+--- a/arch/unicore64/kernel/showinfo.c
++++ b/arch/unicore64/kernel/showinfo.c
+@@ -16,7 +16,7 @@ void __show_uc64_regs(void)
+ }
+ 
+ /**
+- * setup_arch_cpuinfo() - show the cpu and cache information
++ * __show_cpuinfo() - show the cpu and cache information
+  *
+  * show the cpu and cache information in the screen.
+  * first, get the value in copro through the macro UC64_CPUID,
+@@ -80,7 +80,7 @@ void __show_uc64_regs(void)
+ 		printk(KERN_CONT "L64B"); break;			\
+ 	}
+ 
+-void __init setup_arch_cpuinfo(void)
++void __show_cpuinfo(void)
+ {
+ 	unsigned long uc64_cpuid;
+ 	unsigned long uc64_cache;
+-- 
+1.7.9.5
+

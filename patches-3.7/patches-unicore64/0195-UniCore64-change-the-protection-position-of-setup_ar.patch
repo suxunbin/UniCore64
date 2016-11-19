@@ -1,0 +1,46 @@
+From ef07e5c60af556d26556d364432af9c0970b30b1 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 16:09:20 +0800
+Subject: [PATCH 195/641] UniCore64: change the protection position of
+ setup_arch_devtree
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    5 +++++
+ arch/unicore64/kernel/setup.c           |    2 --
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index cfdeeab..c39dfde 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -6,7 +6,12 @@
+ 
+ extern void setup_arch_cpuinfo(void);
+ extern void setup_arch_memory(void);
++
++#ifdef CONFIG_OF_EARLY_FLATTREE
+ extern void setup_arch_devtree(char *cmdline);
++#else
++#define setup_arch_devtree(s)		do { } while (0)
++#endif /* CONFIG_OF_EARLY_FLATTREE */
+ 
+ #define UC64_CPUID							\
+ 	({								\
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 8fd78cc..fdb1e5d 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -24,9 +24,7 @@ static struct notifier_block uc64_panic_block = {
+ 
+ static void __init setup_arch_param(char **cmdline_p)
+ {
+-#ifdef CONFIG_OF_EARLY_FLATTREE
+ 	setup_arch_devtree(boot_command_line);
+-#endif
+ 
+ 	if (boot_command_line[0])
+ 		strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
+-- 
+1.7.9.5
+

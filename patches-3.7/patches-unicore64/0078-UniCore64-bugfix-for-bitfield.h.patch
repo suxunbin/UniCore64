@@ -1,0 +1,29 @@
+From d010ed76115cb4b70a0e053a4fa3fc897265aebf Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 21 Nov 2011 13:57:39 +0800
+Subject: [PATCH 078/641] UniCore64: bugfix for bitfield.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index 6cace31..01b3aeb 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -12,9 +12,9 @@
+ #define UData(Data)	(Data)
+ #endif
+ 
+-#define FIELD(val, vmask, vshift)		\\
++#define FIELD(val, vmask, vshift)		\
+ 		(((val) & ((UData(1) << (vmask)) - 1)) << (vshift))
+-#define FMASK(vmask, vshift)			\\
++#define FMASK(vmask, vshift)			\
+ 		(((UData(1) << (vmask)) - 1) << (vshift))
+ 
+ #endif /* __UNICORE64_ARCH_BITFIELD_H__ */
+-- 
+1.7.9.5
+

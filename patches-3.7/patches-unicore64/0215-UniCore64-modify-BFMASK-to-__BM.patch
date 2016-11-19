@@ -1,0 +1,191 @@
+From 2997df51893c94e2e9db78fad08590ab235c702e Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 16 Jan 2012 09:05:07 +0800
+Subject: [PATCH 215/641] UniCore64: modify BFMASK to __BM
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h          |    6 +++---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |   20 ++++++++++----------
+ arch/unicore64/include/arch/hwdef-cpu.h         |    6 +++---
+ arch/unicore64/include/arch/hwdef-pgtable.h     |   16 ++++++++--------
+ 4 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index be5ddc1..f84ab8c 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -9,11 +9,11 @@
+ #include <linux/const.h>
+ 
+ #define BFSIZE(vbits)			(_AC(1, UL) << (vbits))
+-#define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+-#define __BS(vmask, vshift)	(~BFMASK(vmask, vshift))
++#define __BM(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
++#define __BS(vmask, vshift)	(~__BM(vmask, vshift))
+ 
+ #define __BF(val, vmask, vshift)		\
+-		(((val) << (vshift)) & BFMASK(vmask, vshift))
++		(((val) << (vshift)) & __BM(vmask, vshift))
+ 
+ /*
+  * To define 64-bit addresses:
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 29a14f9..d95e0ab 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -80,26 +80,26 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define CP0_CPUID_PARTNO_MASK		BFMASK(16, 0)
++#define CP0_CPUID_PARTNO_MASK		__BM(16, 0)
+ #define CP0_CPUID_PARTNO_PKUNITY	__BF(0x863, 12, 0)
+ #define CP0_CPUID_LAYOUT_POS		(16)
+-#define CP0_CPUID_LAYOUT_MASK		BFMASK(4, CP0_CPUID_LAYOUT_POS)
++#define CP0_CPUID_LAYOUT_MASK		__BM(4, CP0_CPUID_LAYOUT_POS)
+ #define CP0_CPUID_SERIES_POS		(20)
+-#define CP0_CPUID_SERIES_MASK		BFMASK(4, CP0_CPUID_SERIES_POS)
+-#define CP0_CPUID_DESIGNER_MASK		BFMASK(8, 24)
++#define CP0_CPUID_SERIES_MASK		__BM(4, CP0_CPUID_SERIES_POS)
++#define CP0_CPUID_DESIGNER_MASK		__BM(8, 24)
+ #define CP0_CPUID_DESIGNER_MPRC		__BF(0x4D, 8, 24)
+ 
+ /**
+  * DOC: HWDEF_COPRO_H_CP0_CACHE
+  * Following cache inforamtion macros in CP0 are defined.
+  */
+-#define CP0_CPUID_ICACHE_LINE_MASK		BFMASK(2, 0)
++#define CP0_CPUID_ICACHE_LINE_MASK		__BM(2, 0)
+ #define CP0_CPUID_ICACHE_LINE_8BYTE		__BF(0, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_16BYTE		__BF(1, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_32BYTE		__BF(2, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_64BYTE		__BF(3, 2, 0)
+ 
+-#define CP0_CPUID_ICACHE_ASSOC_MASK		BFMASK(3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_MASK		__BM(3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_DMAP		__BF(0, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_2WAY		__BF(1, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_4WAY		__BF(2, 3, 3)
+@@ -109,7 +109,7 @@
+ #define CP0_CPUID_ICACHE_ASSOC_64WAY		__BF(6, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_128WAY		__BF(7, 3, 3)
+ 
+-#define CP0_CPUID_ICACHE_SIZE_MASK		BFMASK(3, 6)
++#define CP0_CPUID_ICACHE_SIZE_MASK		__BM(3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_512B		__BF(0, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_1KB		__BF(1, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_2KB		__BF(2, 3, 6)
+@@ -119,13 +119,13 @@
+ #define CP0_CPUID_ICACHE_SIZE_32KB		__BF(6, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_64KB		__BF(7, 3, 6)
+ 
+-#define CP0_CPUID_DCACHE_LINE_MASK		BFMASK(2, 12)
++#define CP0_CPUID_DCACHE_LINE_MASK		__BM(2, 12)
+ #define CP0_CPUID_DCACHE_LINE_8BYTE		__BF(0, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_16BYTE		__BF(1, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_32BYTE		__BF(2, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_64BYTE		__BF(3, 2, 12)
+ 
+-#define CP0_CPUID_DCACHE_ASSOC_MASK		BFMASK(3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_MASK		__BM(3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_DMAP		__BF(0, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_2WAY		__BF(1, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_4WAY		__BF(2, 3, 15)
+@@ -135,7 +135,7 @@
+ #define CP0_CPUID_DCACHE_ASSOC_64WAY		__BF(6, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_128WAY		__BF(7, 3, 15)
+ 
+-#define CP0_CPUID_DCACHE_SIZE_MASK		BFMASK(3, 18)
++#define CP0_CPUID_DCACHE_SIZE_MASK		__BM(3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_512B		__BF(0, 3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_1KB		__BF(1, 3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_2KB		__BF(2, 3, 18)
+diff --git a/arch/unicore64/include/arch/hwdef-cpu.h b/arch/unicore64/include/arch/hwdef-cpu.h
+index 30205ab..8a74bf6 100644
+--- a/arch/unicore64/include/arch/hwdef-cpu.h
++++ b/arch/unicore64/include/arch/hwdef-cpu.h
+@@ -32,7 +32,7 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define ASR_MODE_MASK		BFMASK(3, 0)
++#define ASR_MODE_MASK		__BM(3, 0)
+ #define ASR_MODE_USER		__BF(1, 1, 0)
+ #define ASR_MODE_PRIV		__BF(1, 1, 1)
+ #define ASR_MODE_DEBUG		__BF(1, 1, 2)
+@@ -40,7 +40,7 @@
+ #define ASR_T_BIT		__BF(1, 1, 3)
+ #define ASR_D_BIT		__BF(1, 1, 4)
+ 
+-#define ASR_INTR_MASK		BFMASK(6, 5)
++#define ASR_INTR_MASK		__BM(6, 5)
+ #define ASR_INTR_SMP		__BF(1, 1, 5)
+ #define ASR_INTR_LSU		__BF(1, 1, 6)
+ #define ASR_INTR_ITM		__BF(1, 1, 7)
+@@ -62,7 +62,7 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define AFR_MASK		BFMASK(4, 0)
++#define AFR_MASK		__BM(4, 0)
+ #define AFR_V_BIT		__BF(1, 1, 0)
+ #define AFR_C_BIT		__BF(1, 1, 1)
+ #define AFR_Z_BIT		__BF(1, 1, 2)
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index 15f365e..2e809af 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -16,21 +16,21 @@
+ 
+ #define UC64_PAGE_BITS		(12)
+ #define UC64_PAGE_SIZE		BFSIZE(UC64_PAGE_BITS)
+-#define UC64_PAGE_MASK		BFMASK(UC64_PAGE_BITS, 0)
++#define UC64_PAGE_MASK		__BM(UC64_PAGE_BITS, 0)
+ 
+ #define UC64_PTE_BITS		(UC64_PAGE_BITS - UC64_PGTBL_ENTRY_BITS)
+ #define UC64_PTE_SIZE		BFSIZE(UC64_PTE_BITS)
+-#define UC64_PTE_MASK		BFMASK(UC64_PTE_BITS, UC64_PAGE_BITS)
++#define UC64_PTE_MASK		__BM(UC64_PTE_BITS, UC64_PAGE_BITS)
+ 
+ #define UC64_PMD_BITS		(UC64_PAGE_BITS - UC64_PGTBL_ENTRY_BITS)
+ #define UC64_PMD_SHIFT		(UC64_PAGE_BITS + UC64_PTE_BITS)
+ #define UC64_PMD_SIZE		BFSIZE(UC64_PMD_SHIFT)
+-#define UC64_PMD_MASK		BFMASK(UC64_PMD_BITS, UC64_PMD_SHIFT)
++#define UC64_PMD_MASK		__BM(UC64_PMD_BITS, UC64_PMD_SHIFT)
+ 
+ #define UC64_PGD_BITS		(UC64_PAGE_BITS - UC64_PGTBL_ENTRY_BITS)
+ #define UC64_PGD_SHIFT		(UC64_PMD_SHIFT + UC64_PGD_BITS)
+ #define UC64_PGD_SIZE		BFSIZE(UC64_PGD_SHIFT)
+-#define UC64_PGD_MASK		BFMASK(UC64_PGD_BITS, UC64_PGD_SHIFT)
++#define UC64_PGD_MASK		__BM(UC64_PGD_BITS, UC64_PGD_SHIFT)
+ 
+ /**
+  * DOC: HWDEF_PGTABLE_H_PGD
+@@ -77,9 +77,9 @@
+ #define UC64_PMD_EXEC		__BF(1, 1, 5)
+ #define UC64_PMD_WRITE		__BF(1, 1, 6)
+ #define UC64_PMD_READ		__BF(1, 1, 7)
+-#define UC64_PMD_RWX		BFMASK(3, 5)
++#define UC64_PMD_RWX		__BM(3, 5)
+ #define UC64_PMD_GLOBAL		__BF(1, 1, 8)
+-#define UC64_PMD_TYPE_MASK	BFMASK(2, 9)
++#define UC64_PMD_TYPE_MASK	__BM(2, 9)
+ #define UC64_PMD_TYPE_IO	__BF(0, 2, 9)
+ #define UC64_PMD_TYPE_NOCACHE	__BF(1, 2, 9)
+ #define UC64_PMD_TYPE_CACHE	__BF(2, 2, 9)
+@@ -115,9 +115,9 @@
+ #define UC64_PTE_EXEC		__BF(1, 1, 5)
+ #define UC64_PTE_WRITE		__BF(1, 1, 6)
+ #define UC64_PTE_READ		__BF(1, 1, 7)
+-#define UC64_PTE_RWX		BFMASK(3, 5)
++#define UC64_PTE_RWX		__BM(3, 5)
+ #define UC64_PTE_GLOBAL		__BF(1, 1, 8)
+-#define UC64_PTE_TYPE_MASK	BFMASK(2, 9)
++#define UC64_PTE_TYPE_MASK	__BM(2, 9)
+ #define UC64_PTE_TYPE_IO	__BF(0, 2, 9)
+ #define UC64_PTE_TYPE_NOCACHE	__BF(1, 2, 9)
+ #define UC64_PTE_TYPE_CACHE	__BF(2, 2, 9)
+-- 
+1.7.9.5
+

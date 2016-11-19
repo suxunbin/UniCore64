@@ -1,0 +1,498 @@
+From 7115c49e722b1f8580d1b99866bb04832fd2a778 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 26 Aug 2011 09:47:34 +0800
+Subject: [PATCH 002/641] unicore64: generate first verion headers
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig                     |    9 +++
+ arch/unicore64/Makefile                    |   15 ++--
+ arch/unicore64/include/asm/dma-mapping.h   |   22 +++++
+ arch/unicore64/include/asm/mmu_context.h   |   19 +++++
+ arch/unicore64/include/asm/page.h          |   24 ++++--
+ arch/unicore64/include/asm/pgalloc.h       |   24 ++++++
+ arch/unicore64/include/asm/pgtable-hwdef.h |    2 +
+ arch/unicore64/include/asm/pgtable.h       |  120 ++++++++++++++++++++++++----
+ arch/unicore64/include/asm/processor.h     |   27 ++++++-
+ arch/unicore64/include/asm/ptrace.h        |    9 +++
+ arch/unicore64/include/asm/thread_info.h   |   20 ++++-
+ arch/unicore64/include/asm/tlbflush.h      |   19 +++++
+ 12 files changed, 279 insertions(+), 31 deletions(-)
+ create mode 100644 arch/unicore64/include/asm/dma-mapping.h
+ create mode 100644 arch/unicore64/include/asm/mmu_context.h
+ create mode 100644 arch/unicore64/include/asm/pgalloc.h
+ create mode 100644 arch/unicore64/include/asm/tlbflush.h
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index a44a120..700b876 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -14,6 +14,9 @@ config UNICORE64
+ config 64BIT
+ 	def_bool y
+ 
++config ARCH_DMA_ADDR_T_64BIT
++	def_bool y
++
+ config RWSEM_GENERIC_SPINLOCK
+ 	def_bool y
+ 
+@@ -76,3 +79,9 @@ source "drivers/Kconfig"
+ source "fs/Kconfig"
+ 
+ source "lib/Kconfig"
++
++menu "Kernel hacking"
++
++source "lib/Kconfig.debug"
++
++endmenu
+diff --git a/arch/unicore64/Makefile b/arch/unicore64/Makefile
+index bb7121f..0fa3333 100644
+--- a/arch/unicore64/Makefile
++++ b/arch/unicore64/Makefile
+@@ -36,20 +36,23 @@ KBUILD_CFLAGS		+= -msoft-float
+ 
+ ASM_GENERIC_HEADERS	:= auxvec.h
+ ASM_GENERIC_HEADERS	+= bug.h bugs.h
+-ASM_GENERIC_HEADERS	+= cache.h cacheflush.h
++ASM_GENERIC_HEADERS	+= cache.h cacheflush.h checksum.h
+ ASM_GENERIC_HEADERS	+= cmpxchg.h cmpxchg-local.h
+ ASM_GENERIC_HEADERS	+= cputime.h current.h
+ ASM_GENERIC_HEADERS	+= delay.h device.h div64.h dma.h
+-ASM_GENERIC_HEADERS	+= errno.h fcntl.h ftrace.h hardirq.h hw_irq.h
++ASM_GENERIC_HEADERS	+= emergency-restart.h errno.h
++ASM_GENERIC_HEADERS	+= fcntl.h ftrace.h futex.h hardirq.h hw_irq.h
+ ASM_GENERIC_HEADERS	+= io.h ioctl.h ioctls.h ipcbuf.h
+ ASM_GENERIC_HEADERS	+= irq.h irq_regs.h irqflags.h
+-ASM_GENERIC_HEADERS	+= kmap_types.h linkage.h local.h
+-ASM_GENERIC_HEADERS	+= mman.h module.h msgbuf.h
++ASM_GENERIC_HEADERS	+= kdebug.h kmap_types.h linkage.h local.h
++ASM_GENERIC_HEADERS	+= mman.h module.h msgbuf.h mutex.h
+ ASM_GENERIC_HEADERS	+= param.h percpu.h poll.h posix_types.h resource.h
+-ASM_GENERIC_HEADERS	+= sections.h sembuf.h setup.h shmbuf.h shmparam.h
++ASM_GENERIC_HEADERS	+= scatterlist.h sections.h sembuf.h setup.h
++ASM_GENERIC_HEADERS	+= shmbuf.h shmparam.h
+ ASM_GENERIC_HEADERS	+= siginfo.h signal.h socket.h sockios.h
+ ASM_GENERIC_HEADERS	+= stat.h statfs.h string.h swab.h system.h
+-ASM_GENERIC_HEADERS	+= termbits.h termios.h topology.h types.h uaccess.h
++ASM_GENERIC_HEADERS	+= termbits.h termios.h tlb.h topology.h types.h
++ASM_GENERIC_HEADERS	+= uaccess.h unaligned.h
+ 
+ archprepare:
+ 	$(Q)$(foreach a, $(ASM_GENERIC_HEADERS),	\
+diff --git a/arch/unicore64/include/asm/dma-mapping.h b/arch/unicore64/include/asm/dma-mapping.h
+new file mode 100644
+index 0000000..5e7d2d4
+--- /dev/null
++++ b/arch/unicore64/include/asm/dma-mapping.h
+@@ -0,0 +1,22 @@
++#ifndef __ASM_UNICORE64_DMA_MAPPING_H__
++#define __ASM_UNICORE64_DMA_MAPPING_H__
++
++extern struct dma_map_ops swiotlb_dma_map_ops;
++
++#define get_dma_ops(dev)		(&swiotlb_dma_map_ops)
++
++#define dma_supported(d, m)			\
++		get_dma_ops(dev)->dma_supported((d), (m))
++#define dma_alloc_coherent(d, s, h, f)		\
++		get_dma_ops(dev)->alloc_coherent((d), (s), (h), (f))
++#define dma_free_coherent(d, s, a, h)		\
++		get_dma_ops(dev)->free_coherent((d), (s), (a), (h))
++
++#define dma_alloc_noncoherent(d, s, h, f)	\
++		dma_alloc_coherent((d), (s), (h), (f))
++#define dma_free_noncoherent(d, s, a, h)	\
++		dma_free_coherent((d), (s), (a), (h))
++
++#include <asm-generic/dma-mapping-common.h>
++
++#endif /* __ASM_UNICORE64_DMA_MAPPING_H__ */
+diff --git a/arch/unicore64/include/asm/mmu_context.h b/arch/unicore64/include/asm/mmu_context.h
+new file mode 100644
+index 0000000..b93fd65
+--- /dev/null
++++ b/arch/unicore64/include/asm/mmu_context.h
+@@ -0,0 +1,19 @@
++#ifndef __ASM_UNICORE64_MMU_CONTEXT_H__
++#define __ASM_UNICORE64_MMU_CONTEXT_H__
++
++#include <asm-generic/mm_hooks.h>
++
++#define init_new_context(tsk, mm)	(0)
++
++#define destroy_context(mm)		do { } while (0)
++#define enter_lazy_tlb(mm, tsk)		do { } while (0)
++#define deactivate_mm(tsk, mm)		do { } while (0)
++#define activate_mm(prev, next)		switch_mm((prev), (next), NULL)
++
++static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
++	  struct task_struct *tsk)
++{
++	BUG();
++}
++
++#endif /* __ASM_UNICORE64_MMU_CONTEXT_H__ */
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index c2edd2c..305ccac 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -10,6 +10,25 @@
+ #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
+ #define PAGE_MASK		(~(PAGE_SIZE-1))
+ 
++#define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
++#define copy_page(to, from)	memcpy((void *)(to), (void *)(from), PAGE_SIZE)
++
++#define clear_user_page(page, vaddr, pg)	clear_page(page)
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
++
++#define __va(x)			((void *)((unsigned long)(x) + PAGE_OFFSET))
++#define __pa(x)			((unsigned long)(x) - PAGE_OFFSET)
++
++#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
++#define page_to_phys(page)	((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
++
++#define pfn_valid(pfn)		((pfn) < max_mapnr)
++
++#define virt_addr_valid(kaddr)	pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
++
++#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | VM_MAYREAD | \
++					VM_MAYWRITE | VM_MAYEXEC)
++
+ #define STRICT_MM_TYPECHECKS
+ 
+ #ifdef STRICT_MM_TYPECHECKS
+@@ -50,11 +69,6 @@ typedef u64 pgprot_t;
+ 
+ typedef struct page *pgtable_t;
+ 
+-#define __va(x)			((void *)((unsigned long)(x) + PAGE_OFFSET))
+-#define __pa(x)			((unsigned long)(x) - PAGE_OFFSET)
+-
+-#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+-
+ #include <asm-generic/getorder.h>
+ #include <asm-generic/memory_model.h>
+ 
+diff --git a/arch/unicore64/include/asm/pgalloc.h b/arch/unicore64/include/asm/pgalloc.h
+new file mode 100644
+index 0000000..2a836e3
+--- /dev/null
++++ b/arch/unicore64/include/asm/pgalloc.h
+@@ -0,0 +1,24 @@
++#ifndef __ASM_UNICORE64_PGALLOC_H__
++#define __ASM_UNICORE64_PGALLOC_H__
++
++extern pgd_t *pgd_alloc(struct mm_struct *);
++extern void pgd_free(struct mm_struct *, pgd_t *);
++
++extern pgtable_t *pte_alloc_one(struct mm_struct *, unsigned long);
++extern pte_t *pte_alloc_one_kernel(struct mm_struct *, unsigned long);
++
++extern void pte_free(struct mm_struct *, pgtable_t);
++extern void pte_free_kernel(struct mm_struct *, pte_t *);
++
++extern void pmd_populate(struct mm_struct *, pmd_t *, pgtable_t);
++extern void pmd_populate_kernel(struct mm_struct *, pmd_t *, pte_t *);
++
++extern pmd_t *pmd_alloc_one(struct mm_struct *, unsigned long);
++extern void pmd_free(struct mm_struct *, pmd_t *);
++
++extern void pud_populate(struct mm_struct *, pud_t *, pmd_t *);
++
++#define __pte_free_tlb(tlb, ptep, addr)	BUG()
++#define __pmd_free_tlb(tlb, pmdp, addr)	BUG()
++
++#endif /* __ASM_UNICORE64_PGALLOC_H__ */
+diff --git a/arch/unicore64/include/asm/pgtable-hwdef.h b/arch/unicore64/include/asm/pgtable-hwdef.h
+index 0574084..e77f9ac 100644
+--- a/arch/unicore64/include/asm/pgtable-hwdef.h
++++ b/arch/unicore64/include/asm/pgtable-hwdef.h
+@@ -16,5 +16,7 @@
+ #define UC64_L3_EXEC		(1 << 5)
+ #define UC64_L3_WRITE		(1 << 6)
+ #define UC64_L3_READ		(1 << 7)
++#define UC64_L3_CACHE		(1 << 8)
++#define UC64_L3_FILE		(1 << 3) /* FIXME */
+ 
+ #endif /* __ASM_UNICORE64_PGTABLE_HWDEF_H__ */
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index 30c82c2..ed94e6a 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -8,32 +8,104 @@
+ #define VMALLOC_START		_AC(0x0000000100000000, UL)
+ #define VMALLOC_END		_AC(0x0000000200000000, UL)
+ 
+-/* 3-level translation table walking: 9+9+9+12 */
+-#define PGDIR_SHIFT		(30)
+-#define PMD_SHIFT		(21)
++#define FIRST_USER_ADDRESS	(0)
+ 
+-#define PTRS_PER_PMD		(1 << 9)
++/*
++ * 3-level translation table walking: 9+9+9+12
++ *  PGTBL_ENTRYSHIFT: the logarithm of the size of pagetable entry space,
++ *			which is the same for PGD/PMD/PTE, i.e., 8 bytes.
++ */
++#define PGTBL_ENTRYSHIFT	(3)
+ 
+-#define pud_none(pud)		(!pud_val(pud))
+-#define pud_bad(pud)		(!pud_val(pud))
+-#define pud_present(pud)	(pud_val(pud))
+-#define pud_clear(pudp)		set_pud(pudp, __pud(0))
++#define PGDIR_SHIFT		(PAGE_SHIFT				\
++				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT)	\
++				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PGDIR_SIZE		(_AC(1, UL) << PGDIR_SHIFT)
++#define PGDIR_MASK		(~(PGDIR_SIZE-1))
++
++#define PMD_SHIFT		(PAGE_SHIFT + (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PMD_SIZE		(_AC(1, UL) << PMD_SHIFT)
++#define PMD_MASK		(~(PMD_SIZE-1))
++
++#define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++
++extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
++
++#define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
++#define pgd_offset(mm, addr)	((mm)->pgd + pgd_index(addr))
++#define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
++
++#define pmd_index(addr)		(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1))
++#define pmd_offset(pudp, addr)	((pmd_t *)pud_val(*(pudp)) + pmd_index(addr))
+ 
++#define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
++#define pte_offset_kernel(pmdp, addr)	({BUG(); 0; })
++#define pte_offset_map(dir, addr)	pte_offset_kernel((dir), (addr))
++#define pte_unmap(pte)			do { } while (0)
++
++#define PAGE_KERNEL		__pgprot(UC64_L3_READ | UC64_L3_WRITE	\
++					| UC64_L3_EXEC | UC64_L3_DIRTY	\
++					| UC64_L3_EXIST | UC64_L3_YOUNG	\
++					| UC64_L3_CACHE)
++
++/* FIXME: if READ is needed when WRITE or EXEC, otherwise, modify VM_flags */
++#define arch_vm_get_page_prot(vm_flags)	__pgprot(UC64_L3_EXIST | UC64_L3_CACHE)
++#define __P000		__pgprot(0)
++#define __P001		__pgprot(UC64_L3_READ)
++#define __P010		__pgprot(0)
++#define __P011		__pgprot(UC64_L3_READ)
++#define __P100		__pgprot(UC64_L3_EXEC)
++#define __P101		__pgprot(UC64_L3_EXEC | UC64_L3_READ)
++#define __P110		__pgprot(UC64_L3_EXEC)
++#define __P111		__pgprot(UC64_L3_EXEC | UC64_L3_READ)
++
++#define __S000		__pgprot(0)
++#define __S001		__pgprot(UC64_L3_READ)
++#define __S010		__pgprot(UC64_L3_WRITE)
++#define __S011		__pgprot(UC64_L3_WRITE | UC64_L3_READ)
++#define __S100		__pgprot(UC64_L3_EXEC)
++#define __S101		__pgprot(UC64_L3_EXEC | UC64_L3_READ)
++#define __S110		__pgprot(UC64_L3_EXEC | UC64_L3_WRITE)
++#define __S111		__pgprot(UC64_L3_EXEC | UC64_L3_WRITE | UC64_L3_READ)
++
++#define pte_modify(pte, newprot)	__pte({BUG(); 0; })
++
++/* ZERO_PAGE is a global shared page that is always zero,
++ * used for zero-mapped memory areas etc..  */
++extern struct page *empty_zero_page;
++#define ZERO_PAGE(vaddr)	(empty_zero_page)
++
++#define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
++#define pfn_pte(pfn, prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
++#define mk_pte(page, prot)	pfn_pte(page_to_pfn(page), prot)
++
++#define pud_none(pud)		(!pud_val(pud))
+ #define pmd_none(pmd)		(!pmd_val(pmd))
++#define pte_none(pte)		(!pte_val(pte))
++#define pud_bad(pud)		(!pud_val(pud))
+ #define pmd_bad(pmd)		(!pmd_val(pmd))
++#define pud_present(pud)	(pud_val(pud))
+ #define pmd_present(pmd)	(pmd_val(pmd) & UC64_L2_EXIST)
+-#define pmd_clear(pmdp)		set_pmd(pmdp, __pmd(0))
++#define pte_present(pte)	(pte_val(pte) & UC64_L3_EXIST)
+ 
+-#define pmd_offset(pudp, addr)	((pmd_t *)pud_val(*(pudp)) +	\
+-				(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1)))
++extern void set_pte(pte_t *ptep, pte_t pteval);
++#define set_pte_at(mm, addr, ptep, pteval)	set_pte(ptep, pteval)
++#define set_pmd(pmdptr, pmdval)		do { *(pmdptr) = pmdval; } while (0)
++#define set_pud(pudptr, pudval)		do { *(pudptr) = pudval; } while (0)
+ 
+-#define pte_none(pte)		(!pte_val(pte))
+-#define pte_present(pte)	(pte_val(pte) & UC64_L3_EXIST)
++#define pud_clear(pudp)			set_pud(pudp, __pud(0))
++#define pmd_clear(pmdp)			set_pmd(pmdp, __pmd(0))
+ #define pte_clear(mm, addr, ptep)	set_pte(ptep, __pte(0))
+ 
++#define pmd_page(pmd)		pfn_to_page((pmd_val(pmd)) >> PAGE_SHIFT)
++#define pte_page(pte)		pfn_to_page(pte_pfn(pte))
++#define pmd_pgtable(pmd)	pmd_page(pmd)
++
+ #define pte_write(pte)		(pte_val(pte) & UC64_L3_WRITE)
+ #define pte_dirty(pte)		(pte_val(pte) & UC64_L3_DIRTY)
+ #define pte_young(pte)		(pte_val(pte) & UC64_L3_YOUNG)
++#define pte_special(pte)	(0)
+ 
+ #define pte_wrprotect(pte)	(__pte(pte_val(pte) & ~UC64_L3_WRITE))
+ #define pte_mkwrite(pte)	(__pte(pte_val(pte) | UC64_L3_WRITE))
+@@ -41,9 +113,27 @@
+ #define pte_mkdirty(pte)	(__pte(pte_val(pte) | UC64_L3_DIRTY))
+ #define pte_mkold(pte)		(__pte(pte_val(pte) & ~UC64_L3_YOUNG))
+ #define pte_mkyoung(pte)	(__pte(pte_val(pte) | UC64_L3_YOUNG))
++#define pte_mkspecial(pte)	(pte)
+ 
+-extern void set_pte(pte_t *ptep, pte_t pteval);
+-#define set_pte_at(mm, addr, ptep, pteval)	set_pte(ptep, pteval)
++#define pgtable_cache_init()		do { } while (0)
++#define check_pgt_cache()		do { } while (0)
++
++#define pgd_ERROR(pgd)			pr_err("%s:%d: bad pgd %016lx.\n", \
++					__FILE__, __LINE__, pgd_val(pgd))
++#define pmd_ERROR(pmd)			pr_err("%s:%d: bad pmd %016lx.\n", \
++					__FILE__, __LINE__, pmd_val(pmd))
++
++#define __swp_type(x)			({BUG(); 0; })
++#define __swp_offset(x)			({BUG(); 0; })
++#define __swp_entry(type, offset)	((swp_entry_t){0}) /* FIXME */
++#define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
++#define __swp_entry_to_pte(swp)		((pte_t) { (swp).val })
++
++#define pte_file(pte)			(pte_val(pte) & UC64_L3_FILE)
++#define pte_to_pgoff(x)			({BUG(); 0; })
++#define pgoff_to_pte(x)			__pte({BUG(); 0;})
++
++#define PTE_FILE_MAX_BITS		36 /* FIXME */
+ 
+ #include <asm-generic/pgtable.h>
+ 
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index bf17ef1..f1f1a84 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -3,11 +3,34 @@
+ 
+ #ifdef __KERNEL__
+ 
+-struct thread_struct { };
++#define TASK_SIZE		PAGE_OFFSET
++#define TASK_UNMAPPED_BASE	(PAGE_OFFSET / 8 * 3) /* FIXME */
++
++#define STACK_TOP		TASK_SIZE
++#define STACK_TOP_MAX		TASK_SIZE
++
++/*
++ * Default implementation of macro that returns current
++ * instruction pointer ("program counter").
++ */
++#define current_text_addr()	({ __label__ _l; _l: &&_l; })
++
++struct thread_struct {
++	u64 pc;
++};
++
+ #define INIT_THREAD		{ }
+ 
++#define thread_saved_pc(tsk)	((tsk)->thread.pc)
++
++#define prepare_to_copy(tsk)	do { } while (0)
++#define release_thread(tsk)	do { } while (0)
++
+ #define cpu_relax()		barrier()
+ 
+-#endif
++/* Create a new kernel thread */
++extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
++
++#endif /* __KERNEL__ */
+ 
+ #endif /* __ASM_UNICORE64_PROCESSOR_H__ */
+diff --git a/arch/unicore64/include/asm/ptrace.h b/arch/unicore64/include/asm/ptrace.h
+index 0d5ec1a..9d667b8 100644
+--- a/arch/unicore64/include/asm/ptrace.h
++++ b/arch/unicore64/include/asm/ptrace.h
+@@ -45,4 +45,13 @@ struct pt_regs {
+ #define UC64_ASR		uc64_regs[32]
+ #define UC64_O00		uc64_regs[33] /* Orig R00 */
+ 
++#ifdef __KERNEL__
++
++#define MODE_MASK		0x0000001f /* FIXME */
++#define USER_MODE		0x00000010
++
++#define user_mode(regs)		(((regs)->UC64_ASR & MODE_MASK) == USER_MODE)
++
++#endif /* __KERNEL__ */
++
+ #endif /* __ASM_UNICORE64_PTRACE_H__ */
+diff --git a/arch/unicore64/include/asm/thread_info.h b/arch/unicore64/include/asm/thread_info.h
+index 358eb32..e45f043 100644
+--- a/arch/unicore64/include/asm/thread_info.h
++++ b/arch/unicore64/include/asm/thread_info.h
+@@ -3,11 +3,12 @@
+ 
+ #ifdef __KERNEL__
+ 
+-#define THREAD_SIZE_ORDER	(1)
+-#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+-
+ #include <asm/types.h>
+ #include <asm/segment.h>
++#include <asm/page.h>
++
++#define THREAD_SIZE_ORDER	(1)
++#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
+ /*
+  * low level task data that entry.S needs immediate access to.
+@@ -37,5 +38,18 @@ struct thread_info {
+ 
+ #define init_thread_info	(init_thread_union.thread_info)
+ 
++static inline struct thread_info *current_thread_info(void)
++{
++	register u64 sp __asm__("sp");
++	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
++}
++
++/* thread information flags: */
++#define TIF_SIGPENDING		0 /* signal pending */
++#define TIF_NEED_RESCHED	1 /* rescheduling necessary */
++#define TIF_SYSCALL_TRACE	2 /* syscall trace active */
++#define TIF_RESTORE_SIGMASK	3 /* restore signal mask in do_signal */
++#define TIF_MEMDIE		4 /* is terminating due to OOM killer */
++
+ #endif /* __KERNEL__ */
+ #endif /* __ASM_UNICORE64_THREAD_INFO_H__ */
+diff --git a/arch/unicore64/include/asm/tlbflush.h b/arch/unicore64/include/asm/tlbflush.h
+new file mode 100644
+index 0000000..cb065ad
+--- /dev/null
++++ b/arch/unicore64/include/asm/tlbflush.h
+@@ -0,0 +1,19 @@
++#ifndef __ASM_UNICORE64_TLBFLUSH_H__
++#define __ASM_UNICORE64_TLBFLUSH_H__
++
++/* following macros used for asm-generic/tlb.h */
++#define tlb_start_vma(tlb, vma)				do { } while (0)
++#define tlb_end_vma(tlb, vma)				do { } while (0)
++#define __tlb_remove_tlb_entry(tlb, ptep, address)	do { } while (0)
++
++extern void flush_tlb_mm(struct mm_struct *);
++extern void flush_tlb_page(struct vm_area_struct *, unsigned long);
++extern void flush_tlb_range(struct vm_area_struct *, unsigned long, unsigned long);
++
++extern void flush_tlb_kernel_range(unsigned long, unsigned long);
++
++extern void update_mmu_cache(struct vm_area_struct *, unsigned long, pte_t *);
++
++#define tlb_flush(tlb)		flush_tlb_mm((tlb)->mm)
++
++#endif /* __ASM_UNICORE64_TLBFLUSH_H__ */
+-- 
+1.7.9.5
+

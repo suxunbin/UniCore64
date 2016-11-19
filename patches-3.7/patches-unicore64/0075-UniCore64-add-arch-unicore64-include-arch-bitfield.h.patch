@@ -1,0 +1,41 @@
+From c8f28ee2cc807ed8433f5d33dfb38c8f6bb7362a Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 17 Nov 2011 09:47:15 +0800
+Subject: [PATCH 075/641] UniCore64: add
+ arch/unicore64/include/arch/bitfield.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 arch/unicore64/include/arch/bitfield.h
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+new file mode 100644
+index 0000000..6cace31
+--- /dev/null
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -0,0 +1,20 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __UNICORE64_ARCH_BITFIELD_H__
++#define __UNICORE64_ARCH_BITFIELD_H__
++
++#ifndef __ASSEMBLY__
++#define UData(Data)	((unsigned long) (Data))
++#else
++#define UData(Data)	(Data)
++#endif
++
++#define FIELD(val, vmask, vshift)		\\
++		(((val) & ((UData(1) << (vmask)) - 1)) << (vshift))
++#define FMASK(vmask, vshift)			\\
++		(((UData(1) << (vmask)) - 1) << (vshift))
++
++#endif /* __UNICORE64_ARCH_BITFIELD_H__ */
+-- 
+1.7.9.5
+

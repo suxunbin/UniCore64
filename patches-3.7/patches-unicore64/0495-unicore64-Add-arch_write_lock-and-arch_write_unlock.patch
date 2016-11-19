@@ -1,0 +1,64 @@
+From 10e841b41979555719f9b63f0e21801806a29c11 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Mon, 17 Dec 2012 09:49:32 +0800
+Subject: [PATCH 495/641] unicore64: Add arch_write_lock and arch_write_unlock
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/spinlock.h |   29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/spinlock.h b/arch/unicore64/include/asm/spinlock.h
+index 59b9633..2b8ed6c 100644
+--- a/arch/unicore64/include/asm/spinlock.h
++++ b/arch/unicore64/include/asm/spinlock.h
+@@ -16,6 +16,7 @@
+ #include <arch/asm-debug.h>
+ 
+ #define LOCK_TOKEN		(1)
++#define WRLOCK_TOKEN		__BP(31)
+ 
+ #define arch_spin_lock_flags(lock, flags) arch_spin_lock(lock)
+ 
+@@ -117,20 +118,28 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
+ 
+ static inline void arch_write_lock(arch_rwlock_t *rw)
+ {
+-	/* FIXME */
+-	__asm__(
+-		"dmovl r0, 0xdead0007\n\t"
+-		"call uc64_debug_putx\n\t"
+-	);
++	u32 tmp;
++
++	__asm__ __volatile__(
++		"1:	llw		%0, [%1+], #0\n"
++		"	cmpsub.a	%0, #0\n"
++		"	bne		1b\n"
++		"	mov		%0, %2\n"
++		"	scw		%0, [%1+], #0\n"
++		"	cmpsub.a	%0, #0\n"
++		"	beq		1b"
++		: "=&r" (tmp)
++		: "r" (&rw->lock), "r" (WRLOCK_TOKEN)
++		: "cc", "memory");
++
++	smp_mb();
+ }
+ 
+ static inline void arch_write_unlock(arch_rwlock_t *rw)
+ {
+-	/* FIXME */
+-	__asm__(
+-		"dmovl r0, 0xdead0008\n\t"
+-		"call uc64_debug_putx\n\t"
+-	);
++	smp_mb();
++
++	rw->lock = 0;
+ }
+ 
+ static inline int arch_write_trylock(arch_rwlock_t *rw)
+-- 
+1.7.9.5
+

@@ -1,0 +1,39 @@
+From 39b2b0479649a048058997858ca65134acdd68f0 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 28 Nov 2011 17:39:04 +0800
+Subject: [PATCH 092/641] unicore64: use asm-generic version mmu.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild |    1 +
+ arch/unicore64/include/asm/mmu.h  |    6 ------
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+ delete mode 100644 arch/unicore64/include/asm/mmu.h
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index cf08ea1..2360792 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -31,6 +31,7 @@ generic-y += kmap_types.h
+ generic-y += linkage.h
+ generic-y += local.h
+ generic-y += mman.h
++generic-y += mmu.h
+ generic-y += module.h
+ generic-y += msgbuf.h
+ generic-y += mutex.h
+diff --git a/arch/unicore64/include/asm/mmu.h b/arch/unicore64/include/asm/mmu.h
+deleted file mode 100644
+index 7cc9450..0000000
+--- a/arch/unicore64/include/asm/mmu.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __ASM_UNICORE64_MMU_H__
+-#define __ASM_UNICORE64_MMU_H__
+-
+-typedef unsigned long mm_context_t;
+-
+-#endif /* __ASM_UNICORE64_MMU_H__ */
+-- 
+1.7.9.5
+

@@ -1,0 +1,80 @@
+From 9e4f1619f02b3e256d3cb2b3c60f5ebb0cbe4361 Mon Sep 17 00:00:00 2001
+From: Zhan Yuefeng <zhanyuefeng@mprc.pku.edu.cn>
+Date: Thu, 15 May 2014 02:53:22 +0800
+Subject: [PATCH 631/641] UniCore64: Adjust noncached region
+
+---
+ arch/unicore64/include/arch/hwdef-memory.h |   16 ++++++++++++----
+ arch/unicore64/mm/init.c                   |    3 ++-
+ arch/unicore64/mm/mmu.c                    |    3 ++-
+ 3 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 2692986..7406f47 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -95,7 +95,6 @@
+  * PGTABLE_PMD_*:
+  * Physical address of the direct map pmd.
+  */
+-#define UC64_PM_NONCACHED_START		__BC(00000000, 00000000)
+ #define UC64_PM_KIMAGE_START		__BC(00000000, 00408000)
+ #define UC64_PM_DTB_START		__BC(00000000, 00400000)
+ #define UC64_PM_ZEROPAGE		__BC(00000000, 00403000)
+@@ -103,13 +102,22 @@
+ #define UC64_PM_PGTABLE_PUD_DM00	__BC(00000000, 00405000)
+ #define UC64_PM_PGTABLE_PUD_IO00	__BC(00000000, 00406000)
+ #define UC64_PM_PGTABLE_PUD_IO01	__BC(00000000, 00407000)
++#define UC64_PM_NONCACHED_START		__BC(00000000, 03000000)
++#define UC64_PM_FRAME_START		__BC(00000000, 03000000)
++#define UC64_PM_DMAOVERFLOW_START	__BC(00000000, 03e00000)
++#define UC64_PM_DMA_START		__BC(00000000, 04000000)
++#define UC64_PM_NONCACHED_END		__BC(00000000, 08000000)
+ 
+ #define UC64_PM2VM(paddr)		(UC64_VM_DMAP_START + (paddr))
+ 
+-#define UC64_VM_NONCACHED_START		UC64_PM2VM(UC64_PM_NONCACHED_START)
+ #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
+-#define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
+-#define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+ #define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
++#define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
++#define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
++#define UC64_VM_NONCACHED_START		UC64_PM2VM(UC64_PM_NONCACHED_START)
++#define UC64_VM_FRAME_START		UC64_PM2VM(UC64_PM_FRAME_START)
++#define UC64_VM_DMAOVERFLOW_START	UC64_PM2VM(UC64_PM_DMAOVERFLOW_START)
++#define UC64_VM_DMA_START		UC64_PM2VM(UC64_PM_DMA_START)
++#define UC64_VM_NONCACHED_END		UC64_PM2VM(UC64_PM_NONCACHED_END)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+diff --git a/arch/unicore64/mm/init.c b/arch/unicore64/mm/init.c
+index 1d1e837..e8608ad 100644
+--- a/arch/unicore64/mm/init.c
++++ b/arch/unicore64/mm/init.c
+@@ -76,7 +76,8 @@ static void __init zone_sizes_init(void)
+ static void __init memblock_init(void)
+ {
+ 	/* Reserve the noncached region with memblock. */
+-	memblock_reserve(UC64_PM_NONCACHED_START, SZ_4M);
++	memblock_reserve(UC64_PM_NONCACHED_START,
++			UC64_PM_NONCACHED_END - UC64_PM_NONCACHED_START);
+ 
+ 	/* Reserve the kernel text, kernel data and initrd with memblock. */
+ 	memblock_reserve(__pa(_text), _end - _text);
+diff --git a/arch/unicore64/mm/mmu.c b/arch/unicore64/mm/mmu.c
+index 44d2c88..f2aa87d 100644
+--- a/arch/unicore64/mm/mmu.c
++++ b/arch/unicore64/mm/mmu.c
+@@ -75,7 +75,8 @@ void __init paging_init(void)
+ 	}
+ 
+ 	/* Set first 4M physical memory as noncached */
+-	uc64_create_direct_mapping(UC64_PM_NONCACHED_START, SZ_4M,
++	uc64_create_direct_mapping(UC64_PM_NONCACHED_START,
++			UC64_PM_NONCACHED_END - UC64_PM_NONCACHED_START,
+ 			UC64_PM_PGTABLE_PUD_DM00, UC64_PMD_TYPE_NOCACHE);
+ 
+ 	uc64_create_io_direct_mapping();
+-- 
+1.7.9.5
+

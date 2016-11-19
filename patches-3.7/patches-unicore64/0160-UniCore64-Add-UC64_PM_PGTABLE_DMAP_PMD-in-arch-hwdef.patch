@@ -1,0 +1,45 @@
+From 88cde70fae4cf6b2d79401af4b3c64aa9c70f134 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 13 Dec 2011 11:18:44 +0800
+Subject: [PATCH 160/641] UniCore64: Add UC64_PM_PGTABLE_DMAP_PMD in arch
+ hwdef-memory
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 03bfeeb..547f81b 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -68,12 +68,24 @@
+ 
+ #define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
+ 
+-/* The byte offset of the kernel image in RAM from the start of RAM. */
++/*
++ * The byte offset of the kernel image in RAM from the start of RAM.
++ * We must make sure that UC64_VM_KIMAGE_START is correctly set.
++ * Currently, we expect the least significant 24 bits to be 0x408000.
++ */
+ #define UC64_PM_KIMAGE_START		HEX64(00000000, 00408000)
+ #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
+ 
+-/* physical and virtual address of the initial page table */
++/*
++ * Physical and virtual address of the initial page table.
++ * We place the page tables 4K below UC64_VM_KIMAGE_START.
++ */
+ #define UC64_PM_PGTABLE_PGD		(UC64_PM_KIMAGE_START - UC64_PAGE_SIZE)
+ #define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
+ 
++/*
++ * Physical address of the direct map pmd.
++ */
++#define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
++
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+-- 
+1.7.9.5
+

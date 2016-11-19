@@ -1,0 +1,26 @@
+From bd8e93cb7ac35d015d44a85f4444671b9a19baeb Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Thu, 8 Mar 2012 16:36:26 +0800
+Subject: [PATCH 322/641] UniCore64: Fix the warning in mmu.c when complie
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/mmu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/mmu.c b/arch/unicore64/mm/mmu.c
+index 8261997..2b58cee 100644
+--- a/arch/unicore64/mm/mmu.c
++++ b/arch/unicore64/mm/mmu.c
+@@ -25,7 +25,7 @@ static void __init uc64_create_direct_mapping(phys_addr_t start,
+ 	/* the first pud has been written in head.S */
+ 	prot_pmd = __pgprot(UC64_PMD_TYPE_CACHE | UC64_PMD_EXIST
+ 			| UC64_PMD_RWX | UC64_PMD_SPAGE);
+-	pmd = phys_pud + pmd_index((unsigned long)__va(start));
++	pmd = (pmd_t *)(phys_pud + pmd_index((unsigned long)__va(start)));
+ 
+ 	for (phys = start; phys < (start + length); phys += UC64_PMD_SIZE) {
+ 		set_pmd(pmd, __pmd(phys | pgprot_val(prot_pmd)));
+-- 
+1.7.9.5
+

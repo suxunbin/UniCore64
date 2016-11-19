@@ -1,0 +1,51 @@
+From 18bec05da46d16208a68eb743919abc767ba5db1 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 14 Jun 2012 11:06:42 +0800
+Subject: [PATCH 389/641] UniCore64: Prototype for show_regs
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/setup.c    |    4 ++--
+ arch/unicore64/kernel/showinfo.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 96f8d52..3beb380 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -4,6 +4,7 @@
+ #include <linux/string.h>
+ #include <linux/of_fdt.h>
+ #include <linux/console.h>
++#include <linux/sched.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/setup_arch.h>
+@@ -13,8 +14,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
+ static int uc64_panic_event(struct notifier_block *this,
+ 		unsigned long event, void *ptr)
+ {
+-	__show_uc64_regs();
+-	__show_cp0_regs();
++	show_regs(NULL);
+ 
+ 	return NOTIFY_DONE;
+ }
+diff --git a/arch/unicore64/kernel/showinfo.c b/arch/unicore64/kernel/showinfo.c
+index ecf07c0..3501d60 100644
+--- a/arch/unicore64/kernel/showinfo.c
++++ b/arch/unicore64/kernel/showinfo.c
+@@ -181,8 +181,8 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
+  */
+ void show_regs(struct pt_regs *regs)
+ {
+-	/* FIXME */
+-	BUG();
++	__show_uc64_regs();
++	__show_cp0_regs();
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

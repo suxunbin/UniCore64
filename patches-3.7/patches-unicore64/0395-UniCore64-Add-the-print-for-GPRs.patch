@@ -1,0 +1,66 @@
+From 370869b275e3b796d648816c6e1d42bf80d6c211 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Fri, 13 Jul 2012 09:04:05 +0800
+Subject: [PATCH 395/641] UniCore64: Add the print for GPRs
+
+Signed-off-by: CaoSong <caosong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    2 +-
+ arch/unicore64/kernel/showinfo.c        |   20 +++++++++++++++-----
+ 2 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index 3f7e633..586b1f8 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -13,7 +13,7 @@ extern void setup_arch_devtree(char *cmdline);
+ 
+ extern char __vectors_table[];
+ 
+-extern void __show_uc64_regs(void);
++extern void __show_uc64_regs(struct pt_regs *regs);
+ extern void __show_cpuinfo(void);
+ extern void __show_cp0_regs(void);
+ 
+diff --git a/arch/unicore64/kernel/showinfo.c b/arch/unicore64/kernel/showinfo.c
+index 847d2ef..302b02d 100644
+--- a/arch/unicore64/kernel/showinfo.c
++++ b/arch/unicore64/kernel/showinfo.c
+@@ -8,11 +8,21 @@
+ #include <arch/hwdef-cpu.h>
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
+-void __show_uc64_regs(void)
++void __show_uc64_regs(struct pt_regs *regs)
+ {
+-	pr_info("\nUniCore64 Information:\n");
+-	pr_info(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
+-	pr_info(" AFR BFR: %16lx %16lx\n", __read_uc64(afr), __read_uc64(bfr));
++	int i;
++
++	if (regs == NULL) {
++		pr_info("None Regs information.\n");
++		return;
++	}
++
++	pr_info("\nUniCore64 Regs Information:\n");
++	pr_info(" ASR: %16lx AFR: %16lx\n", regs->UC64_ASR, regs->UC64_AFR);
++	for (i = 0; i < 32; i += 4)
++		pr_info("R%02d~%02d: %16lx %16lx %16lx %16lx\n", i, i + 3,
++			regs->uc64_regs[i], regs->uc64_regs[i + 1],
++			regs->uc64_regs[i + 2], regs->uc64_regs[i + 3]);
+ }
+ 
+ /**
+@@ -182,7 +192,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
+  */
+ void show_regs(struct pt_regs *regs)
+ {
+-	__show_uc64_regs();
++	__show_uc64_regs(regs);
+ 	__show_cp0_regs();
+ }
+ 
+-- 
+1.7.9.5
+

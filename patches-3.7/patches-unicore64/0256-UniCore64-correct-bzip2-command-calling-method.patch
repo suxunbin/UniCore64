@@ -1,0 +1,26 @@
+From 3376ce362ac274d4d68b21ff305fc0b02d1d221a Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 19 Jan 2012 09:47:33 +0800
+Subject: [PATCH 256/641] UniCore64: correct bzip2 command calling method
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/boot/Makefile b/arch/unicore64/boot/Makefile
+index c837cf4..ea7cc42 100644
+--- a/arch/unicore64/boot/Makefile
++++ b/arch/unicore64/boot/Makefile
+@@ -15,7 +15,7 @@ $(obj)/Image: vmlinux FORCE
+ 
+ # Step two: compress Image to piggy.bin
+ suffix_$(CONFIG_KERNEL_GZIP)	:= gzip
+-suffix_$(CONFIG_KERNEL_BZIP2)	:= bz2
++suffix_$(CONFIG_KERNEL_BZIP2)	:= bzip2
+ suffix_$(CONFIG_KERNEL_LZO)	:= lzo
+ suffix_$(CONFIG_KERNEL_LZMA)	:= lzma
+ 
+-- 
+1.7.9.5
+

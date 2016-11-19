@@ -1,0 +1,68 @@
+From a7112f21f7dabd04d34038aa9f6bd41d7debde0c Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Wed, 2 Nov 2011 20:12:48 +0800
+Subject: [PATCH 066/641] UniCore64: Add kernel/vmlinux.lds.S
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/vmlinux.lds.S |   49 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/arch/unicore64/kernel/vmlinux.lds.S b/arch/unicore64/kernel/vmlinux.lds.S
+index 1084c97..4b21400 100644
+--- a/arch/unicore64/kernel/vmlinux.lds.S
++++ b/arch/unicore64/kernel/vmlinux.lds.S
+@@ -1 +1,50 @@
+ #include <asm-generic/vmlinux.lds.h>
++#include <asm/thread_info.h>
++#include <arch/memory.h>
++#include <asm/page.h>
++#include <asm/cache.h>
++
++OUTPUT_ARCH(unicore64)
++ENTRY(stext)
++
++jiffies = jiffies_64;
++
++SECTIONS
++{
++	. = PAGE_OFFSET + KERNEL_IMAGE_START;
++
++	_text = .;
++	__init_begin = .;
++	HEAD_TEXT_SECTION
++	INIT_TEXT_SECTION(PAGE_SIZE)
++	INIT_DATA_SECTION(16)
++	PERCPU_SECTION(L1_CACHE_BYTES)
++	__init_end = .;
++
++	_stext = .;
++	.text : {		/* Real text segment */
++		TEXT_TEXT
++		SCHED_TEXT
++		LOCK_TEXT
++
++		*(.fixup)
++		*(.gnu.warning)
++	}
++	_etext = .;
++
++	_sdata = .;
++	RO_DATA_SECTION(PAGE_SIZE)
++	RW_DATA_SECTION(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
++	_edata = .;
++
++	EXCEPTION_TABLE(L1_CACHE_BYTES)
++	NOTES
++
++	BSS_SECTION(0, 0, 0)
++	_end = .;
++
++	STABS_DEBUG
++	DWARF_DEBUG
++
++	DISCARDS		/* Exit code and data */
++}
+-- 
+1.7.9.5
+

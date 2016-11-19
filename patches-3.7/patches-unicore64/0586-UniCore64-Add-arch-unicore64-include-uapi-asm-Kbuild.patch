@@ -1,0 +1,23 @@
+From a80bd71b4a778076add02c90d4ab139bb876e5ab Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 18 Apr 2014 22:43:07 +0800
+Subject: [PATCH 586/641] UniCore64: Add
+ arch/unicore64/include/uapi/asm/Kbuild
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/uapi/asm/Kbuild |    2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 arch/unicore64/include/uapi/asm/Kbuild
+
+diff --git a/arch/unicore64/include/uapi/asm/Kbuild b/arch/unicore64/include/uapi/asm/Kbuild
+new file mode 100644
+index 0000000..b15bf6b
+--- /dev/null
++++ b/arch/unicore64/include/uapi/asm/Kbuild
+@@ -0,0 +1,2 @@
++# UAPI Header export list
++include include/uapi/asm-generic/Kbuild.asm
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From dbfb9ad7d27c447db9b1fb3836593ee3064df6df Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 19 Jun 2012 15:54:26 +0800
+Subject: [PATCH 391/641] UniCore64: Fix error in __thread_info
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index a5ae1af..260ffa8 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -9,7 +9,7 @@
+ 
+ 	.macro		__thread_info, rd
+ 	dasr		&rd, sp, #13
+-	dlsl		&rd, sp, #13
++	dlsl		&rd, &rd, #13
+ 	.endm
+ 
+ 	.macro		__redzone
+-- 
+1.7.9.5
+

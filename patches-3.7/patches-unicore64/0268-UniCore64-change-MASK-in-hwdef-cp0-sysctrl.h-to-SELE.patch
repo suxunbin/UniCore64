@@ -1,0 +1,151 @@
+From 10e6bdcfd7d7489349dfd4dd6596708e2b477d85 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 25 Jan 2012 17:00:37 +0800
+Subject: [PATCH 268/641] UniCore64: change MASK in hwdef-cp0-sysctrl.h to
+ SELECT
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |   28 +++++++++++------------
+ arch/unicore64/kernel/cpu-uc64.c                |   14 ++++++------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 0f109be..616453a 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -71,35 +71,35 @@
+  *
+  * \\\\lt:programlisting\\\\gt:
+  * -
+- * CP0_CPUID_PARTNO_MASK:	mask for the cpuid partnumber
++ * CP0_CPUID_PARTNO_SELECT:	mask for the cpuid partnumber
+  * CP0_CPUID_PARTNO_PKUNITY:	the cpuid partnumber of PKUnity
+- * CP0_CPUID_LAYOUT_MASK:	mask for the cpuid layout
+- * CP0_CPUID_SERIES_MASK:	mask for the cpuid series
+- * CP0_CPUID_DESIGNER_MASK:	mask for the cpuid designer
++ * CP0_CPUID_LAYOUT_SELECT:	mask for the cpuid layout
++ * CP0_CPUID_SERIES_SELECT:	mask for the cpuid series
++ * CP0_CPUID_DESIGNER_SELECT:	mask for the cpuid designer
+  * CP0_CPUID_DESIGNER_MPRC:	the symbol of MPRC for the cpu designer
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define CP0_CPUID_PARTNO_MASK		__BS(16, 0)
++#define CP0_CPUID_PARTNO_SELECT		__BS(16, 0)
+ #define CP0_CPUID_PARTNO_PKUNITY	__BF(0x863, 12, 0)
+ #define CP0_CPUID_LAYOUT_POS		(16)
+-#define CP0_CPUID_LAYOUT_MASK		__BS(4, CP0_CPUID_LAYOUT_POS)
++#define CP0_CPUID_LAYOUT_SELECT		__BS(4, CP0_CPUID_LAYOUT_POS)
+ #define CP0_CPUID_SERIES_POS		(20)
+-#define CP0_CPUID_SERIES_MASK		__BS(4, CP0_CPUID_SERIES_POS)
+-#define CP0_CPUID_DESIGNER_MASK		__BS(8, 24)
++#define CP0_CPUID_SERIES_SELECT		__BS(4, CP0_CPUID_SERIES_POS)
++#define CP0_CPUID_DESIGNER_SELECT	__BS(8, 24)
+ #define CP0_CPUID_DESIGNER_MPRC		__BF(0x4D, 8, 24)
+ 
+ /**
+  * DOC: HWDEF_COPRO_H_CP0_CACHE
+  * Following cache inforamtion macros in CP0 are defined.
+  */
+-#define CP0_CPUID_ICACHE_LINE_MASK		__BS(2, 0)
++#define CP0_CPUID_ICACHE_LINE_SELECT		__BS(2, 0)
+ #define CP0_CPUID_ICACHE_LINE_8BYTE		__BF(0, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_16BYTE		__BF(1, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_32BYTE		__BF(2, 2, 0)
+ #define CP0_CPUID_ICACHE_LINE_64BYTE		__BF(3, 2, 0)
+ 
+-#define CP0_CPUID_ICACHE_ASSOC_MASK		__BS(3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_SELECT		__BS(3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_DMAP		__BF(0, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_2WAY		__BF(1, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_4WAY		__BF(2, 3, 3)
+@@ -109,7 +109,7 @@
+ #define CP0_CPUID_ICACHE_ASSOC_64WAY		__BF(6, 3, 3)
+ #define CP0_CPUID_ICACHE_ASSOC_128WAY		__BF(7, 3, 3)
+ 
+-#define CP0_CPUID_ICACHE_SIZE_MASK		__BS(3, 6)
++#define CP0_CPUID_ICACHE_SIZE_SELECT		__BS(3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_512B		__BF(0, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_1KB		__BF(1, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_2KB		__BF(2, 3, 6)
+@@ -119,13 +119,13 @@
+ #define CP0_CPUID_ICACHE_SIZE_32KB		__BF(6, 3, 6)
+ #define CP0_CPUID_ICACHE_SIZE_64KB		__BF(7, 3, 6)
+ 
+-#define CP0_CPUID_DCACHE_LINE_MASK		__BS(2, 12)
++#define CP0_CPUID_DCACHE_LINE_SELECT		__BS(2, 12)
+ #define CP0_CPUID_DCACHE_LINE_8BYTE		__BF(0, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_16BYTE		__BF(1, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_32BYTE		__BF(2, 2, 12)
+ #define CP0_CPUID_DCACHE_LINE_64BYTE		__BF(3, 2, 12)
+ 
+-#define CP0_CPUID_DCACHE_ASSOC_MASK		__BS(3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_SELECT		__BS(3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_DMAP		__BF(0, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_2WAY		__BF(1, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_4WAY		__BF(2, 3, 15)
+@@ -135,7 +135,7 @@
+ #define CP0_CPUID_DCACHE_ASSOC_64WAY		__BF(6, 3, 15)
+ #define CP0_CPUID_DCACHE_ASSOC_128WAY		__BF(7, 3, 15)
+ 
+-#define CP0_CPUID_DCACHE_SIZE_MASK		__BS(3, 18)
++#define CP0_CPUID_DCACHE_SIZE_SELECT		__BS(3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_512B		__BF(0, 3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_1KB		__BF(1, 3, 18)
+ #define CP0_CPUID_DCACHE_SIZE_2KB		__BF(2, 3, 18)
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index 064d432..78f222d 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -102,7 +102,7 @@ const struct seq_operations cpuinfo_op = {
+  * of Instruct cache and Date cache.
+  */
+ #define CACHETYPE_SIZE(CT)						\
+-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_MASK) {		\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_SELECT) {	\
+ 	case CP0_CPUID_##CT##CACHE_SIZE_512B:				\
+ 		pr_info("512B "); break;				\
+ 	case CP0_CPUID_##CT##CACHE_SIZE_1KB:				\
+@@ -122,7 +122,7 @@ const struct seq_operations cpuinfo_op = {
+ 	}
+ 
+ #define CACHETYPE_ASSOC(CT)						\
+-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_MASK) {	\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_SELECT) {	\
+ 	case CP0_CPUID_##CT##CACHE_ASSOC_DMAP:				\
+ 		pr_info("DMAP "); break;				\
+ 	case CP0_CPUID_##CT##CACHE_ASSOC_2WAY:				\
+@@ -142,7 +142,7 @@ const struct seq_operations cpuinfo_op = {
+ 	}
+ 
+ #define CACHETYPE_LINE(CT)						\
+-	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_MASK) {		\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_SELECT) {	\
+ 	case CP0_CPUID_##CT##CACHE_LINE_8BYTE:				\
+ 		pr_info("L8B"); break;					\
+ 	case CP0_CPUID_##CT##CACHE_LINE_16BYTE:				\
+@@ -160,16 +160,16 @@ void __init setup_arch_cpuinfo(void)
+ 
+ 	uc64_cpuid = read_cp_op(CP0_CPUID, 0);
+ 
+-	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_MASK) !=
++	BUG_ON((uc64_cpuid & CP0_CPUID_PARTNO_SELECT) !=
+ 			CP0_CPUID_PARTNO_PKUNITY);
+ 
+-	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_MASK) !=
++	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_SELECT) !=
+ 			CP0_CPUID_DESIGNER_MPRC);
+ 
+ 	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity,");
+ 	pr_info(" revision: %ld, layout: %ld\n",
+-		((uc64_cpuid & CP0_CPUID_SERIES_MASK) >> CP0_CPUID_SERIES_POS),
+-		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
++		((uc64_cpuid & CP0_CPUID_SERIES_SELECT) >> CP0_CPUID_SERIES_POS),
++		((uc64_cpuid & CP0_CPUID_LAYOUT_SELECT) >> CP0_CPUID_LAYOUT_POS));
+ 
+ 	/* CACHE information */
+ 	uc64_cache = read_cp_op(CP0_CPUID, 1);
+-- 
+1.7.9.5
+

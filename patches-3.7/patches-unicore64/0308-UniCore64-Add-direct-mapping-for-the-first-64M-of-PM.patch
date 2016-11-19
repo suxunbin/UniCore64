@@ -1,0 +1,44 @@
+From ed3755ef93a249e4ee60f97afab83483c6434225 Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 21 Feb 2012 23:03:24 +0800
+Subject: [PATCH 308/641] UniCore64: Add direct mapping for the first 64M of
+ PM
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/boot.S   |    2 +-
+ arch/unicore64/kernel/head.S |    5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/boot/boot.S b/arch/unicore64/boot/boot.S
+index 668d66f..07e1cdc 100644
+--- a/arch/unicore64/boot/boot.S
++++ b/arch/unicore64/boot/boot.S
+@@ -34,7 +34,7 @@ _start:
+ 	/*
+ 	 * Jump to the start address of kernel image.
+ 	 */
+-	dmovl	r0, #UC64_VM_KIMAGE_START
++	dmovl	r0, #UC64_PM_KIMAGE_START
+ 	jump	r0
+ 
+ 	.section .rodata.dtb
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index ad646b4..b2178e7 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -85,6 +85,11 @@ ENTRY(__head_pgtable_init)
+ 	dor	r0, r0, #UC64_PGD_EXIST
+ 	std	r0, [r1]
+ 
++	dmovl	r1, #UC64_PM_PGTABLE_PGD
++	dmovl	r0, #UC64_PM_PGTABLE_PUD_DM00
++	dor	r0, r0, #UC64_PGD_EXIST
++	std	r0, [r1]
++
+ 	/*
+ 	 * Step three: clear 4k level-two page table from first
+ 	 * direct-mapped pmd
+-- 
+1.7.9.5
+

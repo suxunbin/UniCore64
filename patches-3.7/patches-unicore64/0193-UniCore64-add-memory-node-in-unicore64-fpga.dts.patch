@@ -1,0 +1,33 @@
+From 81a34e06b10d92f60186e3c963dfd7d1595cd0c2 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 11:34:12 +0800
+Subject: [PATCH 193/641] UniCore64: add memory node in unicore64-fpga.dts
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/unicore64-fpga.dts |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/unicore64/boot/unicore64-fpga.dts b/arch/unicore64/boot/unicore64-fpga.dts
+index 39b4d66..021ac7e 100644
+--- a/arch/unicore64/boot/unicore64-fpga.dts
++++ b/arch/unicore64/boot/unicore64-fpga.dts
+@@ -1,4 +1,15 @@
+ /dts-v1/;
+ / {
+ 	model = "unicore64";
++
++	/*
++	 * Memory node.
++	 * The device type is memory.
++	 * The base of memory is 0, and the end is 0x20000000.
++	 * So the size of memory is 512M.
++	 */
++	memory {
++		device_type = "memory";
++		reg = <0 0x20000000>;
++	};
+ };
+-- 
+1.7.9.5
+

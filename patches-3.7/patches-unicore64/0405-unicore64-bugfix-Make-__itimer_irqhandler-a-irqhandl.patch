@@ -1,0 +1,53 @@
+From d6ea6a4f7350c3cd12332fbc301e80d10bd27b27 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 27 Aug 2012 16:21:24 +0800
+Subject: [PATCH 405/641] unicore64-bugfix: Make __itimer_irqhandler a
+ irqhandler
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    2 ++
+ arch/unicore64/kernel/time.c  |    8 +++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index d9cb5e4..1f4b90a 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -157,6 +157,8 @@ ENDPROC(__vec_int_puv3)
+ ENTRY(__vec_int_itimer)
+ 	__priv_entry
+ 
++	@ void __itimer_irqhandler(struct pt_regs *regs)
++	dmov		r0, sp
+ 	call		__itimer_irqhandler
+ 
+ 	__priv_exit
+diff --git a/arch/unicore64/kernel/time.c b/arch/unicore64/kernel/time.c
+index 5eb1207..9c27293 100644
+--- a/arch/unicore64/kernel/time.c
++++ b/arch/unicore64/kernel/time.c
+@@ -103,13 +103,19 @@ static struct clocksource __itimer_cs = {
+  * Clear corresponding bit of itimer irq in asr and call
+  * architecture-independent handler.
+  */
+-void __itimer_irqhandler(void)
++void __itimer_irqhandler(struct pt_regs *regs)
+ {
++	struct pt_regs *old_regs = set_irq_regs(regs);
++	irq_enter();
++
+ 	/* Disarm the compare/match, signal the event. */
+ 	__itimer_irq_disable();
+ 	__itimer_irq_clear();
+ 
+ 	__itimer_ce.event_handler(&__itimer_ce);
++
++	irq_exit();
++	set_irq_regs(old_regs);
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

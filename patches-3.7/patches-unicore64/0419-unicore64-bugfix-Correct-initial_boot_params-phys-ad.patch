@@ -1,0 +1,27 @@
+From c2f1086fe65fd7e8d07406b40f0861f454b2f82a Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 7 Sep 2012 09:02:26 +0800
+Subject: [PATCH 419/641] unicore64-bugfix: Correct initial_boot_params phys
+ addr problem
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/devtree.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/devtree.c b/arch/unicore64/kernel/devtree.c
+index b77b5f8..b4a27fb 100644
+--- a/arch/unicore64/kernel/devtree.c
++++ b/arch/unicore64/kernel/devtree.c
+@@ -38,7 +38,7 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
+ 
+ void __init setup_arch_devtree(char *cmdline)
+ {
+-	initial_boot_params = (void *)UC64_PM_DTB_START;
++	initial_boot_params = (void *)UC64_VM_DTB_START;
+ 	of_scan_flat_dt(early_init_dt_scan_chosen, cmdline);
+ 	of_scan_flat_dt(early_init_dt_scan_root, NULL);
+ 	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+-- 
+1.7.9.5
+

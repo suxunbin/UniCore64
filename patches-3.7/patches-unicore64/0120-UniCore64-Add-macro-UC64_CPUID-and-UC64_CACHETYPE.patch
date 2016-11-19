@@ -1,0 +1,43 @@
+From 55ff5091702c0da04e5164f6b70b4043cdb513a3 Mon Sep 17 00:00:00 2001
+From: ChangHuaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 7 Dec 2011 09:14:01 +0800
+Subject: [PATCH 120/641] UniCore64: Add macro UC64_CPUID and UC64_CACHETYPE
+
+Signed-off-by: ChangHuaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 arch/unicore64/include/asm/setup_arch.h
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+new file mode 100644
+index 0000000..ddcac3c
+--- /dev/null
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -0,0 +1,23 @@
++#ifndef __UNICORE64_ASM_SETUP_ARCH_H__
++#define __UNICORE64_ASM_SETUP_ARCH_H__
++
++#include <linux/stringify.h>
++#include <arch/hwdef-copro.h>
++
++#define UC64_CPUID							\
++	({								\
++		unsigned long __val;					\
++		asm("movc	%0, " __stringify(CP0_CPUID) ", #0"	\
++		    : "=r" (__val));					\
++		__val;							\
++	})
++
++#define UC64_CACHETYPE							\
++	({								\
++		unsigned long __val;					\
++		asm("movc	%0, " __stringify(CP0_CPUID) ", #1"	\
++		    : "=r" (__val));					\
++		__val;							\
++	})
++
++#endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
+-- 
+1.7.9.5
+

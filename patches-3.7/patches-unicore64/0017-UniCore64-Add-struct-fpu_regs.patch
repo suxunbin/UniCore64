@@ -1,0 +1,41 @@
+From 1fec8e5d2beec81740d9ecf2ce22696458c896a9 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Mon, 10 Oct 2011 18:06:32 +0800
+Subject: [PATCH 017/641] UniCore64:Add struct fpu_regs
+
+Fixed error
+fs/binfmt_elf.c:1591:17: error: field 'fpu' has incomplete type
+fs/binfmt_elf.c: In function 'elf_note_info_init':
+fs/binfmt_elf.c:1666:29: error: dereferencing pointer to incomplete type
+fs/binfmt_elf.c: In function 'fill_note_info':
+fs/binfmt_elf.c:1747:33: error: dereferencing pointer to incomplete type
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/elf.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/elf.h b/arch/unicore64/include/asm/elf.h
+index ff083cb..13a7de9 100644
+--- a/arch/unicore64/include/asm/elf.h
++++ b/arch/unicore64/include/asm/elf.h
+@@ -15,6 +15,16 @@ typedef elf_greg_t elf_gregset_t[ELF_NGREG];
+ #define ELF_PLATFORM		(NULL)
+ #define ELF_EXEC_PAGESIZE	PAGE_SIZE
+ 
++#ifndef __ASSEMBLY__
++
++#define FP_REGS_NUMBER		33
++
++struct fpu_regs {
++	unsigned int regs[FP_REGS_NUMBER];
++} __attribute__((aligned(8)));
++
++#endif
++
+ typedef struct fpu_regs elf_fpregset_t;
+ 
+ #if defined(__KERNEL__) && !defined(__ASSEMBLY__)
+-- 
+1.7.9.5
+

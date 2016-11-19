@@ -1,0 +1,25 @@
+From ec34e809627bf3d33046a6248fbc73909b47a554 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 01:32:19 +0800
+Subject: [PATCH 597/641] UniCore64: use asm version header in c file
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/video/unifb2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/video/unifb2.c b/drivers/video/unifb2.c
+index c712ce1..f612a99 100644
+--- a/drivers/video/unifb2.c
++++ b/drivers/video/unifb2.c
+@@ -1,6 +1,6 @@
+ #include <linux/fb.h>
+ #include <mach/hardware.h>
+-#include <asm-generic/io.h>
++#include <asm/io.h>
+ 
+ static unsigned long unifb_regs[30];
+ /* create fb0 framebuffer by default */
+-- 
+1.7.9.5
+

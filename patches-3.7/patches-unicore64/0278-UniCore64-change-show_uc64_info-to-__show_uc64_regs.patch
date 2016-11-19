@@ -1,0 +1,52 @@
+From b54a88b1c49fd66439b2e33c91c5ee0ed9521852 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 30 Jan 2012 10:18:49 +0800
+Subject: [PATCH 278/641] UniCore64: change show_uc64_info to __show_uc64_regs
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    2 +-
+ arch/unicore64/kernel/cpu-uc64.c        |    2 +-
+ arch/unicore64/kernel/setup.c           |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index 2d90664..195e293 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -14,5 +14,5 @@ extern void setup_arch_devtree(char *cmdline);
+ 
+ extern char __vectors_table[];
+ 
+-extern void show_uc64_info(void);
++extern void __show_uc64_regs(void);
+ #endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index b0112aa..cf69da8 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -198,7 +198,7 @@ void __init setup_arch_cpuinfo(void)
+ #undef CACHETYPE_ASSOC
+ #undef CACHETYPE_LINE
+ 
+-void show_uc64_info(void)
++void __show_uc64_regs(void)
+ {
+ 	pr_emerg("\nUniCore64 Information:\n");
+ 	pr_emerg(" ASR BSR: %16lx %16lx\n", __read_uc64(asr), __read_uc64(bsr));
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 6c0ccf3..d691e9c 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -11,7 +11,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
+ static int uc64_panic_event(struct notifier_block *this,
+ 		unsigned long event, void *ptr)
+ {
+-	show_uc64_info();
++	__show_uc64_regs();
+ 
+ 	return NOTIFY_DONE;
+ }
+-- 
+1.7.9.5
+

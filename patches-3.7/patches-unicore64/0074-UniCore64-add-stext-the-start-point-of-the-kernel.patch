@@ -1,0 +1,26 @@
+From fd4e5a8279adcb099e719d90a88bf1f8a064db47 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 4 Nov 2011 16:25:48 +0800
+Subject: [PATCH 074/641] UniCore64: add stext, the start point of the kernel
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/head.S |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 9ad1b3b..05e49bc 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -1,2 +1,8 @@
++#include <linux/linkage.h>
++
+ .globl	swapper_pg_dir
+ .equ	swapper_pg_dir, 0
++
++ENTRY(stext)
++	/* FIXME */
++ENDPROC(stext)
+-- 
+1.7.9.5
+

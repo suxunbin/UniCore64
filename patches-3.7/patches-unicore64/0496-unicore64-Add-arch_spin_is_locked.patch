@@ -1,0 +1,25 @@
+From 8d1919fc46002a5c4fd1cf3cbfe950b88951d749 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Sat, 15 Dec 2012 16:06:25 +0800
+Subject: [PATCH 496/641] unicore64: Add arch_spin_is_locked
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/spinlock.h |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/spinlock.h b/arch/unicore64/include/asm/spinlock.h
+index 2b8ed6c..5b8a494 100644
+--- a/arch/unicore64/include/asm/spinlock.h
++++ b/arch/unicore64/include/asm/spinlock.h
+@@ -156,7 +156,6 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
+ #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)
+ #define arch_spin_is_locked(x)			\
+ 	({					\
+-		uc64_debug_putx(0xdead000a);	\
+ 		((x)->lock != 0);		\
+ 	})
+ #define arch_spin_unlock_wait(lock) \
+-- 
+1.7.9.5
+

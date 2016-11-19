@@ -1,0 +1,58 @@
+From 4df153aa953fdec719eb0ec392e038e9fd1a1c38 Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Fri, 2 Dec 2011 16:33:00 +0800
+Subject: [PATCH 109/641] UniCore64: add open CONFIG_DEBUG_OCD
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig                     |    2 ++
+ arch/unicore64/Kconfig.debug               |   11 +++++++++++
+ arch/unicore64/configs/unicore64_defconfig |    4 ++++
+ 3 files changed, 17 insertions(+)
+ create mode 100644 arch/unicore64/Kconfig.debug
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index 888607b..8dc7d8e 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -85,6 +85,8 @@ source "net/Kconfig"
+ 
+ source "drivers/Kconfig"
+ 
++source "arch/unicore64/Kconfig.debug"
++
+ source "fs/Kconfig"
+ 
+ source "lib/Kconfig"
+diff --git a/arch/unicore64/Kconfig.debug b/arch/unicore64/Kconfig.debug
+new file mode 100644
+index 0000000..a613b64
+--- /dev/null
++++ b/arch/unicore64/Kconfig.debug
+@@ -0,0 +1,11 @@
++menu "Kernel hacking"
++
++# These options are only for real kernel hackers who want to get their hands dirty.
++config DEBUG_OCD
++	bool "Kernel low-level debugging via On-Chip-Debugger"
++	depends on DEBUG_KERNEL
++	help
++	  Say Y here if you want the debug print routines to direct their
++	  output to the UniCore On-Chip-Debugger channel.
++
++endmenu
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index da6a04d..71047a0 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -9,3 +9,7 @@ CONFIG_CPU_DCACHE_DISABLE=y
+ 
+ #	Console display driver support
+ CONFIG_VGA_CONSOLE=n
++
++### Kernel hacking
++CONFIG_DEBUG_KERNEL=y
++CONFIG_DEBUG_OCD=y
+-- 
+1.7.9.5
+

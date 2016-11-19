@@ -1,0 +1,87 @@
+From 20118601a01bd4c2ab14c96c5cec4a69c354252c Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Wed, 26 Oct 2011 17:04:16 +0800
+Subject: [PATCH 033/641] UniCore64: Add tlb flush functions
+
+Fixed errors:
+kernel/built-in.o: In function `dup_mm':
+(.text+0x46cd): undefined reference to `flush_tlb_mm'
+mm/built-in.o: In function `handle_pte_fault':
+(.text+0x18488): undefined reference to `flush_tlb_page'
+mm/built-in.o: In function `unmap_kernel_range':
+(.text+0x23086): undefined reference to `flush_tlb_kernel_range'
+mm/built-in.o: In function `mprotect_fixup':
+(.text+0x1ec32): undefined reference to `flush_tlb_range'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/Makefile |    1 +
+ arch/unicore64/kernel/tlb.c    |   49 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
+ create mode 100644 arch/unicore64/kernel/tlb.c
+
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+index 4914e9f..5cac0d1 100644
+--- a/arch/unicore64/kernel/Makefile
++++ b/arch/unicore64/kernel/Makefile
+@@ -1 +1,2 @@
++obj-y			:= tlb.o
+ extra-y			:= vmlinux.lds
+diff --git a/arch/unicore64/kernel/tlb.c b/arch/unicore64/kernel/tlb.c
+new file mode 100644
+index 0000000..5c10112
+--- /dev/null
++++ b/arch/unicore64/kernel/tlb.c
+@@ -0,0 +1,49 @@
++#include <linux/mm.h>
++#include <linux/kernel.h>
++#include <asm/tlbflush.h>
++
++/**
++ * flush_tlb_mm() -
++ * @mm
++ */
++void flush_tlb_mm(struct mm_struct *mm)
++{
++	/* FIXME */
++	BUG();
++}
++
++/**
++ * flush_tlb_page() -
++ * @vma:
++ * @va:
++ */
++void flush_tlb_page(struct vm_area_struct *vma, unsigned long va)
++{
++	/* FIXME */
++	BUG();
++}
++
++
++/**
++ * flush_tlb_range() -
++ * @vma:
++ * @start:
++ * @end:
++ */
++void flush_tlb_range(struct vm_area_struct *vma,
++		     unsigned long start, unsigned long end)
++{
++	/* FIXME */
++	BUG();
++}
++
++/**
++ * flush_tlb_kernl_range() -
++ * @start:
++ * @end:
++ */
++void flush_tlb_kernel_range(unsigned long start, unsigned long end)
++{
++	/* FIXME */
++	BUG();
++}
+-- 
+1.7.9.5
+

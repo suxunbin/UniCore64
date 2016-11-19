@@ -1,0 +1,54 @@
+From 4f96dec6e763082bea1fc062e85b3fff30e74b67 Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 21 Feb 2012 23:03:15 +0800
+Subject: [PATCH 307/641] UniCore64: Change PAGE_OFFSET
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |    2 +-
+ arch/unicore64/include/asm/page.h          |    2 +-
+ arch/unicore64/kernel/head.S               |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index cbdb048..063f20d 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -109,7 +109,7 @@
+ #define UC64_PM_PGTABLE_PUD_IO00	__BC(00000000, 00406000)
+ #define UC64_PM_PGTABLE_PUD_IO01	__BC(00000000, 00407000)
+ 
+-#define UC64_PM2VM(paddr)		(UC64_VM_KERNEL_START + (paddr))
++#define UC64_PM2VM(paddr)		(UC64_VM_DMAP_START + (paddr))
+ 
+ #define UC64_VM_KIMAGE_START		UC64_PM2VM(UC64_PM_KIMAGE_START)
+ #define UC64_VM_PGTABLE_PGD		UC64_PM2VM(UC64_PM_PGTABLE_PGD)
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index f9635b8..0ae720d 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -5,7 +5,7 @@
+ #include <arch/hwdef-pgtable.h>
+ 
+ /* Virtual start address of the first bank of RAM */
+-#define PAGE_OFFSET		UC64_VM_KERNEL_START
++#define PAGE_OFFSET		UC64_VM_DMAP_START
+ 
+ /* PAGE_SHIFT determines the page size */
+ #define PAGE_SHIFT		UC64_PAGE_BITS
+diff --git a/arch/unicore64/kernel/head.S b/arch/unicore64/kernel/head.S
+index 8cfacbb..ad646b4 100644
+--- a/arch/unicore64/kernel/head.S
++++ b/arch/unicore64/kernel/head.S
+@@ -74,7 +74,7 @@ ENTRY(__head_pgtable_init)
+ 	 * Step two: write level-one page table
+ 	 * Level one page table entry value = level two page table base + offset
+ 	 */
+-	dmovl	r1, #UC64_VM_KERNEL_START
++	dmovl	r1, #UC64_VM_DMAP_START
+ 	dasr	r1, r1, #UC64_PGD_SHIFT
+ 	dlsl	r1, r1, #UC64_PGTBL_ENTRY_BITS
+ 	dmovl	r2, #UC64_PAGE_SELECT
+-- 
+1.7.9.5
+

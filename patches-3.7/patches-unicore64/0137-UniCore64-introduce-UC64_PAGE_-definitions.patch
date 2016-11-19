@@ -1,0 +1,53 @@
+From 1757a1727685032d728d4a77209d31ccecb20023 Mon Sep 17 00:00:00 2001
+From: GuanXuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 10 Dec 2011 12:22:47 +0800
+Subject: [PATCH 137/641] UniCore64: introduce UC64_PAGE_* definitions
+
+Signed-off-by: GuanXuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-pgtable.h |    5 ++++-
+ arch/unicore64/include/asm/page.h           |    7 ++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index 9c8cf0e..0916a14 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -3,7 +3,10 @@
+ 
+ #include <arch/bitfield.h>
+ 
+-/* Hardware page table definitions. */
++/* Hardware address translation and page table definitions. */
++#define UC64_PAGE_BITS		(12)
++#define UC64_PAGE_SIZE		(_AC(1, UL) << UC64_PAGE_BITS)
++#define UC64_PAGE_MASK		FMASK(UC64_PAGE_BITS, 0)
+ 
+ /* Level 1 descriptor (PGD) */
+ #define PGD_EXIST		FIELD(1, 1, 2)
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index 2a74bc5..45f7404 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -2,14 +2,15 @@
+ #define __UNICORE64_ASM_PAGE_H__
+ 
+ #include <arch/hwdef-memory.h>
++#include <arch/hwdef-pgtable.h>
+ 
+ /* Virtual start address of the first bank of RAM */
+ #define PAGE_OFFSET		UC64_VM_KERNEL_START
+ 
+ /* PAGE_SHIFT determines the page size */
+-#define PAGE_SHIFT		(12)
+-#define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
+-#define PAGE_MASK		(~(PAGE_SIZE-1))
++#define PAGE_SHIFT		UC64_PAGE_BITS
++#define PAGE_SIZE		UC64_PAGE_SIZE
++#define PAGE_MASK		UC64_PAGE_MASK
+ 
+ #ifndef __ASSEMBLY__
+ 
+-- 
+1.7.9.5
+

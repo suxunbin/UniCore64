@@ -1,0 +1,68 @@
+From 093c7926fbf4182c409f4f3e315909f871f57e90 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Wed, 2 Nov 2011 20:12:24 +0800
+Subject: [PATCH 065/641] UniCore64: Add config __ASSEMBLY__ in page.h and
+ thread_info.h
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/page.h        |    4 ++++
+ arch/unicore64/include/asm/thread_info.h |    8 +++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index 5a98e65..9ae4251 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -10,6 +10,8 @@
+ #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
+ #define PAGE_MASK		(~(PAGE_SIZE-1))
+ 
++#ifndef __ASSEMBLY__
++
+ #define clear_page(page)	memset((void *)(page), 0, PAGE_SIZE)
+ #define copy_page(to, from)	memcpy((void *)(to), (void *)(from), PAGE_SIZE)
+ 
+@@ -69,6 +71,8 @@ typedef unsigned long pgprot_t;
+ 
+ typedef struct page *pgtable_t;
+ 
++#endif /* !__ASSEMBLY__ */
++
+ #include <asm-generic/getorder.h>
+ #include <asm-generic/memory_model.h>
+ 
+diff --git a/arch/unicore64/include/asm/thread_info.h b/arch/unicore64/include/asm/thread_info.h
+index e45f043..879480c 100644
+--- a/arch/unicore64/include/asm/thread_info.h
++++ b/arch/unicore64/include/asm/thread_info.h
+@@ -4,12 +4,16 @@
+ #ifdef __KERNEL__
+ 
+ #include <asm/types.h>
+-#include <asm/segment.h>
+ #include <asm/page.h>
+ 
+ #define THREAD_SIZE_ORDER	(1)
+ #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
++
++#ifndef __ASSEMBLY__
++
++#include <asm/segment.h>
++
+ /*
+  * low level task data that entry.S needs immediate access to.
+  */
+@@ -44,6 +48,8 @@ static inline struct thread_info *current_thread_info(void)
+ 	return (struct thread_info *)(sp & ~(THREAD_SIZE - 1));
+ }
+ 
++#endif /* !__ASSEMBLY__ */
++
+ /* thread information flags: */
+ #define TIF_SIGPENDING		0 /* signal pending */
+ #define TIF_NEED_RESCHED	1 /* rescheduling necessary */
+-- 
+1.7.9.5
+

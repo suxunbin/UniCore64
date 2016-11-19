@@ -1,0 +1,26 @@
+From 408ae78acda4c4d0d848c261f8581eeefb95e195 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 19 Jan 2012 10:31:58 +0800
+Subject: [PATCH 258/641] UniCore64: make puv3_core_init static type
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/puv3-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/puv3-core.c b/arch/unicore64/kernel/puv3-core.c
+index 495352d..4a577d9 100644
+--- a/arch/unicore64/kernel/puv3-core.c
++++ b/arch/unicore64/kernel/puv3-core.c
+@@ -32,7 +32,7 @@ static struct resource puv3_ost_resources[] = {
+ 	},
+ };
+ 
+-int __init puv3_core_init(void)
++static int __init puv3_core_init(void)
+ {
+ 	/* APB-5 */
+ 	platform_device_register_simple("PUV3-INTC", -1,
+-- 
+1.7.9.5
+

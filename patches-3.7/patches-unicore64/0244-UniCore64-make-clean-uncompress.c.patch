@@ -1,0 +1,58 @@
+From 77fc142dfb105ff5771b97803277ff8744a42dfd Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 18 Jan 2012 06:22:43 +0800
+Subject: [PATCH 244/641] UniCore64: make clean uncompress.c
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/uncompress.c |   19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/arch/unicore64/boot/uncompress.c b/arch/unicore64/boot/uncompress.c
+index 993cdef..b9f3898 100644
+--- a/arch/unicore64/boot/uncompress.c
++++ b/arch/unicore64/boot/uncompress.c
+@@ -1,11 +1,7 @@
+-#include <asm/unaligned.h>
+ #include "uncompress.h"
+ 
+-unsigned char *output_data;
+-unsigned long output_ptr;
+-
+-unsigned int free_mem_ptr;
+-unsigned int free_mem_end_ptr;
++unsigned long free_mem_ptr;
++unsigned long free_mem_end_ptr;
+ 
+ /**
+  * error() - print error information.
+@@ -50,24 +46,17 @@ static void error(char *x)
+  * @free_mem_ptr_p: the pointer of free memory
+  * @free_mem_ptr_end_p: the pointer of the end of free memory
+  */
+-unsigned long decompress_kernel(unsigned long output_start,
++void decompress_kernel(unsigned char *output_start,
+ 		unsigned long free_mem_ptr_p,
+ 		unsigned long free_mem_ptr_end_p)
+ {
+-	unsigned char *tmp;
+-
+-	output_data		= (unsigned char *)output_start;
+ 	free_mem_ptr		= free_mem_ptr_p;
+ 	free_mem_end_ptr	= free_mem_ptr_end_p;
+ 
+ 	arch_decomp_setup();
+ 
+-	tmp = (unsigned char *) (((unsigned long)input_data_end) - 4);
+-	output_ptr = get_unaligned_le32(tmp);
+-
+ 	arch_decomp_puts("Uncompressing Linux...");
+ 	decompress(input_data, input_data_end - input_data, NULL, NULL,
+-			output_data, NULL, error);
++			output_start, NULL, error);
+ 	arch_decomp_puts(" done, booting the kernel.\n");
+-	return output_ptr;
+ }
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From 5cc50d4c2e2673d01f3ff9892deb82729a1b155c Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 19 Dec 2012 10:50:31 +0800
+Subject: [PATCH 499/641] unicore64: __volatile typo in __write_cp_op
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index cd424a1..c320d26 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -19,7 +19,7 @@
+ 
+ #define __write_cp_op(reg_value, reg, op_no)				\
+ 	({								\
+-		__asm__ __volatile("movc	" __stringify(reg)	\
++		__asm__ __volatile__("movc	" __stringify(reg)	\
+ 			", %0, #" __stringify(op_no)			\
+ 		    : : "r" (reg_value));				\
+ 	})
+-- 
+1.7.9.5
+

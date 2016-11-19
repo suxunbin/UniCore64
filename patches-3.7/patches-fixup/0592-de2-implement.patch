@@ -1,0 +1,358 @@
+From 43858ecf588344f2756e552ce4d9ea3dc09eb58d Mon Sep 17 00:00:00 2001
+From: Zhang Huan <zhanghuan@mprc.pku.edu.cn>
+Date: Sat, 19 Apr 2014 02:45:32 +0800
+Subject: [PATCH 592/641] de2 implement
+
+Signed-off-by: Ma Lina < malina@mprc.pku.edu.cn>
+---
+ drivers/video/unifb2.c |  297 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 295 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/unifb2.c b/drivers/video/unifb2.c
+index 0554750..1aac890 100644
+--- a/drivers/video/unifb2.c
++++ b/drivers/video/unifb2.c
+@@ -57,23 +57,230 @@ static struct fb_fix_screeninfo unifb_fix = {
+ 
+ static u_long get_line_length(int xres_virtual, int bpp)
+ {
+-	return 0;
++	u_long length;
++	length = xres_virtual * bpp;
++	length = (length + 31) & ~31;
++	length >>= 3;
++	return length;
+ }
+ 
+ static int unifb_check_var(struct fb_var_screeninfo *var,
+ 			 struct fb_info *info)
+ {
++	u_long line_length;
++	if (var->vmode & FB_VMODE_CONUPDATE) {
++		var->vmode |= FB_VMODE_YWRAP;
++		var->xoffset = info->var.xoffset;
++		var->yoffset = info->var.yoffset;
++	}
++
++	/*
++	 *  Some very basic checks
++	 */
++	if (!var->xres)
++		var->xres = 1;
++	if (!var->yres)
++		var->yres = 1;
++	if (var->xres > var->xres_virtual)
++		var->xres_virtual = var->xres;
++	if (var->yres > var->yres_virtual)
++		var->yres_virtual = var->yres;
++	if (var->bits_per_pixel <= 1)
++		var->bits_per_pixel = 1;
++	else if (var->bits_per_pixel <= 8)
++		var->bits_per_pixel = 8;
++	else if (var->bits_per_pixel <= 16)
++		var->bits_per_pixel = 16;
++	else if (var->bits_per_pixel <= 24)
++		var->bits_per_pixel = 24;
++	else if (var->bits_per_pixel <= 32)
++		var->bits_per_pixel = 32;
++	else {
++		pr_err("397_check_var is failed return, -EINVAL = 0x%x\n",
++				-EINVAL);
++		return -EINVAL;
++	}
++	if (var->xres_virtual < var->xoffset + var->xres)
++		var->xres_virtual = var->xoffset + var->xres;
++	if (var->yres_virtual < var->yoffset + var->yres)
++		var->yres_virtual = var->yoffset + var->yres;
++
++	/*
++	 *  Memory limit
++	 */
++	line_length = get_line_length(var->xres_virtual, var->bits_per_pixel);
++	if (line_length * var->yres_virtual > videomemorysize) {
++		pr_err("431_check_var is failed return, -ENOMEM = 0x%x\n",
++				-ENOMEM);
++		return -ENOMEM;
++	}
++
++	switch (var->bits_per_pixel) {
++	case 1:
++	case 8:
++		var->red.offset = 0;
++		var->red.length = 8;
++		var->green.offset = 0;
++		var->green.length = 8;
++		var->blue.offset = 0;
++		var->blue.length = 8;
++		var->transp.offset = 0;
++		var->transp.length = 0;
++		break;
++	case 16:		/* ARGB 1555 */
++		if (var->transp.length) {
++			var->red.offset = 10;
++			var->red.length = 5;
++			var->green.offset = 5;
++			var->green.length = 5;
++			var->blue.offset = 0;
++			var->blue.length = 5;
++			var->transp.offset = 15;
++			var->transp.length = 1;
++		} else {	/* RGB 565 */
++			var->red.offset = 11;
++			var->red.length = 5;
++			var->green.offset = 5;
++			var->green.length = 6;
++			var->blue.offset = 0;
++			var->blue.length = 5;
++			var->transp.offset = 0;
++			var->transp.length = 0;
++		}
++		break;
++	case 24:		/* RGB 888 */
++		var->red.offset = 16;
++		var->red.length = 8;
++		var->green.offset = 8;
++		var->green.length = 8;
++		var->blue.offset = 0;
++		var->blue.length = 8;
++		var->transp.offset = 0;
++		var->transp.length = 0;
++		break;
++	case 32:		/* ARGB 8888 */
++		var->red.offset = 16;
++		var->red.length = 8;
++		var->green.offset = 8;
++		var->green.length = 8;
++		var->blue.offset = 0;
++		var->blue.length = 8;
++		var->transp.offset = 24;
++		var->transp.length = 8;
++		break;
++	}
++	var->red.msb_right = 0;
++	var->green.msb_right = 0;
++	var->blue.msb_right = 0;
++	var->transp.msb_right = 0;
+ 	return 0;
+ }
+ 
+ static int unifb_set_par(struct fb_info *info)
+ {
++	int hTotal, vTotal, hSyncStart, hSyncEnd, vSyncStart, vSyncEnd;
++	int format;
++	struct pkunity_de2 *de2_channel = dev_get_drvdata(info->device);
++	struct fb_var_screeninfo orig_var = \
++	de2_channel->old_var[de2_channel->id-1];
++	if (info->var.xres == orig_var.xres
++		&& info->var.yres == orig_var.yres
++		&& info->var.upper_margin == orig_var.upper_margin
++		&& info->var.lower_margin == orig_var.lower_margin
++		&& info->var.left_margin  == orig_var.left_margin
++		&& info->var.right_margin == orig_var.right_margin
++		&& info->var.hsync_len == orig_var.hsync_len
++		&& info->var.vsync_len == orig_var.vsync_len
++		&& info->var.pixclock == orig_var.pixclock) {
++		/* Same as the old one, do nothing */
++		return 0;
++	}
++
++	switch (info->var.bits_per_pixel) {
++	case 8:
++		format = UDE_CFG_DST8;
++		break;
++	case 16:
++		format = UDE_CFG_DST16;
++		break;
++	case 24:
++		format = UDE_CFG_DST24;
++		break;
++	case 32:
++		format = UDE_CFG_DST32;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* config DE */
++	info->fix.line_length = get_line_length(info->var.xres_virtual,
++						info->var.bits_per_pixel);
++
++	hSyncStart = info->var.xres + info->var.right_margin;
++	hSyncEnd = hSyncStart + info->var.hsync_len;
++	hTotal = hSyncEnd + info->var.left_margin;
++
++	vSyncStart = info->var.yres + info->var.lower_margin;
++	vSyncEnd = vSyncStart + info->var.vsync_len;
++	vTotal = vSyncEnd + info->var.upper_margin;
++
++	/* Configure Graphic */
++	unifb_regs[0] = 0x1 << 1 | format | 0x1 << 10;
++	writel(unifb_regs[0], DE2_GFX1_CFG_REG);
++	unifb_regs[1] = info->var.yres << 16 | info->var.xres;
++	writel(unifb_regs[1], DE2_GFX1_SIZE_REG);
++	unifb_regs[2] = PKUNITY_DE2_MMAP_BASE;
++	writel(unifb_regs[2], DE2_GFX1_ADDR_REG);
++
++	/* Configure Timing */
++	unifb_regs[4] = 0x1 << 1;
++	writel(unifb_regs[4], DE2_SCG1_CFG_REG);
++	unifb_regs[5] = (hTotal << 16) | (info->var.xres);
++	writel(unifb_regs[5], DE2_SCG1_H_BLANK_REG);
++	unifb_regs[6] = ((hSyncEnd) << 16) | (hSyncStart);
++	writel(unifb_regs[6], DE2_SCG1_H_SYNC_REG);
++	unifb_regs[7] = (vTotal << 16) | (info->var.yres);
++	writel(unifb_regs[7], DE2_SCG1_V_BLANK_REG);
++	unifb_regs[8] = ((vSyncEnd-1) << 16) | (vSyncStart);
++	writel(unifb_regs[8], DE2_SCG1_V_SYNC_REG);
++
++	/* Configure Output */
++	unifb_regs[9] = 0x1 << 2;
++	writel(unifb_regs[9], DE2_SQC1_CFG_REG);
++	unifb_regs[10] = 0x3f0000;
++	writel(unifb_regs[10], DE2_SQC1_EN_CTL_REG);
++	unifb_regs[11] = 0x64;
++	writel(unifb_regs[11], DE2_SQC2_CFG_REG);
++
++	/* update */
++	unifb_regs[11] = 0x1 | 0x1 << 4 | 0x1 << 5;
++	writel(unifb_regs[11], DE2_UPDATE_STATE_REG);
++	static int tmp = 1;
++	while (tmp)
++		tmp = readl(DE2_UPDATE_STATE_REG);
++	/* change old var to current one */
++	de2_channel->old_var[de2_channel->id-1] = info->var;
+ 	return 0;
+ }
+ 
+ #ifndef MODULE
+ static int __init unifb_setup(char *options)
+ {
++	char *this_opt;
++	unifb_enable = 0;
++	if (!options)
++		return 1;
++	unifb_enable = 1;
++	if (!*options)
++		return 1;
++	while ((this_opt = strsep(&options, ",")) != NULL) {
++		if (!*this_opt)
++			continue;
++		/* Test disable for backwards compatibility */
++		if (!strcmp(this_opt, "disable"))
++			unifb_enable = 0;
++	}
+ 	return 1;
+ }
+ #endif  /*  MODULE  */
+@@ -90,7 +297,73 @@ static struct fb_ops unifb_ops = {
+  */
+ static int __init unifb_probe(struct platform_device *dev)
+ {
++	struct fb_info *info;
++	struct pkunity_de2 *de2_channel;
++	int retval = -ENOMEM;
++	static char *unifb_option;
++	static int dbsize;
++
++	de2_channel =  kzalloc(sizeof(struct pkunity_de2), GFP_KERNEL);
++	if (NULL == de2_channel)
++		goto err;
++	/*
++	 * For real video cards we use ioremap.
++	 */
++	videomemory = (void *)__get_free_pages(GFP_KERNEL | __GFP_COMP,
++				get_order(videomemorysize));
++
++	/*
++	 * VFB could clear memory to prevent kernel info
++	 * leakage into userspace and set black screen
++	 * VGA-based drivers MUST NOT clear memory if
++	 * they want to be able to take over vgacon
++	 */
++	info = framebuffer_alloc(sizeof(u32) * 256, &dev->dev);
++	if (!info)
++		goto err;
++
++	de2_channel->info = info;
++	de2_channel->id = 1;
++	info->screen_base = (char __iomem *)videomemory;
++	info->fbops = &unifb_ops;
++	dbsize = ARRAY_SIZE(unifb_modes);
++	retval = fb_find_mode(&info->var, info, \
++			unifb_option, unifb_modes, dbsize, \
++			&unifb_modes[0], 16);
++	if (!retval || (retval == 4))
++		info->var = unifb_default;
++	unifb_fix.smem_start = PKUNITY_DE2_MMAP_BASE \
++			       + dev->id * videomemorysize;
++	unifb_fix.smem_len = videomemorysize;
++	unifb_fix.mmio_start = PKUNITY_UNIGFX2_BASE;
++	info->fix = unifb_fix;
++	info->pseudo_palette = info->par;
++	info->par = NULL;
++	info->flags = FBINFO_FLAG_DEFAULT;
++	info->flags |= FBINFO_HWACCEL_DISABLED;
++
++	retval = fb_alloc_cmap(&info->cmap, 256, 0);
++	if (retval < 0)
++		goto err1;
++
++	platform_set_drvdata(dev, de2_channel);
++	retval = register_framebuffer(info);
++	if (retval < 0)
++		goto err2;
++
++	pr_info( \
++	"fb%d: Virtual frame buffer device, using %ldK of video memory\n", \
++	info->node, videomemorysize >> 10);
++
+ 	return 0;
++err2:
++	fb_dealloc_cmap(&info->cmap);
++err1:
++	framebuffer_release(info);
++err:
++	kfree(de2_channel);
++
++	return retval;
+ }
+ 
+ static struct platform_driver unifb_driver = {
+@@ -104,13 +377,33 @@ static struct platform_device *unifb_device;
+ 
+ static int __init unifb_init(void)
+ {
+-	return 0;
++	int ret = 0;
++
++	ret = platform_driver_register(&unifb_driver);
++	if (!ret) {
++		if (unifb_enable)
++			unifb_device  = platform_device_alloc("unifb", 0);
++
++		if (unifb_device)
++			ret = platform_device_add(unifb_device);
++		else
++			ret = -ENOMEM;
++
++		if (ret) {
++			platform_device_put(unifb_device);
++			platform_driver_unregister(&unifb_driver);
++			return ret;
++		}
++	}
++	return ret;
+ }
+ module_init(unifb_init);
+ 
+ #ifdef MODULE
+ static void __exit unifb_exit(void)
+ {
++	platform_device_unregister(unifb_device);
++	platform_driver_unregister(&unifb_driver);
+ }
+ module_exit(unifb_exit);
+ 
+-- 
+1.7.9.5
+

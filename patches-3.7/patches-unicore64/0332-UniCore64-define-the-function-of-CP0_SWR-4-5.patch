@@ -1,0 +1,80 @@
+From dfadc61a90dc2766d11bac70d422ce43b51b08d8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 30 Mar 2012 15:38:08 +0800
+Subject: [PATCH 332/641] UniCore64: define the function of CP0_SWR #4/5
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |    4 ++++
+ arch/unicore64/kernel/entry.S                   |   16 ++++++++--------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 4f382ba..16fa41d 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -26,6 +26,10 @@
+  * CP0 CR10:	reg. for timer interrupt and interrupt information
+  * CP0 CR11:	control reg. of Read/Write Margin
+  * CP0 CR12:	reg. of software usage
++ *   #4: for temperary usage, perhaps destroyed when context switch
++ *   #5: for temperary usage, perhaps destroyed when context switch
++ *   #6: reserved for ocd
++ *   #7: reserved for ocd
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index b05dabe..b6ff077 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -6,8 +6,8 @@
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
+ 	.macro	__priv_context_save
+-	movc	CP0_SWR, r0, #0			@ save r0 for temp use
+-	movc	CP0_SWR, sp, #1			@ save sp for context save
++	movc	CP0_SWR, r0, #4			@ save r0 for temp use
++	movc	CP0_SWR, sp, #5			@ save sp for context save
+ 
+ 	dmov	r0, #-1
+ 	__push	r0				@ push return value
+@@ -18,10 +18,10 @@
+ 	movc	r0, CP0_EPC, #1
+ 	__push	r0				@ push r31(pc)
+ 	__push	lr				@ push r30(lr)
+-	movc	r0, CP0_SWR, #1
++	movc	r0, CP0_SWR, #5
+ 	__push	r0				@ push r29(sp)
+ 
+-	movc	r0, CP0_SWR, #0			@ restore original r0 value
++	movc	r0, CP0_SWR, #4			@ restore original r0 value
+ 	.irp	n, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, \
+ 		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+ 	__push	r\n				@ push r28-r0 regs
+@@ -35,9 +35,9 @@
+ 	__pop	r\n				@ pop r0-r28 regs
+ 	.endr
+ 	__pop	lr				@ pop r29(sp)
+-	movc	CP0_SWR, lr, #1			@ saved in temp reg
++	movc	CP0_SWR, lr, #5			@ saved in temp reg
+ 	__pop	lr				@ pop r30(lr)
+-	movc	CP0_SWR, lr, #0			@ saved in temp reg
++	movc	CP0_SWR, lr, #4			@ saved in temp reg
+ 	__pop	lr				@ pop r31(pc)
+ 	movc	CP0_EPC, lr, #1			@ saved in epc reg
+ 	__pop	lr				@ pop bsr
+@@ -45,8 +45,8 @@
+ 	__pop	lr				@ pop bfr
+ 	mov	bfr, lr
+ 
+-	movc	lr, CP0_SWR, #0			@ restore r30(lr) value
+-	movc	sp, CP0_SWR, #1			@ restore r29(sp) value
++	movc	lr, CP0_SWR, #4			@ restore r30(lr) value
++	movc	sp, CP0_SWR, #5			@ restore r29(sp) value
+ 	eret
+ 	.endm
+ 
+-- 
+1.7.9.5
+

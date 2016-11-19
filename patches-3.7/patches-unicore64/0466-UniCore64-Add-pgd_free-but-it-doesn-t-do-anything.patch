@@ -1,0 +1,26 @@
+From aba17e51062ce3954fe9cd4d31b9cb8c02312260 Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Mon, 19 Nov 2012 11:42:03 +0800
+Subject: [PATCH 466/641] UniCore64: Add pgd_free but it doesn't do anything
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index c917614..14632b7 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -25,7 +25,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
+ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ {
+ 	/* FIXME */
+-	BUG();
++	printk("Warning:pgd_free doesn't do anything now!");
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

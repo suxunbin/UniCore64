@@ -1,0 +1,26 @@
+From 2751b57e3f72d63b3ac615a2cc98461143985d17 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 3 Feb 2012 09:34:59 +0800
+Subject: [PATCH 298/641] UniCore64: add comment for __head_clear_bss
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/head-macros.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/head-macros.S b/arch/unicore64/include/arch/head-macros.S
+index 79879aa..5703dbe 100644
+--- a/arch/unicore64/include/arch/head-macros.S
++++ b/arch/unicore64/include/arch/head-macros.S
+@@ -22,7 +22,7 @@
+ /*
+  * __head_clear_bss - Clear bss region
+  *
+- * r0, r1 and r2 will be used in this macro.
++ * All GP registers will be destroyed in this macro.
+  */
+ .macro	__head_clear_bss
+ 	adr	r1, 1001f
+-- 
+1.7.9.5
+

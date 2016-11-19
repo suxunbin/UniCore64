@@ -1,0 +1,183 @@
+From fc07b3565b77f576dbfdbca5d40a11c53b8b2d09 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 31 May 2012 15:25:11 +0800
+Subject: [PATCH 357/641] UniCore64: add ocd console support
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig.debug               |    6 ++
+ arch/unicore64/configs/unicore64_defconfig |    2 +-
+ arch/unicore64/include/asm/setup_arch.h    |    4 ++
+ arch/unicore64/kernel/setup.c              |    8 +++
+ arch/unicore64/lib/Makefile                |    2 +
+ arch/unicore64/lib/ocd_console.c           |   86 ++++++++++++++++++++++++++++
+ 6 files changed, 107 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/lib/ocd_console.c
+
+diff --git a/arch/unicore64/Kconfig.debug b/arch/unicore64/Kconfig.debug
+index 6f3e02a..f4ea63c 100644
+--- a/arch/unicore64/Kconfig.debug
++++ b/arch/unicore64/Kconfig.debug
+@@ -19,4 +19,10 @@ config EARLY_PRINTK
+ 	  it is not recommended because it looks ugly and doesn't cooperate
+ 	  with klogd/syslogd or the X server. You should normally N here,
+ 	  unless you want to debug such a crash.
++
++config OCD_CONSOLE
++	bool
++	depends on VGA_CONSOLE!=y && FRAMEBUFFER_CONSOLE!=y && DEBUG_OCD
++	default y
++
+ endmenu
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 2f8f9b1..e4049cf 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -15,4 +15,4 @@ CONFIG_DEBUG_KERNEL=y
+ CONFIG_DEBUG_OCD=y
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd,keep ignore_loglevel"
++CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index 38e68ef..3f8f254 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -17,4 +17,8 @@ extern char __vectors_table[];
+ extern void __show_uc64_regs(void);
+ extern void __show_cp0_regs(void);
+ 
++#ifdef CONFIG_OCD_CONSOLE
++extern const struct consw ocd_con;	/* OCD console */
++#endif
++
+ #endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 3fe81fd..484e458 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -3,6 +3,7 @@
+ #include <linux/notifier.h>
+ #include <linux/string.h>
+ #include <linux/of_fdt.h>
++#include <linux/console.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/setup_arch.h>
+@@ -50,4 +51,11 @@ void __init setup_arch(char **cmdline_p)
+ 	setup_arch_param(cmdline_p);
+ 	setup_arch_memory();
+ 	unflatten_device_tree();
++
++	/* Set default console for virtual terminal */
++#if defined(CONFIG_OCD_CONSOLE)
++	conswitchp = &ocd_con;
++#elif defined(CONFIG_DUMMY_CONSOLE)
++	conswitchp = &dummy_con;
++#endif
+ }
+diff --git a/arch/unicore64/lib/Makefile b/arch/unicore64/lib/Makefile
+index fc16a84..b08f4c3 100644
+--- a/arch/unicore64/lib/Makefile
++++ b/arch/unicore64/lib/Makefile
+@@ -1,3 +1,5 @@
+ lib-y			:= delay.o debug.o
+ lib-y			+= string-simple.o
+ lib-y			+= mcount.o
++
++lib-$(CONFIG_OCD_CONSOLE)	+= ocd_console.o
+diff --git a/arch/unicore64/lib/ocd_console.c b/arch/unicore64/lib/ocd_console.c
+new file mode 100644
+index 0000000..b6cd28f
+--- /dev/null
++++ b/arch/unicore64/lib/ocd_console.c
+@@ -0,0 +1,86 @@
++/*
++ *  To be used if there's no graphics device in board, and only ocd
++ *  available for text output.
++ */
++#include <linux/console.h>
++#include <linux/vt_kern.h>
++#include <linux/module.h>
++
++#include <arch/asm-debug.h>
++
++#define OCD_CON_COLUMNS			80
++#define OCD_CON_ROWS			25
++
++static const char *ocd_con_startup(void)
++{
++	return "OCD(On-Chip-Debugger) console";
++}
++
++static void ocd_con_init(struct vc_data *vc, int init)
++{
++	vc->vc_can_do_color = 1;
++	if (init) {
++		vc->vc_cols = OCD_CON_COLUMNS;
++		vc->vc_rows = OCD_CON_ROWS;
++	} else
++		vc_resize(vc, OCD_CON_COLUMNS, OCD_CON_ROWS);
++}
++
++static void ocd_con_putc(struct vc_data *vc, int c, int ypos, int xpos)
++{
++	uc64_debug_puts((char *)&c, 1);
++}
++
++static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
++			int n, int ypos, int xpos)
++{
++	static int ypos_last;
++	char c = '\n';
++
++	uc64_debug_puts((char *)s, n);
++
++	if (ypos != ypos_last) {
++		uc64_debug_puts(&c, 1);
++	}
++	ypos_last = ypos;
++}
++
++static int ocd_con_scroll(struct vc_data *vc, int t, int b, int dir, int cnt)
++{
++	char c = '\n';
++	uc64_debug_puts(&c, 1);
++	return 0;
++}
++
++static int ocd_con_dummy(void)
++{
++	return 0;
++}
++
++/*
++ *  The console switch structure for the ocd console
++ *
++ *  Most of the operations are dummies.
++ */
++#define	DUMMY			(void *)ocd_con_dummy
++
++const struct consw ocd_con = {
++	.owner =		THIS_MODULE,
++	.con_startup =		ocd_con_startup,
++	.con_init =		ocd_con_init,
++	.con_deinit =		DUMMY,
++	.con_clear =		DUMMY,
++	.con_putc =		ocd_con_putc,
++	.con_putcs =		ocd_con_putcs,
++	.con_cursor =		DUMMY,
++	.con_scroll =		ocd_con_scroll,
++	.con_bmove =		DUMMY,
++	.con_switch =		DUMMY,
++	.con_blank =		DUMMY,
++	.con_font_set =		DUMMY,
++	.con_font_get =		DUMMY,
++	.con_font_default =	DUMMY,
++	.con_font_copy =	DUMMY,
++	.con_set_palette =	DUMMY,
++	.con_scrolldelta =	DUMMY,
++};
+-- 
+1.7.9.5
+

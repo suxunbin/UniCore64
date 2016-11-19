@@ -1,0 +1,62 @@
+From c85fabbba9ac808b392a0b085e066fb39e141f07 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 19 Jan 2012 14:01:27 +0800
+Subject: [PATCH 262/641] UniCore64: adjust parameters passing of
+ decompress_kernel
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/boot.S       |    4 ----
+ arch/unicore64/boot/uncompress.c |   11 ++++-------
+ 2 files changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/arch/unicore64/boot/boot.S b/arch/unicore64/boot/boot.S
+index 9c03900..99fff75 100644
+--- a/arch/unicore64/boot/boot.S
++++ b/arch/unicore64/boot/boot.S
+@@ -47,12 +47,8 @@ _start:
+ 	/*
+ 	 * Call decompress_kernel, and it's three parameters are:
+ 	 *   r0: output_start
+-	 *   r1: free_mem_ptr_p
+-	 *   r2: free_mem_ptr_end_p
+ 	 */
+ 	dmovl	r0, #UC64_PM_KIMAGE_START
+-	dmovl	r1, #UC64_PM_ZIMAGE_STACKTOP
+-	dmovl	r2, #UC64_PM_ZIMAGE_HEAP_END
+ 	call	decompress_kernel
+ 
+ 	/*
+diff --git a/arch/unicore64/boot/uncompress.c b/arch/unicore64/boot/uncompress.c
+index c9fb242..e6ac385 100644
+--- a/arch/unicore64/boot/uncompress.c
++++ b/arch/unicore64/boot/uncompress.c
+@@ -1,5 +1,6 @@
+ #include <linux/stddef.h>
+ #include <asm/string.h>
++#include <arch/hwdef-memory.h>
+ 
+ #include "uncompress.h"
+ 
+@@ -46,15 +47,11 @@ static void error(char *x)
+ /**
+  * decompress_kernel() - Decompress the kernel image
+  * @output_start: the address of kernel output
+- * @free_mem_ptr_p: the pointer of free memory
+- * @free_mem_ptr_end_p: the pointer of the end of free memory
+  */
+-void decompress_kernel(unsigned char *output_start,
+-		unsigned long free_mem_ptr_p,
+-		unsigned long free_mem_ptr_end_p)
++void decompress_kernel(unsigned char *output_start)
+ {
+-	free_mem_ptr		= free_mem_ptr_p;
+-	free_mem_end_ptr	= free_mem_ptr_end_p;
++	free_mem_ptr = UC64_PM_ZIMAGE_STACKTOP;
++	free_mem_end_ptr = UC64_PM_ZIMAGE_HEAP_END;
+ 
+ 	arch_decomp_setup();
+ 
+-- 
+1.7.9.5
+

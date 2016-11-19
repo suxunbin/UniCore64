@@ -1,0 +1,94 @@
+From 6609eb32b822b65f44d27595f2e60f7fb506b717 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sun, 1 Apr 2012 15:32:39 +0800
+Subject: [PATCH 335/641] UniCore64: introduce __delay and udelay
+ implementations
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild  |    1 -
+ arch/unicore64/include/asm/delay.h |   11 +++++++++++
+ arch/unicore64/lib/delay.S         |   11 +++++++++++
+ arch/unicore64/lib/delay.c         |   21 ---------------------
+ 4 files changed, 22 insertions(+), 22 deletions(-)
+ create mode 100644 arch/unicore64/include/asm/delay.h
+ create mode 100644 arch/unicore64/lib/delay.S
+ delete mode 100644 arch/unicore64/lib/delay.c
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 20563b2..67d2a41 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -11,7 +11,6 @@ generic-y += cmpxchg.h
+ generic-y += cmpxchg-local.h
+ generic-y += cputime.h
+ generic-y += current.h
+-generic-y += delay.h
+ generic-y += device.h
+ generic-y += div64.h
+ generic-y += dma.h
+diff --git a/arch/unicore64/include/asm/delay.h b/arch/unicore64/include/asm/delay.h
+new file mode 100644
+index 0000000..18143af
+--- /dev/null
++++ b/arch/unicore64/include/asm/delay.h
+@@ -0,0 +1,11 @@
++#ifndef __UNICORE64_ASM_DELAY_H__
++#define __UNICORE64_ASM_DELAY_H__
++
++#include <linux/param.h>
++
++extern void __delay(unsigned long loops);
++
++/* If only we had a cycle counter... */
++#define udelay(usecs)	__delay((usecs) * loops_per_jiffy * HZ / 1000000)
++
++#endif /* __UNICORE64_ASM_DELAY_H__ */
+diff --git a/arch/unicore64/lib/delay.S b/arch/unicore64/lib/delay.S
+new file mode 100644
+index 0000000..63b04c9
+--- /dev/null
++++ b/arch/unicore64/lib/delay.S
+@@ -0,0 +1,11 @@
++#include <linux/linkage.h>
++
++/**
++ * __delay - delay routine
++ * r0: loops per cycle
++ */
++ENTRY(__delay)
++	dsub.a	r0, r0, #2
++	bua	__delay
++	return
++ENDPROC(__delay)
+diff --git a/arch/unicore64/lib/delay.c b/arch/unicore64/lib/delay.c
+deleted file mode 100644
+index 3f9c941..0000000
+--- a/arch/unicore64/lib/delay.c
++++ /dev/null
+@@ -1,21 +0,0 @@
+-#include <linux/delay.h>
+-
+-/**
+- * __delay() -
+- * @loops:
+- */
+-void __delay(unsigned long loops)
+-{
+-	/* FIXME */
+-	BUG();
+-}
+-
+-/**
+- * __const_udelay() -
+- * @xloops:
+- */
+-inline void __const_udelay(unsigned long xloops)
+-{
+-	/* FIXME */
+-	BUG();
+-}
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From 3199a2b60b6db387aabe4d44d124362c56d78a0e Mon Sep 17 00:00:00 2001
+From: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+Date: Tue, 10 Jul 2012 09:33:24 +0800
+Subject: [PATCH 394/641] UniCore64: Fix error in ret_from_fork
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 260ffa8..d9cb5e4 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -84,7 +84,7 @@ ENTRY(ret_from_fork)
+ 1001:	__irq_disable
+ 	__thread_info	r17
+ 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
+-	and		r0, r18, #TIF_NEED_RESCHED	@ FIXME: wait for and.a
++	and		r0, r18, #(1 << TIF_NEED_RESCHED)	@ FIXME: wait for and.a
+ 	cmpsub.a	r0, #0
+ 	adr		lr, 1001b
+ 	bne		schedule		@ return to 1001b
+-- 
+1.7.9.5
+

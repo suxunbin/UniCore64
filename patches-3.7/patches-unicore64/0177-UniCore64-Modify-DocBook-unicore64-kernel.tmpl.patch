@@ -1,0 +1,74 @@
+From 8b2b9d25a9bd47af01176c18eccfb6a829d03ef2 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Fri, 16 Dec 2011 16:04:53 +0800
+Subject: [PATCH 177/641] UniCore64: Modify DocBook unicore64-kernel.tmpl
+
+Add the several chapters to the unicore64 kernel-doc framework.
+Signed-off-by: Cao Song <caosong@mprc.pku.edu.cn>
+---
+ Documentation/DocBook/unicore64-kernel.tmpl |   49 +++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/Documentation/DocBook/unicore64-kernel.tmpl b/Documentation/DocBook/unicore64-kernel.tmpl
+index 00d5eb3..39ceac5 100644
+--- a/Documentation/DocBook/unicore64-kernel.tmpl
++++ b/Documentation/DocBook/unicore64-kernel.tmpl
+@@ -97,6 +97,55 @@
+ !Parch/unicore64/include/arch/asm-mmuops.h ASM_MMUOPS_H_SET_PGD
+ 		</sect2>
+     	</sect1>
++	<sect1 id="sect1_2">
++		<title>Definitions related to kernel</title>
++		<para>
++		Definitions here is related to kernel, and provide the basic
++		function for the kernel.
++		</para>
++	</sect1>
++</chapter>
++
++<chapter id="chapter2">
++	<title>Foundamental setup</title>
++	<para>
++		Foundatmental setup.
++	</para>
++</chapter>
++
++<chapter id="chapter3">
++	<title>Atomic and transaction</title>
++	<para>
++		Atomic and transaction.
++	</para>
++</chapter>
++
++<chapter id="chapter4">
++	<title>Debug</title>
++	<para>
++		Debug.
++	</para>
++</chapter>
++
++<chapter id="chapter5">
++	<title>Memory management</title>
++	<para>
++		Memory management.
++	</para>
++</chapter>
++
++<chapter id="chapter6">
++	<title>Interrupt</title>
++	<para>
++		Interrupt.
++	</para>
++</chapter>
++
++<chapter id="chapter7">
++	<title>Time</title>
++	<para>
++		Time.
++	</para>
+ </chapter>
+ 
+ </book>
+-- 
+1.7.9.5
+

@@ -1,0 +1,33 @@
+From e7ac72a27f3308e96aa6ea0f2490616af4c8566d Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 4 Jun 2012 17:29:38 +0800
+Subject: [PATCH 364/641] UniCore64-bugfix: fix the string misunderstand in
+ console putcs
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/lib/ocd_console.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/lib/ocd_console.c b/arch/unicore64/lib/ocd_console.c
+index b6cd28f..ce9d8a8 100644
+--- a/arch/unicore64/lib/ocd_console.c
++++ b/arch/unicore64/lib/ocd_console.c
+@@ -37,7 +37,13 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
+ 	static int ypos_last;
+ 	char c = '\n';
+ 
+-	uc64_debug_puts((char *)s, n);
++	/* For each element in *s (16bit in an unsigned short type):
++	 * High 8-bit is background color, low 8-bit is foreground char */
++	while (*s && (n > 0)) {
++		uc64_debug_puts((char *)s, 1);
++		s++;
++		n--;
++	}
+ 
+ 	if (ypos != ypos_last) {
+ 		uc64_debug_puts(&c, 1);
+-- 
+1.7.9.5
+

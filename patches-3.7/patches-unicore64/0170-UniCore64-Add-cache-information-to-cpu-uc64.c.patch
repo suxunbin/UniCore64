@@ -1,0 +1,203 @@
+From 09b5054cdcf658b1a018fbf488c818c5a15dfec1 Mon Sep 17 00:00:00 2001
+From: CaoSong <caosong@mprc.pku.edu.cn>
+Date: Wed, 14 Dec 2011 16:51:28 +0800
+Subject: [PATCH 170/641] UniCore64: Add cache information to cpu-uc64.c
+
+Add cache information macros in the arch/hwdef-copro.h and add cache
+information process in setup_arch_cpuinfo function of kernel/cpu-uc64.c.
+Signed-off-by: Cao Song <caosong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |   61 +++++++++++++++++++
+ arch/unicore64/kernel/cpu-uc64.c          |   90 +++++++++++++++++++++++++++--
+ 2 files changed, 147 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index db91f27..53eeef1 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -94,4 +94,65 @@
+ #define CP0_CPUID_DESIGNER_MASK		BFMASK(8, 24)
+ #define CP0_CPUID_DESIGNER_MPRC		BFIELD(0x4D, 8, 24)
+ 
++/**
++ * DOC: HWDEF_COPRO_H_CP0_CACHE
++ * Following cache inforamtion macros in CP0 are defined.
++ */
++#define CP0_CPUID_ICACHE_LINE_MASK		BFMASK(2, 0)
++#define CP0_CPUID_ICACHE_LINE_8BYTE		BFIELD(0, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_16BYTE		BFIELD(1, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_32BYTE		BFIELD(2, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_64BYTE		BFIELD(3, 2, 0)
++
++#define CP0_CPUID_ICACHE_ASSOC_MASK		BFMASK(3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_DMAP		BFIELD(0, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_2WAY		BFIELD(1, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_4WAY		BFIELD(2, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_8WAY		BFIELD(3, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_16WAY		BFIELD(4, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_32WAY		BFIELD(5, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_64WAY		BFIELD(6, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_128WAY		BFIELD(7, 3, 3)
++
++#define CP0_CPUID_ICACHE_SIZE_MASK		BFMASK(3, 6)
++#define CP0_CPUID_ICACHE_SIZE_512B		BFIELD(0, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_1KB		BFIELD(1, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_2KB		BFIELD(2, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_4KB		BFIELD(3, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_8KB		BFIELD(4, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_16KB		BFIELD(5, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_32KB		BFIELD(6, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_64KB		BFIELD(7, 3, 6)
++
++#define CP0_CPUID_DCACHE_LINE_MASK		BFMASK(2, 12)
++#define CP0_CPUID_DCACHE_LINE_8BYTE		BFIELD(0, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_16BYTE		BFIELD(1, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_32BYTE		BFIELD(2, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_64BYTE		BFIELD(3, 2, 12)
++
++#define CP0_CPUID_DCACHE_ASSOC_MASK		BFMASK(3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_DMAP		BFIELD(0, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_2WAY		BFIELD(1, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_4WAY		BFIELD(2, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_8WAY		BFIELD(3, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_16WAY		BFIELD(4, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_32WAY		BFIELD(5, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_64WAY		BFIELD(6, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_128WAY		BFIELD(7, 3, 15)
++
++#define CP0_CPUID_DCACHE_SIZE_MASK		BFMASK(3, 18)
++#define CP0_CPUID_DCACHE_SIZE_512B		BFIELD(0, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_1KB		BFIELD(1, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_2KB		BFIELD(2, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_4KB		BFIELD(3, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_8KB		BFIELD(4, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_16KB		BFIELD(5, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_32KB		BFIELD(6, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_64KB		BFIELD(7, 3, 18)
++
++#define CP0_CPUID_CACHE_SEPERATE		BFIELD(1, 1, 24)
++#define CP0_CPUID_CACHE_LOCKDOWN		BFIELD(1, 1, 25)
++#define CP0_CPUID_CACHE_WRITEBACK		BFIELD(1, 1, 26)
++#define CP0_CPUID_CACHE_WRITETHROUGH		BFIELD(1, 1, 27)
++
+ #endif /* __UNICORE64_ARCH_HWDEF_COPRO_H__ */
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index fba6a0a..c854773 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -89,17 +89,74 @@ const struct seq_operations cpuinfo_op = {
+ };
+ 
+ /**
+- * setup_arch_cpuinfo() - show the cpu information
++ * setup_arch_cpuinfo() - show the cpu and cache information
+  *
+- * show the cpu information in the screen.
++ * show the cpu and cache information in the screen.
+  * first, get the value in copro through the macro UC64_CPUID,
+  * then check the bit field. The value should be 0x4Duv0863. It represent
+  * that designer is 0x4D, series is 0xu, layout is 0xv, and
+  * part number is 0x0863. And the layout value is not checked here.
++ * And then, get the cache information from the macro UC64_CACHETYPE,
++ * judge the strategy, such as I&D cache seperate, lockdown, write back
++ * and write throuth, if it was enabled. At last, print out the information
++ * of Instruct cache and Date cache.
+  */
++#define CACHETYPE_SIZE(CT)						\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_SIZE_MASK) {		\
++	case CP0_CPUID_##CT##CACHE_SIZE_512B:				\
++		pr_info("512B "); break;				\
++	case CP0_CPUID_##CT##CACHE_SIZE_1KB:				\
++		pr_info("1KB "); break;					\
++	case CP0_CPUID_##CT##CACHE_SIZE_2KB:				\
++		pr_info("2KB "); break;					\
++	case CP0_CPUID_##CT##CACHE_SIZE_4KB:				\
++		pr_info("4KB "); break;					\
++	case CP0_CPUID_##CT##CACHE_SIZE_8KB:				\
++		pr_info("8KB "); break;					\
++	case CP0_CPUID_##CT##CACHE_SIZE_16KB:				\
++		pr_info("16KB "); break;				\
++	case CP0_CPUID_##CT##CACHE_SIZE_32KB:				\
++		pr_info("32KB "); break;				\
++	case CP0_CPUID_##CT##CACHE_SIZE_64KB:				\
++		pr_info("64KB "); break;				\
++	}
++
++#define CACHETYPE_ASSOC(CT)						\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_ASSOC_MASK) {	\
++	case CP0_CPUID_##CT##CACHE_ASSOC_DMAP:				\
++		pr_info("DMAP "); break;				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_2WAY:				\
++		pr_info("2Way "); break;				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_4WAY:				\
++		pr_info("4Way "); break;				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_8WAY:				\
++		pr_info("8Way "); break;				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_16WAY:				\
++		pr_info("16Way "); break; 				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_32WAY:				\
++		pr_info("32Way "); break; 				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_64WAY:				\
++		pr_info("64Way "); break;				\
++	case CP0_CPUID_##CT##CACHE_ASSOC_128WAY:			\
++		pr_info("128Way "); break;				\
++	}
++
++#define CACHETYPE_LINE(CT)						\
++	switch (uc64_cache & CP0_CPUID_##CT##CACHE_LINE_MASK) {		\
++	case CP0_CPUID_##CT##CACHE_LINE_8BYTE:				\
++		pr_info("L8B"); break;					\
++	case CP0_CPUID_##CT##CACHE_LINE_16BYTE:				\
++		pr_info("L16B"); break;					\
++	case CP0_CPUID_##CT##CACHE_LINE_32BYTE:				\
++		pr_info("L32B"); break;					\
++	case CP0_CPUID_##CT##CACHE_LINE_64BYTE:				\
++		pr_info("L64B"); break;					\
++	}
++
+ void __init setup_arch_cpuinfo(void)
+ {
+ 	unsigned long uc64_cpuid;
++	unsigned long uc64_cache;
+ 
+ 	uc64_cpuid = UC64_CPUID;
+ 
+@@ -109,8 +166,33 @@ void __init setup_arch_cpuinfo(void)
+ 	BUG_ON((uc64_cpuid & CP0_CPUID_DESIGNER_MASK) !=
+ 			CP0_CPUID_DESIGNER_MPRC);
+ 
+-	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity\n");
+-	pr_info("revision: %ld, layout: %ld\n",
++	pr_info("CPU: UniCore64, Designer: MPRC, SoC: PKUnity,");
++	pr_info(" revision: %ld, layout: %ld\n",
+ 		((uc64_cpuid & CP0_CPUID_SERIES_MASK) >> CP0_CPUID_SERIES_POS),
+ 		((uc64_cpuid & CP0_CPUID_LAYOUT_MASK) >> CP0_CPUID_LAYOUT_POS));
++
++	/* CACHE information */
++	uc64_cache = UC64_CACHETYPE;
++
++	BUG_ON(!(uc64_cache & CP0_CPUID_CACHE_SEPERATE));
++
++	pr_info("Cachetype: %s %s, ",
++		(uc64_cache & CP0_CPUID_CACHE_LOCKDOWN) ? "LD" : NULL,
++		(uc64_cache & CP0_CPUID_CACHE_WRITEBACK) ? "WB" : "WT");
++
++	pr_info("I$: ");
++	CACHETYPE_SIZE(I);
++	CACHETYPE_ASSOC(I);
++	CACHETYPE_LINE(I);
++
++	pr_info(", D$: ");
++	CACHETYPE_SIZE(D);
++	CACHETYPE_ASSOC(D);
++	CACHETYPE_LINE(D);
++
++	pr_info("\n");
+ }
++
++#undef CACHETYPE_SIZE
++#undef CACHETYPE_ASSOC
++#undef CACHETYPE_LINE
+-- 
+1.7.9.5
+

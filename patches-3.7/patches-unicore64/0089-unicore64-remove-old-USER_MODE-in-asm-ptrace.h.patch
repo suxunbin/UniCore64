@@ -1,0 +1,45 @@
+From f013e3cc6f786193aad9f2186f9fad97bb0cf092 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 28 Nov 2011 16:48:09 +0800
+Subject: [PATCH 089/641] unicore64: remove old USER_MODE in asm/ptrace.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 +-
+ arch/unicore64/include/asm/ptrace.h    |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index 177b453..f2a190d 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -48,7 +48,7 @@ extern unsigned long get_wchan(struct task_struct *p);
+ 	unsigned long *stack = (unsigned long *)sp;			\
+ 	set_fs(USER_DS);						\
+ 	memset(regs->uc64_regs, 0, sizeof(regs->uc64_regs));		\
+-	regs->UC64_ASR = USER_MODE;					\
++	regs->UC64_ASR = ASR_MODE_USER;					\
+ 	regs->UC64_R31 = pc & ~1;	/* pc */                        \
+ 	regs->UC64_R29 = sp;		/* sp */                        \
+ 	regs->UC64_R02 = stack[2];	/* r2 (envp) */                 \
+diff --git a/arch/unicore64/include/asm/ptrace.h b/arch/unicore64/include/asm/ptrace.h
+index 9d667b8..f45f6dc 100644
+--- a/arch/unicore64/include/asm/ptrace.h
++++ b/arch/unicore64/include/asm/ptrace.h
+@@ -47,10 +47,10 @@ struct pt_regs {
+ 
+ #ifdef __KERNEL__
+ 
+-#define MODE_MASK		0x0000001f /* FIXME */
+-#define USER_MODE		0x00000010
++#include <arch/hwdef-cpu.h>
+ 
+-#define user_mode(regs)		(((regs)->UC64_ASR & MODE_MASK) == USER_MODE)
++#define user_mode(regs)			\
++	(((regs)->UC64_ASR & ASR_MODE_MASK) == ASR_MODE_USER)
+ 
+ #endif /* __KERNEL__ */
+ 
+-- 
+1.7.9.5
+

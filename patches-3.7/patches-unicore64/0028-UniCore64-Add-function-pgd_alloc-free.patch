@@ -1,0 +1,56 @@
+From cc092eed8bd7485382f8107e5331a54d813c8b8e Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Tue, 25 Oct 2011 18:00:08 +0800
+Subject: [PATCH 028/641] UniCore64: Add function pgd_alloc/free
+
+Fixed error:
+kernel/built-in.o: In function `mm_init.clone.60':
+fork.c:(.text+0x3dc6): undefined reference to `pgd_alloc'
+kernel/built-in.o: In function `__mmdrop':
+(.text+0x3fba): undefined reference to `pgd_free'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/Makefile  |    2 +-
+ arch/unicore64/mm/pgtable.c |   22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/mm/pgtable.c
+
+diff --git a/arch/unicore64/mm/Makefile b/arch/unicore64/mm/Makefile
+index 1c17518..0a041ea 100644
+--- a/arch/unicore64/mm/Makefile
++++ b/arch/unicore64/mm/Makefile
+@@ -1 +1 @@
+-obj-y				:= mmu.o
++obj-y				:= mmu.o pgtable.o
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+new file mode 100644
+index 0000000..623ff8b
+--- /dev/null
++++ b/arch/unicore64/mm/pgtable.c
+@@ -0,0 +1,22 @@
++#include <linux/mm.h>
++
++/**
++ * pgd_alloc() - Allocates a new Page Global Directory
++ * @mm:
++ */
++pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	/* FIXME */
++	BUG();
++}
++
++/**
++ * pgd_free() - Release a page table and insert the freed page frame in cache
++ * @mm:
++ * @pgd:
++ */
++void pgd_free(struct mm_struct *mm, pgd_t *pgd)
++{
++	/* FIXME */
++	BUG();
++}
+-- 
+1.7.9.5
+

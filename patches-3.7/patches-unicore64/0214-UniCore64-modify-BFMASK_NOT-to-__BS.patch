@@ -1,0 +1,59 @@
+From 830ba65b075c464e3994a50324a42c909efb6ea8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 16 Jan 2012 09:03:13 +0800
+Subject: [PATCH 214/641] UniCore64: modify BFMASK_NOT to __BS
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h |    2 +-
+ arch/unicore64/include/asm/page.h      |    2 +-
+ arch/unicore64/include/asm/pgtable.h   |    4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index 508e9a3..be5ddc1 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -10,7 +10,7 @@
+ 
+ #define BFSIZE(vbits)			(_AC(1, UL) << (vbits))
+ #define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+-#define BFMASK_NOT(vmask, vshift)	(~BFMASK(vmask, vshift))
++#define __BS(vmask, vshift)	(~BFMASK(vmask, vshift))
+ 
+ #define __BF(val, vmask, vshift)		\
+ 		(((val) << (vshift)) & BFMASK(vmask, vshift))
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+index da1f6da..a74497a 100644
+--- a/arch/unicore64/include/asm/page.h
++++ b/arch/unicore64/include/asm/page.h
+@@ -10,7 +10,7 @@
+ /* PAGE_SHIFT determines the page size */
+ #define PAGE_SHIFT		UC64_PAGE_BITS
+ #define PAGE_SIZE		UC64_PAGE_SIZE
+-#define PAGE_MASK		BFMASK_NOT(PAGE_SHIFT, 0)
++#define PAGE_MASK		__BS(PAGE_SHIFT, 0)
+ 
+ #ifndef __ASSEMBLY__
+ 
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index 084aa65..84187e7 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -16,11 +16,11 @@
+ 
+ #define PGDIR_SHIFT		UC64_PGD_SHIFT
+ #define PGDIR_SIZE		UC64_PGD_SIZE
+-#define PGDIR_MASK		BFMASK_NOT(PGDIR_SHIFT, 0)
++#define PGDIR_MASK		__BS(PGDIR_SHIFT, 0)
+ 
+ #define PMD_SHIFT		UC64_PMD_SHIFT
+ #define PMD_SIZE		UC64_PMD_SIZE
+-#define PMD_MASK		BFMASK_NOT(PMD_SHIFT, 0)
++#define PMD_MASK		__BS(PMD_SHIFT, 0)
+ 
+ #define PTRS_PER_PGD		BFSIZE(UC64_PGD_BITS)
+ #define PTRS_PER_PMD		BFSIZE(UC64_PMD_BITS)
+-- 
+1.7.9.5
+

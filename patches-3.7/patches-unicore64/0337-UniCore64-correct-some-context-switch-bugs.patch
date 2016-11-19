@@ -1,0 +1,101 @@
+From e819fef9cd771b2dce7091de3165df1dc3b5d8a8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sun, 1 Apr 2012 16:43:15 +0800
+Subject: [PATCH 337/641] UniCore64: correct some context switch bugs
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/ptrace.h |    5 +++--
+ arch/unicore64/kernel/entry.S       |   16 ++++++++--------
+ 2 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/ptrace.h b/arch/unicore64/include/asm/ptrace.h
+index a833ba1..c074b6f 100644
+--- a/arch/unicore64/include/asm/ptrace.h
++++ b/arch/unicore64/include/asm/ptrace.h
+@@ -7,7 +7,7 @@
+  * has to be a multiple of 8.
+  */
+ struct pt_regs {
+-	unsigned long uc64_regs[35];
++	unsigned long uc64_regs[36];
+ };
+ 
+ #define UC64_R00		uc64_regs[0]
+@@ -44,7 +44,8 @@ struct pt_regs {
+ #define UC64_R31		uc64_regs[31]
+ #define UC64_ASR		uc64_regs[32]
+ #define UC64_AFR		uc64_regs[33]
+-#define UC64_O00		uc64_regs[34] /* Orig R00 */
++#define UC64_SW0		uc64_regs[34] /* SWR #0 */
++#define UC64_O00		uc64_regs[35] /* Orig R00 */
+ 
+ #ifdef __KERNEL__
+ 
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 2edc731..9ddb0d8 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -13,6 +13,8 @@
+ 	@ step 2: push special registers into stack, see struct pt_regs
+ 	dmov	r0, #-1
+ 	__push	r0				@ push return value
++	movc	r0, CP0_SWR, #0
++	__push	r0				@ push swr #0
+ 	dmov	r0, bfr
+ 	__push	r0				@ push bfr
+ 	dmov	r0, bsr
+@@ -30,15 +32,10 @@
+ 	__push	r\n
+ 	.endr
+ 
+-	@ step 4: push only-kernel-awared registers into stack
+-	movc	r16, CP0_SWR, #0		@ push swr #0
+-	__push	r16
+ 	.endm
+ 
+ 	.macro __priv_context_restore
+ 	@ step 1: pop only-kernel-awared registers from stack
+-	__pop	r16
+-	movc	CP0_SWR, r16, #0		@ pop swr #0
+ 
+ 	@ step 2: pop general registers from stack, see struct pt_regs
+ 	.irp	n, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, \
+@@ -54,14 +51,15 @@
+ 	__pop	lr				@ pop r31(pc)
+ 	movc	CP0_EPC, lr, #1			@ saved in epc reg
+ 	__pop	lr				@ pop bsr
+-	mov	bsr, lr
++	dmov	bsr, lr
+ 	__pop	lr				@ pop bfr
+-	mov	bfr, lr
++	dmov	bfr, lr
++	__pop	lr				@ pop swr #0
++	movc	CP0_SWR, lr, #0
+ 
+ 	@ step 4: restore the original values of lr and sp
+ 	movc	lr, CP0_SWR, #4			@ restore r30(lr) value
+ 	movc	sp, CP0_SWR, #5			@ restore r29(sp) value
+-	eret
+ 	.endm
+ 
+ /**
+@@ -105,6 +103,7 @@ ENTRY(__vec_itrap)
+ 	disable_irq
+ 
+ 	__priv_context_restore
++	eret
+ ENDPROC(__vec_itrap)
+ 
+ ENTRY(__vec_dtrap)
+@@ -126,6 +125,7 @@ ENTRY(__vec_dtrap)
+ 	disable_irq
+ 
+ 	__priv_context_restore
++	eret
+ ENDPROC(__vec_dtrap)
+ 
+ ENTRY(__vec_int_puv3)
+-- 
+1.7.9.5
+

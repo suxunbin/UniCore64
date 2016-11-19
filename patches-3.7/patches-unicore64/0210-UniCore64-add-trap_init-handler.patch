@@ -1,0 +1,71 @@
+From 6aff429b71aaf572ed1c8d7d8a9366a1132fe945 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 14 Jan 2012 14:07:01 +0800
+Subject: [PATCH 210/641] UniCore64: add trap_init handler
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/setup_arch.h |    5 ++---
+ arch/unicore64/kernel/entry.S           |    4 ++++
+ arch/unicore64/kernel/traps.c           |    7 +++++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/setup_arch.h b/arch/unicore64/include/asm/setup_arch.h
+index a188cb9..43e030c 100644
+--- a/arch/unicore64/include/asm/setup_arch.h
++++ b/arch/unicore64/include/asm/setup_arch.h
+@@ -1,9 +1,6 @@
+ #ifndef __UNICORE64_ASM_SETUP_ARCH_H__
+ #define __UNICORE64_ASM_SETUP_ARCH_H__
+ 
+-#include <linux/stringify.h>
+-#include <arch/hwdef-copro.h>
+-
+ extern void setup_arch_cpuinfo(void);
+ extern void setup_arch_memory(void);
+ 
+@@ -15,4 +12,6 @@ extern void setup_arch_devtree(char *cmdline);
+ #define setup_arch_devtree(s)		do { } while (0)
+ #endif /* CONFIG_OF_EARLY_FLATTREE */
+ 
++extern char __vectors_table[];
++
+ #endif /* __UNICORE64_ASM_SETUP_ARCH_H__ */
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index b5bbd6e..3438d2e 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -6,3 +6,7 @@
+ ENTRY(__switch_to)
+ 	/* FIXME: */
+ ENDPROC(__switch_to)
++
++ENTRY(__vectors_table)
++
++ENDPROC(__vectors_table)
+diff --git a/arch/unicore64/kernel/traps.c b/arch/unicore64/kernel/traps.c
+index 5bdc260..692f02c 100644
+--- a/arch/unicore64/kernel/traps.c
++++ b/arch/unicore64/kernel/traps.c
+@@ -1,13 +1,16 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ 
++#include <asm/setup_arch.h>
++
++#include <arch/hwdef-cp0-sysctrl.h>
++
+ /**
+  * trap_init() -
+  */
+ void __init trap_init(void)
+ {
+-	/* FIXME */
+-	BUG();
++	write_cp(__vectors_table, CP0_INTR_VECBASE);
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

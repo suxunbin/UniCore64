@@ -1,0 +1,38 @@
+From 07ccff7f0182942f132250372298dce13d38a606 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Sat, 15 Dec 2012 14:22:18 +0800
+Subject: [PATCH 489/641] unicore64: Define __atomic_hash
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/lib/Makefile |    1 +
+ arch/unicore64/lib/bitops.c |    6 ++++++
+ 2 files changed, 7 insertions(+)
+ create mode 100644 arch/unicore64/lib/bitops.c
+
+diff --git a/arch/unicore64/lib/Makefile b/arch/unicore64/lib/Makefile
+index e98c459..babc858 100644
+--- a/arch/unicore64/lib/Makefile
++++ b/arch/unicore64/lib/Makefile
+@@ -1,5 +1,6 @@
+ lib-y				:= delay.o debug.o
+ lib-y				+= string-simple.o
+ 
++lib-$(CONFIG_SMP)		+= bitops.o
+ lib-$(CONFIG_DEBUG_MCOUNT)	+= mcount.o
+ lib-$(CONFIG_OCD_CONSOLE)	+= ocd_console.o
+diff --git a/arch/unicore64/lib/bitops.c b/arch/unicore64/lib/bitops.c
+new file mode 100644
+index 0000000..c157896
+--- /dev/null
++++ b/arch/unicore64/lib/bitops.c
+@@ -0,0 +1,6 @@
++#include <linux/spinlock.h>
++#include <linux/atomic.h>
++
++arch_spinlock_t __atomic_hash[ATOMIC_HASH_SIZE] __lock_aligned = {
++	[0 ... (ATOMIC_HASH_SIZE-1)]  = __ARCH_SPIN_LOCK_UNLOCKED
++};
+-- 
+1.7.9.5
+

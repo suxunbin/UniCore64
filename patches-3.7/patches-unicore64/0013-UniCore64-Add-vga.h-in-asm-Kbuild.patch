@@ -1,0 +1,27 @@
+From 7c24e501ffaa6147370590245b5320209fe34cb9 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Mon, 10 Oct 2011 18:06:34 +0800
+Subject: [PATCH 013/641] UniCore64:Add vga.h in asm/Kbuild
+
+Fixed error
+In file included from include/linux/selection.h:11:0,
+                  from drivers/video/console/vgacon.c:45:
+include/linux/vt_buffer.h:18:21: fatal error: asm/vga.h: No such file or directory
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 9126c2a..05ca0f9 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -65,3 +65,4 @@ generic-y += uaccess.h
+ generic-y += unaligned.h
+ generic-y += user.h
+ generic-y += pci.h
++generic-y += vga.h
+-- 
+1.7.9.5
+

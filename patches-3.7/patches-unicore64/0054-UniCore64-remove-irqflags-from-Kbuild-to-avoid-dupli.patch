@@ -1,0 +1,26 @@
+From 6c188ac6ea5212d35f5a03948a2643809d2714f1 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 31 Oct 2011 18:14:13 +0800
+Subject: [PATCH 054/641] UniCore64: remove irqflags from Kbuild to avoid
+ duplicated files
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 92ab916..cf08ea1 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -26,7 +26,6 @@ generic-y += ioctls.h
+ generic-y += ipcbuf.h
+ generic-y += irq.h
+ generic-y += irq_regs.h
+-generic-y += irqflags.h
+ generic-y += kdebug.h
+ generic-y += kmap_types.h
+ generic-y += linkage.h
+-- 
+1.7.9.5
+

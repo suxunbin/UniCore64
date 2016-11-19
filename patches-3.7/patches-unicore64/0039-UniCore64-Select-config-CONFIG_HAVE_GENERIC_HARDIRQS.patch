@@ -1,0 +1,30 @@
+From 07def3387344aaf289a7df43afc6230f340c46cd Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Wed, 26 Oct 2011 19:27:05 +0800
+Subject: [PATCH 039/641] UniCore64: Select config
+ CONFIG_HAVE_GENERIC_HARDIRQS
+
+Fixed error:
+main.c:(.init.text+0x795): undefined reference to `init_irq_proc'
+i8042.c:(.text+0x27733): undefined reference to `free_irq'
+i8042.c:(.init.text+0x1bdf): undefined reference to `request_irq'
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index 1cff1ef..3ab4632 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -1,5 +1,6 @@
+ config UNICORE64
+ 	def_bool y
++	select HAVE_GENERIC_HARDIRQS
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_BZIP2
+ 	select HAVE_KERNEL_LZO
+-- 
+1.7.9.5
+

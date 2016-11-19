@@ -1,0 +1,85 @@
+From ac622261ca47a36a5b0ed709444b34ff057b1597 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Thu, 12 Jan 2012 17:16:43 +0800
+Subject: [PATCH 199/641] UniCore64: add early printk
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig.debug         |   10 ++++++++++
+ arch/unicore64/kernel/Makefile       |    1 +
+ arch/unicore64/kernel/early_printk.c |   33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
+ create mode 100644 arch/unicore64/kernel/early_printk.c
+
+diff --git a/arch/unicore64/Kconfig.debug b/arch/unicore64/Kconfig.debug
+index cceb7a8..6f3e02a 100644
+--- a/arch/unicore64/Kconfig.debug
++++ b/arch/unicore64/Kconfig.debug
+@@ -9,4 +9,14 @@ config DEBUG_OCD
+ 	  Say Y here if you want the debug print routines to direct their
+ 	  output to the UniCore On-Chip-Debugger channel.
+ 
++config EARLY_PRINTK
++	def_bool DEBUG_OCD
++	help
++	  Write kernel log output directly into the ocd or to a serial port.
++
++	  This is useful for kernel debugging when your machine crashes very
++	  early before the console code is initialized. For normal operation
++	  it is not recommended because it looks ugly and doesn't cooperate
++	  with klogd/syslogd or the X server. You should normally N here,
++	  unless you want to debug such a crash.
+ endmenu
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+index 8449f27..cf0a4ad 100644
+--- a/arch/unicore64/kernel/Makefile
++++ b/arch/unicore64/kernel/Makefile
+@@ -9,5 +9,6 @@ obj-y			+= time.o traps.o
+ 
+ obj-$(CONFIG_UNICORE64)		+= cpu-uc64.o
+ obj-$(CONFIG_OF_EARLY_FLATTREE)	+= devtree.o
++obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+ 
+ extra-y			:= vmlinux.lds
+diff --git a/arch/unicore64/kernel/early_printk.c b/arch/unicore64/kernel/early_printk.c
+new file mode 100644
+index 0000000..68e8838
+--- /dev/null
++++ b/arch/unicore64/kernel/early_printk.c
+@@ -0,0 +1,33 @@
++#include <linux/console.h>
++#include <linux/init.h>
++#include <linux/string.h>
++#include <arch/asm-debug.h>
++
++static void early_ocd_write(struct console *con, const char *s, unsigned n)
++{
++	uc64_debug_puts(s);
++}
++
++static struct console early_ocd_console = {
++	.name =		"earlyocd",
++	.write =	early_ocd_write,
++	.flags =	CON_PRINTBUFFER,
++	.index =	-1,
++};
++
++static int __init setup_early_printk(char *param)
++{
++	if (!param)
++		return 0;
++
++	if (strstr(param, "keep"))
++		early_ocd_console.flags &= ~CON_BOOT;
++	else
++		early_ocd_console.flags |= CON_BOOT;
++
++	register_console(&early_ocd_console);
++
++	return 0;
++}
++
++early_param("earlyprintk", setup_early_printk);
+-- 
+1.7.9.5
+

@@ -1,0 +1,35 @@
+From af081809937c7739325a5c7d5638b2122c1fa43d Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Mon, 17 Jun 2013 16:59:13 +0800
+Subject: [PATCH 559/641] unicore64: Set AP online
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index c3940da..ba9b045 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -220,6 +220,8 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *idle)
+  */
+ void __init secondary_start_kernel(void)
+ {
++	unsigned int cpu = smp_processor_id();
++
+ 	atomic_inc(&init_mm.mm_count);
+ 	current->active_mm = &init_mm;
+ 
+@@ -229,6 +231,8 @@ void __init secondary_start_kernel(void)
+ 
+ 	notify_cpu_starting(cpu);
+ 
++	set_cpu_online(cpu, true);
++
+ 	smp_secondary_alive = 1;
+ 
+ 	cpu_idle();
+-- 
+1.7.9.5
+

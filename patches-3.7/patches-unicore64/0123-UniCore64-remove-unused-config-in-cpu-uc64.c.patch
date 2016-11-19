@@ -1,0 +1,25 @@
+From a3a0068d9ea8f2c2a1f95dfe021bfdad11026e19 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 8 Dec 2011 10:21:17 +0800
+Subject: [PATCH 123/641] UniCore64: remove unused config in cpu-uc64.c
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/cpu-uc64.c |    4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/unicore64/kernel/cpu-uc64.c b/arch/unicore64/kernel/cpu-uc64.c
+index 9681bd0..844834c 100644
+--- a/arch/unicore64/kernel/cpu-uc64.c
++++ b/arch/unicore64/kernel/cpu-uc64.c
+@@ -59,7 +59,3 @@ const struct seq_operations cpuinfo_op = {
+ 	.stop	= cpu_ucv3_stop,
+ 	.show	= cpu_ucv3_show
+ };
+-
+-#ifdef CONFIG_CPU_FREQ
+-	/* FIXME */
+-#endif
+-- 
+1.7.9.5
+

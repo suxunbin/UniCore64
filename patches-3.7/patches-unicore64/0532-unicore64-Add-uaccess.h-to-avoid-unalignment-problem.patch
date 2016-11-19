@@ -1,0 +1,44 @@
+From b52a0fc5f6f360af6d17b84033736e9cd7142204 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 9 Jan 2013 15:50:07 +0800
+Subject: [PATCH 532/641] unicore64: Add uaccess.h to avoid unalignment
+ problem
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild    |    1 -
+ arch/unicore64/include/asm/uaccess.h |   10 ++++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/include/asm/uaccess.h
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 2068b20..792226a 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -59,7 +59,6 @@ generic-y += termios.h
+ generic-y += tlb.h
+ generic-y += topology.h
+ generic-y += types.h
+-generic-y += uaccess.h
+ generic-y += ucontext.h
+ generic-y += unaligned.h
+ generic-y += user.h
+diff --git a/arch/unicore64/include/asm/uaccess.h b/arch/unicore64/include/asm/uaccess.h
+new file mode 100644
+index 0000000..97688eb
+--- /dev/null
++++ b/arch/unicore64/include/asm/uaccess.h
+@@ -0,0 +1,10 @@
++#ifndef __UNICORE64_UACCESS_H__
++#define __UNICORE64_UACCESS_H__
++
++/* To avoid unalignment problem */
++#define __copy_from_user(to, from, n)	(memcpy(to, (void __force *)from, n), 0)
++#define __copy_to_user(to, from, n)	(memcpy((void __force *)to, from, n), 0)
++
++#include <asm-generic/uaccess.h>
++
++#endif /* __UNICORE64_UACCESS_H__ */
+-- 
+1.7.9.5
+

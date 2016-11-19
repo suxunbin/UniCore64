@@ -1,0 +1,47 @@
+From 27568870b9f92109de73d3f166907578964a7519 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 01:47:22 +0800
+Subject: [PATCH 601/641] UniCore64: adjust video Kconfig for de2
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/video/Kconfig |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index 5631724..0d0c23b 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -5,14 +5,6 @@
+ menu "Graphics support"
+ 	depends on HAS_IOMEM
+ 
+-config FB_PUV4_DE2
+-        bool
+-        default y
+-	select FB_SYS_FOPS
+-	select FB_SYS_FILLRECT
+-	select FB_SYS_COPYAREA
+-	select FB_SYS_IMAGEBLIT
+-
+ config HAVE_FB_ATMEL
+ 	bool
+ 
+@@ -2425,6 +2417,14 @@ config FB_PUV3_UNIGFX
+ 	  Choose this option if you want to use the Unigfx device as a
+ 	  framebuffer device. Without the support of PCI & AGP.
+ 
++config FB_PUV4_DE2
++	bool
++	depends on FB && UNICORE64 && ARCH_PUV4
++	select FB_SYS_FOPS
++	select FB_SYS_FILLRECT
++	select FB_SYS_COPYAREA
++	select FB_SYS_IMAGEBLIT
++
+ source "drivers/video/omap/Kconfig"
+ source "drivers/video/omap2/Kconfig"
+ source "drivers/video/exynos/Kconfig"
+-- 
+1.7.9.5
+

@@ -1,0 +1,725 @@
+From ae6410daf94394cc3736b9f89021eddeb452eff0 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 4 May 2011 15:51:51 +0800
+Subject: [PATCH 001/641] unicore64: add compilation and some headers
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig                     |   78 ++++++++++++++++++++++++++++
+ arch/unicore64/Makefile                    |   66 +++++++++++++++++++++++
+ arch/unicore64/configs/unicore64_defconfig |    8 +++
+ arch/unicore64/include/asm/Kbuild          |    1 +
+ arch/unicore64/include/asm/atomic.h        |    2 +
+ arch/unicore64/include/asm/bitops.h        |   32 ++++++++++++
+ arch/unicore64/include/asm/bitsperlong.h   |    8 +++
+ arch/unicore64/include/asm/byteorder.h     |    1 +
+ arch/unicore64/include/asm/elf.h           |   18 +++++++
+ arch/unicore64/include/asm/mmu.h           |    6 +++
+ arch/unicore64/include/asm/page.h          |   61 ++++++++++++++++++++++
+ arch/unicore64/include/asm/pgtable-hwdef.h |   20 +++++++
+ arch/unicore64/include/asm/pgtable.h       |   50 ++++++++++++++++++
+ arch/unicore64/include/asm/processor.h     |   13 +++++
+ arch/unicore64/include/asm/ptrace.h        |   48 +++++++++++++++++
+ arch/unicore64/include/asm/segment.h       |    8 +++
+ arch/unicore64/include/asm/sigcontext.h    |   14 +++++
+ arch/unicore64/include/asm/thread_info.h   |   41 +++++++++++++++
+ arch/unicore64/include/asm/timex.h         |   11 ++++
+ arch/unicore64/include/asm/unistd.h        |    7 +++
+ arch/unicore64/kernel/asm-offsets.c        |   20 +++++++
+ arch/unicore64/mm/Kconfig                  |   24 +++++++++
+ 22 files changed, 537 insertions(+)
+ create mode 100644 arch/unicore64/Kconfig
+ create mode 100644 arch/unicore64/Makefile
+ create mode 100644 arch/unicore64/configs/unicore64_defconfig
+ create mode 100644 arch/unicore64/include/asm/Kbuild
+ create mode 100644 arch/unicore64/include/asm/atomic.h
+ create mode 100644 arch/unicore64/include/asm/bitops.h
+ create mode 100644 arch/unicore64/include/asm/bitsperlong.h
+ create mode 100644 arch/unicore64/include/asm/byteorder.h
+ create mode 100644 arch/unicore64/include/asm/elf.h
+ create mode 100644 arch/unicore64/include/asm/mmu.h
+ create mode 100644 arch/unicore64/include/asm/page.h
+ create mode 100644 arch/unicore64/include/asm/pgtable-hwdef.h
+ create mode 100644 arch/unicore64/include/asm/pgtable.h
+ create mode 100644 arch/unicore64/include/asm/processor.h
+ create mode 100644 arch/unicore64/include/asm/ptrace.h
+ create mode 100644 arch/unicore64/include/asm/segment.h
+ create mode 100644 arch/unicore64/include/asm/sigcontext.h
+ create mode 100644 arch/unicore64/include/asm/thread_info.h
+ create mode 100644 arch/unicore64/include/asm/timex.h
+ create mode 100644 arch/unicore64/include/asm/unistd.h
+ create mode 100644 arch/unicore64/kernel/asm-offsets.c
+ create mode 100644 arch/unicore64/mm/Kconfig
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+new file mode 100644
+index 0000000..a44a120
+--- /dev/null
++++ b/arch/unicore64/Kconfig
+@@ -0,0 +1,78 @@
++config UNICORE64
++	def_bool y
++	select HAVE_KERNEL_GZIP
++	select HAVE_KERNEL_BZIP2
++	select HAVE_KERNEL_LZO
++	select HAVE_KERNEL_LZMA
++	select ARCH_WANT_FRAME_POINTERS
++	help
++	  UniCore-64 is 64-bit Instruction Set Architecture,
++	  including a series of low-power-consumption RISC chip
++	  designs licensed by PKUnity Ltd.
++	  Please see web page at <http://www.pkunity.com/>.
++
++config 64BIT
++	def_bool y
++
++config RWSEM_GENERIC_SPINLOCK
++	def_bool y
++
++source "init/Kconfig"
++
++menu "Processor and System Type"
++
++config MMU
++	def_bool y
++
++source "arch/unicore64/mm/Kconfig"
++
++source "kernel/Kconfig.hz"
++
++comment "Board and System Features"
++
++config ARCH_FPGA
++	bool "FPGA Specific Board/System"
++	help
++	  ONLY enabled this option when debugging and running in FPGA board.
++
++	  If unsure, say N.
++endmenu
++
++menu "Kernel Features"
++
++source "mm/Kconfig"
++
++endmenu
++
++menu "Boot options"
++
++config CMDLINE
++	string "Default kernel command string"
++	default ""
++
++config CMDLINE_FORCE
++	bool "Always use the default kernel command string"
++	depends on CMDLINE != ""
++	help
++	  Always use the default kernel command string, even if the boot
++	  loader passes other arguments to the kernel.
++	  This is useful if you cannot or don't want to change the
++	  command-line options your boot loader passes to the kernel.
++
++	  If unsure, say N.
++
++endmenu
++
++menu "Userspace binary formats"
++
++source "fs/Kconfig.binfmt"
++
++endmenu
++
++source "net/Kconfig"
++
++source "drivers/Kconfig"
++
++source "fs/Kconfig"
++
++source "lib/Kconfig"
+diff --git a/arch/unicore64/Makefile b/arch/unicore64/Makefile
+new file mode 100644
+index 0000000..bb7121f
+--- /dev/null
++++ b/arch/unicore64/Makefile
+@@ -0,0 +1,66 @@
++#
++# arch/unicore64/Makefile
++#
++# This file is included by the global makefile so that you can add your own
++# architecture-specific flags and dependencies.
++#
++# This file is subject to the terms and conditions of the GNU General Public
++# License.  See the file "COPYING" in the main directory of this archive
++# for more details.
++#
++# Copyright (C) 2011~2011 by Guan Xuetao
++#
++ifneq ($(SUBARCH),$(ARCH))
++	ifeq ($(CROSS_COMPILE),)
++		CROSS_COMPILE := $(call cc-cross-prefix, unicore64-linux-)
++	endif
++endif
++
++# Provide the path to use for "make defconfig".
++KBUILD_DEFCONFIG	:= $(ARCH)_defconfig
++
++LDFLAGS_vmlinux		:= -p --no-undefined -X
++
++OBJCOPYFLAGS		:= -O binary -R .note -R .note.gnu.build-id -R .comment -S
++
++# Never use hard float in kernel
++KBUILD_CFLAGS		+= -msoft-float
++
++#head-y			:= arch/unicore64/kernel/head.o
++#head-y			+= arch/unicore64/kernel/init_task.o
++
++#core-y			+= arch/unicore64/kernel/
++#core-y			+= arch/unicore64/mm/
++
++#libs-y			+= arch/unicore64/lib/
++
++ASM_GENERIC_HEADERS	:= auxvec.h
++ASM_GENERIC_HEADERS	+= bug.h bugs.h
++ASM_GENERIC_HEADERS	+= cache.h cacheflush.h
++ASM_GENERIC_HEADERS	+= cmpxchg.h cmpxchg-local.h
++ASM_GENERIC_HEADERS	+= cputime.h current.h
++ASM_GENERIC_HEADERS	+= delay.h device.h div64.h dma.h
++ASM_GENERIC_HEADERS	+= errno.h fcntl.h ftrace.h hardirq.h hw_irq.h
++ASM_GENERIC_HEADERS	+= io.h ioctl.h ioctls.h ipcbuf.h
++ASM_GENERIC_HEADERS	+= irq.h irq_regs.h irqflags.h
++ASM_GENERIC_HEADERS	+= kmap_types.h linkage.h local.h
++ASM_GENERIC_HEADERS	+= mman.h module.h msgbuf.h
++ASM_GENERIC_HEADERS	+= param.h percpu.h poll.h posix_types.h resource.h
++ASM_GENERIC_HEADERS	+= sections.h sembuf.h setup.h shmbuf.h shmparam.h
++ASM_GENERIC_HEADERS	+= siginfo.h signal.h socket.h sockios.h
++ASM_GENERIC_HEADERS	+= stat.h statfs.h string.h swab.h system.h
++ASM_GENERIC_HEADERS	+= termbits.h termios.h topology.h types.h uaccess.h
++
++archprepare:
++	$(Q)$(foreach a, $(ASM_GENERIC_HEADERS),	\
++		echo '#include <asm-generic/$a>'	\
++			> $(srctree)/arch/unicore64/include/asm/$a; )
++
++CLEAN_FILES		+= $(foreach a, $(ASM_GENERIC_HEADERS),		\
++			$(srctree)/arch/unicore64/include/asm/$a )
++
++all:	vmlinux
++
++define archhelp
++	echo  '  defconfig     - using arch/$(ARCH)/configs/$(KBUILD_DEFCONFIG)'
++endef
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+new file mode 100644
+index 0000000..15cf93f
+--- /dev/null
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -0,0 +1,8 @@
++### General setup
++CONFIG_LOCALVERSION="-uc64"
++
++### Processor and System Type
++#	Processor Features
++CONFIG_ARCH_FPGA=y
++CONFIG_CPU_ICACHE_DISABLE=y
++CONFIG_CPU_DCACHE_DISABLE=y
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+new file mode 100644
+index 0000000..c68e168
+--- /dev/null
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -0,0 +1 @@
++include include/asm-generic/Kbuild.asm
+diff --git a/arch/unicore64/include/asm/atomic.h b/arch/unicore64/include/asm/atomic.h
+new file mode 100644
+index 0000000..47a3941
+--- /dev/null
++++ b/arch/unicore64/include/asm/atomic.h
+@@ -0,0 +1,2 @@
++#include <asm-generic/atomic64.h>
++#include <asm-generic/atomic.h>
+diff --git a/arch/unicore64/include/asm/bitops.h b/arch/unicore64/include/asm/bitops.h
+new file mode 100644
+index 0000000..9422ee1
+--- /dev/null
++++ b/arch/unicore64/include/asm/bitops.h
+@@ -0,0 +1,32 @@
++#ifndef __ASM_UNICORE64_BITOPS_H__
++#define __ASM_UNICORE64_BITOPS_H__
++
++#define _ASM_GENERIC_BITOPS___FLS_H_
++/*
++ * __fls - find last (most-significant) set bit in a long word
++ * @word: the word to search
++ *
++ * Undefined if no set bit exists, so code should check against 0 first.
++ */
++static __always_inline unsigned long __fls(unsigned long word)
++{
++	/* FIXME: NOT implemented */
++	return 0;
++}
++
++#define _ASM_GENERIC_BITOPS___FFS_H_
++/*
++ * __ffs - find first bit in word.
++ * @word: The word to search
++ *
++ * Undefined if no bit exists, so code should check against 0 first.
++ */
++static __always_inline unsigned long __ffs(unsigned long word)
++{
++	/* FIXME: NOT implemented */
++	return 0;
++}
++
++#include <asm-generic/bitops.h>
++
++#endif /* __ASM_UNICORE64_BITOPS_H__ */
+diff --git a/arch/unicore64/include/asm/bitsperlong.h b/arch/unicore64/include/asm/bitsperlong.h
+new file mode 100644
+index 0000000..46d290a
+--- /dev/null
++++ b/arch/unicore64/include/asm/bitsperlong.h
+@@ -0,0 +1,8 @@
++#ifndef __ASM_UNICORE64_BITSPERLONG_H__
++#define __ASM_UNICORE64_BITSPERLONG_H__
++
++#define __BITS_PER_LONG		64
++
++#include <asm-generic/bitsperlong.h>
++
++#endif /* __ASM_UNICORE64_BITSPERLONG_H__ */
+diff --git a/arch/unicore64/include/asm/byteorder.h b/arch/unicore64/include/asm/byteorder.h
+new file mode 100644
+index 0000000..9558416
+--- /dev/null
++++ b/arch/unicore64/include/asm/byteorder.h
+@@ -0,0 +1 @@
++#include <linux/byteorder/little_endian.h>
+diff --git a/arch/unicore64/include/asm/elf.h b/arch/unicore64/include/asm/elf.h
+new file mode 100644
+index 0000000..bb7a783
+--- /dev/null
++++ b/arch/unicore64/include/asm/elf.h
+@@ -0,0 +1,18 @@
++#ifndef __ASM_UNICORE64_ELF_H__
++#define __ASM_UNICORE64_ELF_H__
++
++#include <asm/ptrace.h>
++
++typedef u64 elf_greg_t;
++#define ELF_NGREG (sizeof(struct pt_regs) / sizeof(elf_greg_t))
++typedef elf_greg_t elf_gregset_t[ELF_NGREG];
++
++#define EM_UNICORE64		110 /* FIXME lator */
++
++#define ELF_CLASS		ELFCLASS64
++#define ELF_DATA		ELFDATA2LSB
++#define ELF_ARCH		EM_UNICORE64
++#define ELF_PLATFORM		(NULL)
++#define ELF_EXEC_PAGESIZE	PAGE_SIZE
++
++#endif /* __ASM_UNICORE64_ELF_H__ */
+diff --git a/arch/unicore64/include/asm/mmu.h b/arch/unicore64/include/asm/mmu.h
+new file mode 100644
+index 0000000..7cc9450
+--- /dev/null
++++ b/arch/unicore64/include/asm/mmu.h
+@@ -0,0 +1,6 @@
++#ifndef __ASM_UNICORE64_MMU_H__
++#define __ASM_UNICORE64_MMU_H__
++
++typedef unsigned long mm_context_t;
++
++#endif /* __ASM_UNICORE64_MMU_H__ */
+diff --git a/arch/unicore64/include/asm/page.h b/arch/unicore64/include/asm/page.h
+new file mode 100644
+index 0000000..c2edd2c
+--- /dev/null
++++ b/arch/unicore64/include/asm/page.h
+@@ -0,0 +1,61 @@
++#ifndef __ASM_UNICORE64_PAGE_H__
++#define __ASM_UNICORE64_PAGE_H__
++
++#include <linux/const.h>
++
++#define PAGE_OFFSET		_AC(0xfffffff800000000, UL)
++
++/* PAGE_SHIFT determines the page size */
++#define PAGE_SHIFT		(12)
++#define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
++#define PAGE_MASK		(~(PAGE_SIZE-1))
++
++#define STRICT_MM_TYPECHECKS
++
++#ifdef STRICT_MM_TYPECHECKS
++/* These are used to make use of C type-checking.. */
++typedef struct { u64 pte; } pte_t;
++typedef struct { u64 pmd; } pmd_t;
++typedef struct { u64 pgd; } pgd_t;
++typedef struct { u64 pgprot; } pgprot_t;
++
++#define pte_val(x)	((x).pte)
++#define pmd_val(x)	((x).pmd)
++#define pgd_val(x)	((x).pgd)
++#define pgprot_val(x)	((x).pgprot)
++
++#define __pte(x)	((pte_t) { (x) })
++#define __pmd(x)	((pmd_t) { (x) })
++#define __pgd(x)	((pgd_t) { (x) })
++#define __pgprot(x)	((pgprot_t) { (x) })
++
++#else /* STRICT_MM_TYPECHECKS */
++/* .. while these make it easier on the compiler */
++typedef u64 pte_t;
++typedef u64 pmd_t;
++typedef u64 pgd_t;
++typedef u64 pgprot_t;
++
++#define pte_val(x)	(x)
++#define pmd_val(x)	(x)
++#define pgd_val(x)	(x)
++#define pgprot_val(x)	(x)
++
++#define __pte(x)	(x)
++#define __pmd(x)	(x)
++#define __pgd(x)	(x)
++#define __pgprot(x)	(x)
++
++#endif /* STRICT_MM_TYPECHECKS */
++
++typedef struct page *pgtable_t;
++
++#define __va(x)			((void *)((unsigned long)(x) + PAGE_OFFSET))
++#define __pa(x)			((unsigned long)(x) - PAGE_OFFSET)
++
++#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
++
++#include <asm-generic/getorder.h>
++#include <asm-generic/memory_model.h>
++
++#endif /* __ASM_UNICORE64_PAGE_H__ */
+diff --git a/arch/unicore64/include/asm/pgtable-hwdef.h b/arch/unicore64/include/asm/pgtable-hwdef.h
+new file mode 100644
+index 0000000..0574084
+--- /dev/null
++++ b/arch/unicore64/include/asm/pgtable-hwdef.h
+@@ -0,0 +1,20 @@
++#ifndef __ASM_UNICORE64_PGTABLE_HWDEF_H__
++#define __ASM_UNICORE64_PGTABLE_HWDEF_H__
++
++/* Hardware page table definitions. */
++
++/* Level 1 descriptor (PGD) */
++#define UC64_L1_EXIST		(1 << 2)
++
++/* Level 2 descriptor (PMD) */
++#define UC64_L2_EXIST		(1 << 2)
++
++/* Level 3 descriptor (PTE) */
++#define UC64_L3_EXIST		(1 << 2)
++#define UC64_L3_YOUNG		(1 << 3)
++#define UC64_L3_DIRTY		(1 << 4)
++#define UC64_L3_EXEC		(1 << 5)
++#define UC64_L3_WRITE		(1 << 6)
++#define UC64_L3_READ		(1 << 7)
++
++#endif /* __ASM_UNICORE64_PGTABLE_HWDEF_H__ */
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+new file mode 100644
+index 0000000..30c82c2
+--- /dev/null
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -0,0 +1,50 @@
++#ifndef __ASM_UNICORE64_PGTABLE_H__
++#define __ASM_UNICORE64_PGTABLE_H__
++
++#include <asm-generic/pgtable-nopud.h>
++#include <asm/pgtable-hwdef.h>
++
++/* FIXME */
++#define VMALLOC_START		_AC(0x0000000100000000, UL)
++#define VMALLOC_END		_AC(0x0000000200000000, UL)
++
++/* 3-level translation table walking: 9+9+9+12 */
++#define PGDIR_SHIFT		(30)
++#define PMD_SHIFT		(21)
++
++#define PTRS_PER_PMD		(1 << 9)
++
++#define pud_none(pud)		(!pud_val(pud))
++#define pud_bad(pud)		(!pud_val(pud))
++#define pud_present(pud)	(pud_val(pud))
++#define pud_clear(pudp)		set_pud(pudp, __pud(0))
++
++#define pmd_none(pmd)		(!pmd_val(pmd))
++#define pmd_bad(pmd)		(!pmd_val(pmd))
++#define pmd_present(pmd)	(pmd_val(pmd) & UC64_L2_EXIST)
++#define pmd_clear(pmdp)		set_pmd(pmdp, __pmd(0))
++
++#define pmd_offset(pudp, addr)	((pmd_t *)pud_val(*(pudp)) +	\
++				(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1)))
++
++#define pte_none(pte)		(!pte_val(pte))
++#define pte_present(pte)	(pte_val(pte) & UC64_L3_EXIST)
++#define pte_clear(mm, addr, ptep)	set_pte(ptep, __pte(0))
++
++#define pte_write(pte)		(pte_val(pte) & UC64_L3_WRITE)
++#define pte_dirty(pte)		(pte_val(pte) & UC64_L3_DIRTY)
++#define pte_young(pte)		(pte_val(pte) & UC64_L3_YOUNG)
++
++#define pte_wrprotect(pte)	(__pte(pte_val(pte) & ~UC64_L3_WRITE))
++#define pte_mkwrite(pte)	(__pte(pte_val(pte) | UC64_L3_WRITE))
++#define pte_mkclean(pte)	(__pte(pte_val(pte) & ~UC64_L3_DIRTY))
++#define pte_mkdirty(pte)	(__pte(pte_val(pte) | UC64_L3_DIRTY))
++#define pte_mkold(pte)		(__pte(pte_val(pte) & ~UC64_L3_YOUNG))
++#define pte_mkyoung(pte)	(__pte(pte_val(pte) | UC64_L3_YOUNG))
++
++extern void set_pte(pte_t *ptep, pte_t pteval);
++#define set_pte_at(mm, addr, ptep, pteval)	set_pte(ptep, pteval)
++
++#include <asm-generic/pgtable.h>
++
++#endif /* __ASM_UNICORE64_PGTABLE_H__ */
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+new file mode 100644
+index 0000000..bf17ef1
+--- /dev/null
++++ b/arch/unicore64/include/asm/processor.h
+@@ -0,0 +1,13 @@
++#ifndef __ASM_UNICORE64_PROCESSOR_H__
++#define __ASM_UNICORE64_PROCESSOR_H__
++
++#ifdef __KERNEL__
++
++struct thread_struct { };
++#define INIT_THREAD		{ }
++
++#define cpu_relax()		barrier()
++
++#endif
++
++#endif /* __ASM_UNICORE64_PROCESSOR_H__ */
+diff --git a/arch/unicore64/include/asm/ptrace.h b/arch/unicore64/include/asm/ptrace.h
+new file mode 100644
+index 0000000..0d5ec1a
+--- /dev/null
++++ b/arch/unicore64/include/asm/ptrace.h
+@@ -0,0 +1,48 @@
++#ifndef __ASM_UNICORE64_PTRACE_H__
++#define __ASM_UNICORE64_PTRACE_H__
++
++/*
++ * This struct defines the way the registers are stored on the
++ * stack during a system call.  Note that sizeof(struct pt_regs)
++ * has to be a multiple of 8.
++ */
++struct pt_regs {
++	__u64 uc64_regs[34];
++};
++
++#define UC64_R00		uc64_regs[0]
++#define UC64_R01		uc64_regs[1]
++#define UC64_R02		uc64_regs[2]
++#define UC64_R03		uc64_regs[3]
++#define UC64_R04		uc64_regs[4]
++#define UC64_R05		uc64_regs[5]
++#define UC64_R06		uc64_regs[6]
++#define UC64_R07		uc64_regs[7]
++#define UC64_R08		uc64_regs[8]
++#define UC64_R09		uc64_regs[9]
++#define UC64_R10		uc64_regs[10]
++#define UC64_R11		uc64_regs[11]
++#define UC64_R12		uc64_regs[12]
++#define UC64_R13		uc64_regs[13]
++#define UC64_R14		uc64_regs[14]
++#define UC64_R15		uc64_regs[15]
++#define UC64_R16		uc64_regs[16]
++#define UC64_R17		uc64_regs[17]
++#define UC64_R18		uc64_regs[18]
++#define UC64_R19		uc64_regs[19]
++#define UC64_R20		uc64_regs[20]
++#define UC64_R21		uc64_regs[21]
++#define UC64_R22		uc64_regs[22]
++#define UC64_R23		uc64_regs[23]
++#define UC64_R24		uc64_regs[24]
++#define UC64_R25		uc64_regs[25]
++#define UC64_R26		uc64_regs[26]
++#define UC64_R27		uc64_regs[27]
++#define UC64_R28		uc64_regs[28]
++#define UC64_R29		uc64_regs[29]
++#define UC64_R30		uc64_regs[30]
++#define UC64_R31		uc64_regs[31]
++#define UC64_ASR		uc64_regs[32]
++#define UC64_O00		uc64_regs[33] /* Orig R00 */
++
++#endif /* __ASM_UNICORE64_PTRACE_H__ */
+diff --git a/arch/unicore64/include/asm/segment.h b/arch/unicore64/include/asm/segment.h
+new file mode 100644
+index 0000000..7152c9e
+--- /dev/null
++++ b/arch/unicore64/include/asm/segment.h
+@@ -0,0 +1,8 @@
++#ifndef __ASM_UNICORE64_SEGMENT_H__
++#define __ASM_UNICORE64_SEGMENT_H__
++
++typedef struct {
++	unsigned long seg;
++} mm_segment_t;
++
++#endif /* __ASM_UNICORE64_SEGMENT_H__ */
+diff --git a/arch/unicore64/include/asm/sigcontext.h b/arch/unicore64/include/asm/sigcontext.h
+new file mode 100644
+index 0000000..d38145d
+--- /dev/null
++++ b/arch/unicore64/include/asm/sigcontext.h
+@@ -0,0 +1,14 @@
++#ifndef __ASM_UNICORE64_SIGCONTEXT_H__
++#define __ASM_UNICORE64_SIGCONTEXT_H__
++
++#include <asm/ptrace.h>
++/*
++ * Signal context structure - contains all info to do with the state
++ * before the signal handler was invoked.  Note: only add new entries
++ * to the end of the structure.
++ */
++struct sigcontext {
++	struct pt_regs regs;
++};
++
++#endif /* __ASM_UNICORE64_SIGCONTEXT_H__ */
+diff --git a/arch/unicore64/include/asm/thread_info.h b/arch/unicore64/include/asm/thread_info.h
+new file mode 100644
+index 0000000..358eb32
+--- /dev/null
++++ b/arch/unicore64/include/asm/thread_info.h
+@@ -0,0 +1,41 @@
++#ifndef __ASM_UNICORE64_THREAD_INFO_H__
++#define __ASM_UNICORE64_THREAD_INFO_H__
++
++#ifdef __KERNEL__
++
++#define THREAD_SIZE_ORDER	(1)
++#define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
++
++#include <asm/types.h>
++#include <asm/segment.h>
++
++/*
++ * low level task data that entry.S needs immediate access to.
++ */
++struct thread_info {
++	struct task_struct	*task;		/* main task structure */
++	struct exec_domain	*exec_domain;	/* execution domain */
++	__u32			flags;		/* low level flags */
++	__s32			preempt_count;	/* <0 => BUG */
++	__u32			cpu;		/* current cpu */
++	mm_segment_t		addr_limit;	/* address limit */
++	struct restart_block	restart_block;
++};
++
++#define INIT_THREAD_INFO(tsk)						\
++{									\
++	.task		= &tsk,						\
++	.exec_domain	= &default_exec_domain,				\
++	.flags		= 0,						\
++	.preempt_count	= INIT_PREEMPT_COUNT,				\
++	.cpu		= 0,						\
++	.addr_limit	= KERNEL_DS,					\
++	.restart_block	= {						\
++		.fn	= do_no_restart_syscall,			\
++	},								\
++}
++
++#define init_thread_info	(init_thread_union.thread_info)
++
++#endif /* __KERNEL__ */
++#endif /* __ASM_UNICORE64_THREAD_INFO_H__ */
+diff --git a/arch/unicore64/include/asm/timex.h b/arch/unicore64/include/asm/timex.h
+new file mode 100644
+index 0000000..e374631
+--- /dev/null
++++ b/arch/unicore64/include/asm/timex.h
+@@ -0,0 +1,11 @@
++#ifndef __ASM_UNICORE64_TIMEX_H__
++#define __ASM_UNICORE64_TIMEX_H__
++
++#ifdef CONFIG_ARCH_FPGA
++/* in FPGA, OST clock is 32K */
++#   define CLOCK_TICK_RATE		(32*1024)
++#endif /* CONFIG_ARCH_FPGA */
++
++#include <asm-generic/timex.h>
++
++#endif /* __ASM_UNICORE64_TIMEX_H__ */
+diff --git a/arch/unicore64/include/asm/unistd.h b/arch/unicore64/include/asm/unistd.h
+new file mode 100644
+index 0000000..3ae98f6
+--- /dev/null
++++ b/arch/unicore64/include/asm/unistd.h
+@@ -0,0 +1,7 @@
++#if !defined(__ASM_UNICORE64_UNISTD_H__) || defined(__SYSCALL)
++#define __ASM_UNICORE64_UNISTD_H__
++
++/* Use the standard ABI for syscalls. */
++#include <asm-generic/unistd.h>
++
++#endif /* __ASM_UNICORE64_UNISTD_H__ */
+diff --git a/arch/unicore64/kernel/asm-offsets.c b/arch/unicore64/kernel/asm-offsets.c
+new file mode 100644
+index 0000000..5fd9618
+--- /dev/null
++++ b/arch/unicore64/kernel/asm-offsets.c
+@@ -0,0 +1,20 @@
++/*
++ * Code specific to PKUnity SoC and UniCore ISA
++ *
++ * Copyright (C) 2011-2011 GUAN Xuetao
++ *
++ * Generate definitions needed by assembly language modules.
++ * This code generates raw asm output which is post-processed to extract
++ * and format the required data.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/kbuild.h>
++
++int main(void)
++{
++	BLANK();
++	return 0;
++}
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+new file mode 100644
+index 0000000..a9d25a3
+--- /dev/null
++++ b/arch/unicore64/mm/Kconfig
+@@ -0,0 +1,24 @@
++comment "Processor Type"
++
++# Select CPU types depending on the architecture selected.  This selects
++# which CPUs we support in the kernel image, and the compiler instruction
++# optimiser behaviour.
++
++config CPU_UCV3
++	def_bool y
++
++comment "Processor Features"
++
++config CPU_ICACHE_DISABLE
++	bool "Disable I-Cache (I-bit)"
++	help
++	  Say Y here to disable the processor instruction cache.
++	  ONLY used when debugging or special circumstance.
++	  It unsure, say N.
++
++config CPU_DCACHE_DISABLE
++	bool "Disable D-Cache (D-bit)"
++	help
++	  Say Y here to disable the processor data cache.
++	  ONLY used when debugging or special circumstance.
++	  It unsure, say N.
+-- 
+1.7.9.5
+

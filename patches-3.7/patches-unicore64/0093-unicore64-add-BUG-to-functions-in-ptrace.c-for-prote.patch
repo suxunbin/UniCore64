@@ -1,0 +1,33 @@
+From 4fef654e74777ea9215107bd5b716606cd2552a5 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 28 Nov 2011 17:48:05 +0800
+Subject: [PATCH 093/641] unicore64: add BUG to functions in ptrace.c for
+ protection
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/ptrace.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/kernel/ptrace.c b/arch/unicore64/kernel/ptrace.c
+index 3004056..dc26795 100644
+--- a/arch/unicore64/kernel/ptrace.c
++++ b/arch/unicore64/kernel/ptrace.c
+@@ -7,6 +7,7 @@
+  */
+ void ptrace_disable(struct task_struct *child)
+ {
++	BUG();
+ }
+ 
+ /**
+@@ -19,5 +20,6 @@ void ptrace_disable(struct task_struct *child)
+ long arch_ptrace(struct task_struct *child, long request,
+ 		 unsigned long addr, unsigned long data)
+ {
++	BUG();
+ 	return 0;
+ }
+-- 
+1.7.9.5
+

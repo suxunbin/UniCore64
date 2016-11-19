@@ -1,0 +1,27 @@
+From 0b2274290cf5e37ee523d8887295a9b94ec3b83b Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 24 Apr 2014 06:17:15 +0800
+Subject: [PATCH 608/641] UniCore64: Make SWIOTLB configable
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/Kconfig |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+index 4f7abfb..ff8747f 100644
+--- a/arch/unicore64/mm/Kconfig
++++ b/arch/unicore64/mm/Kconfig
+@@ -34,7 +34,8 @@ config ALIGNMENT_TRAP
+ 	  operation of some network protocols.
+ 
+ config SWIOTLB
+-	def_bool y
++#	def_bool y
++	bool "SW IO TLB"
+ 
+ config IOMMU_HELPER
+ 	def_bool SWIOTLB
+-- 
+1.7.9.5
+

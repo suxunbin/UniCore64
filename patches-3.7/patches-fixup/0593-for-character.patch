@@ -1,0 +1,202 @@
+From 36f69f579036f46216bb2ef25865c52c66966c7d Mon Sep 17 00:00:00 2001
+From: Zhang Huan <zhanghuan@mprc.pku.edu.cn>
+Date: Sat, 19 Apr 2014 02:47:03 +0800
+Subject: [PATCH 593/641] for character
+
+Signed-off-by: Ma Lina <malina@mprc.pku.edu.cn>
+---
+ drivers/video/Kconfig                          |    5 +-
+ drivers/video/unifb2.c                         |  108 ++++++++++++++++++++++--
+ 5 files changed, 159 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index 21aca42..5631724 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -8,7 +8,10 @@ menu "Graphics support"
+ config FB_PUV4_DE2
+         bool
+         default y
+-        select FB_SYS_FOPS
++	select FB_SYS_FOPS
++	select FB_SYS_FILLRECT
++	select FB_SYS_COPYAREA
++	select FB_SYS_IMAGEBLIT
+ 
+ config HAVE_FB_ATMEL
+ 	bool
+diff --git a/drivers/video/unifb2.c b/drivers/video/unifb2.c
+index 1aac890..c712ce1 100644
+--- a/drivers/video/unifb2.c
++++ b/drivers/video/unifb2.c
+@@ -1,5 +1,6 @@
+ #include <linux/fb.h>
+ #include <mach/hardware.h>
++#include <asm-generic/io.h>
+ 
+ static unsigned long unifb_regs[30];
+ /* create fb0 framebuffer by default */
+@@ -17,9 +18,8 @@ static const struct fb_videomode unifb_modes[] = {
+ 	2, 0, FB_VMODE_NONINTERLACED, FB_MODE_IS_VESA },
+ };
+ 
+-#define VIDEOMEMSIZE	(31*1024*1024)
+-/* 31 MB for each channel of unifb(total 64MB),
+- * the rest of 2MB for hardware cursor */
++#define VIDEOMEMSIZE	(2*1024*1024)
++/* 2 MB for each channel of unifb*/
+ static void *videomemory;
+ static u_long videomemorysize = VIDEOMEMSIZE;
+ 
+@@ -214,6 +214,7 @@ static int unifb_set_par(struct fb_info *info)
+ 	}
+ 
+ 	/* config DE */
++
+ 	info->fix.line_length = get_line_length(info->var.xres_virtual,
+ 						info->var.bits_per_pixel);
+ 
+@@ -228,10 +229,15 @@ static int unifb_set_par(struct fb_info *info)
+ 	/* Configure Graphic */
+ 	unifb_regs[0] = 0x1 << 1 | format | 0x1 << 10;
+ 	writel(unifb_regs[0], DE2_GFX1_CFG_REG);
++	unifb_regs[0] = 0x0;
++	writel(unifb_regs[0], DE2_GFX1_XY_REG);
+ 	unifb_regs[1] = info->var.yres << 16 | info->var.xres;
+ 	writel(unifb_regs[1], DE2_GFX1_SIZE_REG);
+-	unifb_regs[2] = PKUNITY_DE2_MMAP_BASE;
++	unifb_regs[2] = info->fix.smem_start;
+ 	writel(unifb_regs[2], DE2_GFX1_ADDR_REG);
++	unifb_regs[3] = get_line_length(info->var.xres,
++			info->var.bits_per_pixel);
++	writel(unifb_regs[3], DE2_GFX1_STRIDE_REG);
+ 
+ 	/* Configure Timing */
+ 	unifb_regs[4] = 0x1 << 1;
+@@ -285,11 +291,94 @@ static int __init unifb_setup(char *options)
+ }
+ #endif  /*  MODULE  */
+ 
++/*
++ *  Set a single color register. The values supplied are already
++ *  rounded down to the hardware's capabilities (according to the
++ *  entries in the var structure). Return != 0 for invalid regno.
++ */
++static int unifb_setcolreg(u_int regno, u_int red, u_int green, u_int blue,
++			 u_int transp, struct fb_info *info)
++{
++	if (regno >= 256)	/* no. of hw registers */
++		return 1;
++
++	/* grayscale works only partially under directcolor */
++	if (info->var.grayscale) {
++		/* grayscale = 0.30*R + 0.59*G + 0.11*B */
++		red = green = blue =
++		    (red * 77 + green * 151 + blue * 28) >> 8;
++	}
++
++#define CNVT_TOHW(val, width) ((((val)<<(width))+0x7FFF-(val))>>16)
++	switch (info->fix.visual) {
++	case FB_VISUAL_TRUECOLOR:
++	case FB_VISUAL_PSEUDOCOLOR:
++		red = CNVT_TOHW(red, info->var.red.length);
++		green = CNVT_TOHW(green, info->var.green.length);
++		blue = CNVT_TOHW(blue, info->var.blue.length);
++		transp = CNVT_TOHW(transp, info->var.transp.length);
++		break;
++	case FB_VISUAL_DIRECTCOLOR:
++		red = CNVT_TOHW(red, 8);	/* expect 8 bit DAC */
++		green = CNVT_TOHW(green, 8);
++		blue = CNVT_TOHW(blue, 8);
++		/* hey, there is bug in transp handling... */
++		transp = CNVT_TOHW(transp, 8);
++		break;
++	}
++#undef CNVT_TOHW
++	/* Truecolor has hardware independent palette */
++	if (info->fix.visual == FB_VISUAL_TRUECOLOR) {
++		u32 v;
++
++		if (regno >= 16)
++			return 1;
++
++		v = (red << info->var.red.offset) |
++		    (green << info->var.green.offset) |
++		    (blue << info->var.blue.offset) |
++		    (transp << info->var.transp.offset);
++		switch (info->var.bits_per_pixel) {
++		case 8:
++			break;
++		case 16:
++		case 24:
++		case 32:
++			((u32 *) (info->pseudo_palette))[regno] = v;
++			break;
++		default:
++			return 1;
++		}
++		return 0;
++	}
++	return 0;
++}
++
++static int unimpl_pan_display(struct fb_var_screeninfo *var,
++			   struct fb_info *info)
++{
++	pr_err("unimpl_pan_display\n");
++	return -EINVAL;
++}
++
++static int unimpl_mmap(struct fb_info *info,
++		    struct vm_area_struct *vma)
++{
++	pr_err("unimpl_mmap\n");
++	return -EINVAL;
++}
++
+ static struct fb_ops unifb_ops = {
+ 	.fb_read        = fb_sys_read,
+ 	.fb_write       = fb_sys_write,
+ 	.fb_check_var	= unifb_check_var,
+ 	.fb_set_par	= unifb_set_par,
++	.fb_setcolreg	= unifb_setcolreg,
++	.fb_fillrect	= sys_fillrect,
++	.fb_copyarea	= sys_copyarea,
++	.fb_imageblit	= sys_imageblit,
++	.fb_pan_display	= unimpl_pan_display,
++	.fb_mmap	= unimpl_mmap,
+ };
+ 
+ /*
+@@ -312,6 +401,11 @@ static int __init unifb_probe(struct platform_device *dev)
+ 	videomemory = (void *)__get_free_pages(GFP_KERNEL | __GFP_COMP,
+ 				get_order(videomemorysize));
+ 
++	if (!videomemory)
++		goto err;
++
++	memset(videomemory, 0x0, videomemorysize);
++
+ 	/*
+ 	 * VFB could clear memory to prevent kernel info
+ 	 * leakage into userspace and set black screen
+@@ -327,13 +421,13 @@ static int __init unifb_probe(struct platform_device *dev)
+ 	info->screen_base = (char __iomem *)videomemory;
+ 	info->fbops = &unifb_ops;
+ 	dbsize = ARRAY_SIZE(unifb_modes);
++	/*FIXME use 32bpp */
+ 	retval = fb_find_mode(&info->var, info, \
+ 			unifb_option, unifb_modes, dbsize, \
+-			&unifb_modes[0], 16);
++			&unifb_modes[0], 32);
+ 	if (!retval || (retval == 4))
+ 		info->var = unifb_default;
+-	unifb_fix.smem_start = PKUNITY_DE2_MMAP_BASE \
+-			       + dev->id * videomemorysize;
++	unifb_fix.smem_start = virt_to_phys(videomemory);
+ 	unifb_fix.smem_len = videomemorysize;
+ 	unifb_fix.mmio_start = PKUNITY_UNIGFX2_BASE;
+ 	info->fix = unifb_fix;
+-- 
+1.7.9.5
+

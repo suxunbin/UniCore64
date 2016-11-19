@@ -1,0 +1,37 @@
+From b99590f40de106a45fcc5e850a71844da2d877f4 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 2 Jan 2013 14:32:17 +0800
+Subject: [PATCH 525/641] unicore64: Correct user thread ksp restoration
+ problem
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/process.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index 95fda38..e790d93 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -28,8 +28,6 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 		p->thread.cpu_context.r18 = stack_start; /* fn for fn(arg) */
+ 		p->thread.cpu_context.r17 = stk_sz; /* arg for fn(arg) */
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+-		/* For kernel_thread, useless pt_regs will be kept in stack */
+-		childregs->UC64_KSP = (unsigned long)childregs;
+ 	} else {
+ 		p->thread.cpu_context.r30 = (unsigned long)ret_from_fork;
+ 
+@@ -38,6 +36,9 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 		childregs->UC64_R29 = stack_start;
+ 	}
+ 
++	/* Kernel-mode SP should be ALWAYS kept for re-entrance */
++	childregs->UC64_KSP = (unsigned long)childregs;
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
+

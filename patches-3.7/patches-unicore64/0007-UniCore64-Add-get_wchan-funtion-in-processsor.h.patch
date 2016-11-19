@@ -1,0 +1,30 @@
+From ce911cb35454691723ac63509013cd9de8256155 Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Thu, 29 Sep 2011 16:14:00 +0800
+Subject: [PATCH 007/641] UniCore64: Add get_wchan funtion in processsor.h
+
+Fixed error:
+        fs/proc/base.c: In function 'proc_pid_wchan':
+        fs/proc/base.c:341:2: error: implicit declaration of function 'get_wchan'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index f1f1a84..d071a3f 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -31,6 +31,8 @@ struct thread_struct {
+ /* Create a new kernel thread */
+ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
+ 
++extern unsigned long get_wchan(struct task_struct *p);
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __ASM_UNICORE64_PROCESSOR_H__ */
+-- 
+1.7.9.5
+

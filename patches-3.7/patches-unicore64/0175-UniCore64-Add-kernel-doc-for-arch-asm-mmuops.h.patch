@@ -1,0 +1,65 @@
+From 9ee2b93ccda8e5d468fdf71d6da90f3516de8776 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Thu, 15 Dec 2011 15:48:21 +0800
+Subject: [PATCH 175/641] UniCore64: Add kernel-doc for arch asm-mmuops.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-mmuops.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-mmuops.h b/arch/unicore64/include/arch/asm-mmuops.h
+index 90bbea3..619bb3c 100644
+--- a/arch/unicore64/include/arch/asm-mmuops.h
++++ b/arch/unicore64/include/arch/asm-mmuops.h
+@@ -1,9 +1,15 @@
+ #ifndef __UNICORE64_ARCH_ASM_MMUOPS_H__
+ #define __UNICORE64_ARCH_ASM_MMUOPS_H__
+ 
++/**
++ * DOC: ASM_MMUOPS_H
++ * This file defines MMU wraps such as invalidate icache,
++ * dcache, or tlb.
++ */
+ #include <arch/asm-common.h>
+ 
+ /**
++ * DOC: ASM_MMUOPS_H_INVALIDATE_DCACHE
+  * uc64_invalidate_dcache - invalidate entire L1 dcache
+  */
+ __ASMMACRO_WRAP(.macro	uc64_invalidate_dcache, rt;
+@@ -12,6 +18,7 @@ __ASMMACRO_WRAP(.macro	uc64_invalidate_dcache, rt;
+ 		.endm)
+ 
+ /**
++ * DOC: ASM_MMUOPS_H_FLUSH_DCACHE
+  * uc64_flush_dcache - flush entire L1 dcache
+  */
+ __ASMMACRO_WRAP(.macro	uc64_flush_dcache, rt;
+@@ -20,6 +27,7 @@ __ASMMACRO_WRAP(.macro	uc64_flush_dcache, rt;
+ 		.endm)
+ 
+ /**
++ * DOC: ASM_MMUOPS_H_INVALIDATE_ICACHE
+  * uc64_invalidate_icache - invalidate entire icache
+  */
+ __ASMMACRO_WRAP(.macro	uc64_invalidate_icache, rt;
+@@ -28,6 +36,7 @@ __ASMMACRO_WRAP(.macro	uc64_invalidate_icache, rt;
+ 		.endm)
+ 
+ /**
++ * DOC: ASM_MMUOPS_H_INVALIDATE_TLB
+  * uc64_invalidate_tlb - invalidate I&D tlb
+  */
+ __ASMMACRO_WRAP(.macro	uc64_invalidate_tlb, rt;
+@@ -36,6 +45,7 @@ __ASMMACRO_WRAP(.macro	uc64_invalidate_tlb, rt;
+ 		.endm)
+ 
+ /**
++ * DOC: ASM_MMUOPS_H_SET_PGD
+  * uc64_set_pgd -  set pgd address
+  */
+ __ASMMACRO_WRAP(.macro	uc64_set_pgd, rpgd;
+-- 
+1.7.9.5
+

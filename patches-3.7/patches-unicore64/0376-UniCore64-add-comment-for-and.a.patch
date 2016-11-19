@@ -1,0 +1,26 @@
+From d84d3a7cca5373e494be551f9759ffc752f801b3 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 12 Jun 2012 09:01:56 +0800
+Subject: [PATCH 376/641] UniCore64: add comment for and.a
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index d72a275..a5ae1af 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -84,7 +84,7 @@ ENTRY(ret_from_fork)
+ 1001:	__irq_disable
+ 	__thread_info	r17
+ 	ldw		r18, [r17+], #THREAD_INFO_FLAGS
+-	and		r0, r18, #TIF_NEED_RESCHED
++	and		r0, r18, #TIF_NEED_RESCHED	@ FIXME: wait for and.a
+ 	cmpsub.a	r0, #0
+ 	adr		lr, 1001b
+ 	bne		schedule		@ return to 1001b
+-- 
+1.7.9.5
+

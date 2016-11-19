@@ -1,0 +1,153 @@
+From 36f69f579036f46216bb2ef25865c52c66966c7d Mon Sep 17 00:00:00 2001
+From: Zhang Huan <zhanghuan@mprc.pku.edu.cn>
+Date: Sat, 19 Apr 2014 02:47:03 +0800
+Subject: [PATCH 593/641] for character
+
+Signed-off-by: Ma Lina <malina@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig     |   19 ++++-
+ arch/unicore64/configs/unicore64_smp_defconfig |   22 ++++-
+ arch/unicore64/kernel/setup.c                  |   20 +++++
+ 5 files changed, 159 insertions(+), 15 deletions(-)
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index 2136874..9efd681 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -8,19 +8,30 @@ CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
+ CONFIG_SMP=n
+ #	Processor Features
+ CONFIG_ARCH_FPGA=y
+-CONFIG_CPU_ICACHE_DISABLE=y
+-CONFIG_CPU_DCACHE_DISABLE=y
++CONFIG_CPU_ICACHE_DISABLE=n
++CONFIG_CPU_DCACHE_DISABLE=n
+ 
+ # Device Drivers
+ #	Hardware I/O ports
+ CONFIG_SERIO_I8042=y
+ #	Console display driver support
+-CONFIG_VGA_CONSOLE=n
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_VGA_CONSOLE=n
++CONFIG_FONTS=y
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++CONFIG_INPUT=y
++
++CONFIG_VT=y
++CONFIG_VT_CONSOLE=y
+ 
+ #       Graphics support
+ CONFIG_FB_PUV4_DE2=y
+ CONFIG_FB=y
++CONFIG_FB_SYS_FILLRECT=y
++CONFIG_FB_SYS_COPYAREA=y
++CONFIG_FB_SYS_IMAGEBLIT=y
++CONFIG_FB_SYS_FOPS=y
+ 
+ ### Kernel hacking
+ CONFIG_DEBUG_KERNEL=y
+@@ -28,6 +39,6 @@ CONFIG_DEBUG_OCD=y
+ CONFIG_DEBUG_MCOUNT=n
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-16"
++CONFIG_CMDLINE="ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-32"
+ 
+ ### Kernel hacking
+diff --git a/arch/unicore64/configs/unicore64_smp_defconfig b/arch/unicore64/configs/unicore64_smp_defconfig
+index c850ca3..b7aa064 100644
+--- a/arch/unicore64/configs/unicore64_smp_defconfig
++++ b/arch/unicore64/configs/unicore64_smp_defconfig
+@@ -8,14 +8,30 @@ CONFIG_INITRAMFS_SOURCE="~/UniCore64/initramfs/initramfs_config.busybox"
+ CONFIG_SMP=y
+ #	Processor Features
+ CONFIG_ARCH_FPGA=y
+-CONFIG_CPU_ICACHE_DISABLE=y
+-CONFIG_CPU_DCACHE_DISABLE=y
++CONFIG_CPU_ICACHE_DISABLE=n
++CONFIG_CPU_DCACHE_DISABLE=n
+ 
+ # Device Drivers
+ #	Hardware I/O ports
+ CONFIG_SERIO_I8042=y
+ #	Console display driver support
++CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_VGA_CONSOLE=n
++CONFIG_FONTS=y
++CONFIG_FONT_8x8=y
++CONFIG_FONT_8x16=y
++CONFIG_INPUT=y
++
++CONFIG_VT=y
++CONFIG_VT_CONSOLE=y
++
++#       Graphics support
++CONFIG_FB_PUV4_DE2=y
++CONFIG_FB=y
++CONFIG_FB_SYS_FILLRECT=y
++CONFIG_FB_SYS_COPYAREA=y
++CONFIG_FB_SYS_IMAGEBLIT=y
++CONFIG_FB_SYS_FOPS=y
+ 
+ ### Kernel hacking
+ CONFIG_DEBUG_KERNEL=y
+@@ -23,6 +39,6 @@ CONFIG_DEBUG_OCD=y
+ CONFIG_DEBUG_MCOUNT=n
+ 
+ ### Boot options
+-CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw"
++CONFIG_CMDLINE="earlyprintk=ocd ignore_loglevel root=/dev/ram0 rw video=unifb:640x480@60-32"
+ 
+ ### Kernel hacking
+diff --git a/arch/unicore64/kernel/setup.c b/arch/unicore64/kernel/setup.c
+index 13ca6b0..790743b 100644
+--- a/arch/unicore64/kernel/setup.c
++++ b/arch/unicore64/kernel/setup.c
+@@ -5,12 +5,23 @@
+ #include <linux/of_fdt.h>
+ #include <linux/console.h>
+ #include <linux/sched.h>
++#include <linux/screen_info.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/setup_arch.h>
+ 
+ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
+ 
++struct screen_info screen_info = {
++	.orig_x = 0,
++	.orig_y = 25,
++	.orig_video_cols = 80,
++	.orig_video_lines = 25,
++	.orig_video_isVGA = 1,
++	.orig_video_points = 16
++};
++EXPORT_SYMBOL(screen_info);
++
+ static int uc64_panic_event(struct notifier_block *this,
+ 		unsigned long event, void *ptr)
+ {
+@@ -57,9 +68,18 @@ void __init setup_arch(char **cmdline_p)
+ 	unflatten_device_tree();
+ 
+ 	/* Set default console for virtual terminal */
++/*
+ #if defined(CONFIG_OCD_CONSOLE)
+ 	conswitchp = &ocd_con;
+ #elif defined(CONFIG_DUMMY_CONSOLE)
+ 	conswitchp = &dummy_con;
++#endif*/
++
++#ifdef CONFIG_VT
++#if defined(CONFIG_VGA_CONSOLE)
++	conswitchp = &vga_con;
++#elif defined(CONFIG_DUMMY_CONSOLE)
++	conswitchp = &dummy_con;
++#endif
+ #endif
+ }
+-- 
+1.7.9.5
+

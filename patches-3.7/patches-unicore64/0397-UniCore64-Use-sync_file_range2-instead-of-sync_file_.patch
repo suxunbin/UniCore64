@@ -1,0 +1,27 @@
+From 66638ff64be9bc38694bd16868920f1de1c3ea84 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 4 Aug 2012 11:38:25 +0800
+Subject: [PATCH 397/641] UniCore64: Use sync_file_range2 instead of
+ sync_file_range
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/unistd.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/unistd.h b/arch/unicore64/include/asm/unistd.h
+index 3292fea..0cdaef8 100644
+--- a/arch/unicore64/include/asm/unistd.h
++++ b/arch/unicore64/include/asm/unistd.h
+@@ -1,6 +1,8 @@
+ #if !defined(__UNICORE64_ASM_UNISTD_H__) || defined(__SYSCALL)
+ #define __UNICORE64_ASM_UNISTD_H__
+ 
++#define __ARCH_WANT_SYNC_FILE_RANGE2
++
+ /* Use the standard ABI for syscalls. */
+ #include <asm-generic/unistd.h>
+ 
+-- 
+1.7.9.5
+

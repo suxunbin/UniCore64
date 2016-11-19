@@ -1,0 +1,668 @@
+From 5e16d290d76139327414b374d0122bdddd301f8b Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 2 Jan 2013 11:14:05 +0800
+Subject: [PATCH 523/641] unicore64: Change name puv3/PUV3 to puv4/PUV4
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/Kconfig                       |    3 +
+ arch/unicore64/include/arch/puv3-iomem.h     |   73 ------------------
+ arch/unicore64/include/arch/puv3-irq.h       |    9 ---
+ arch/unicore64/include/arch/puv3-regs-intc.h |   23 ------
+ arch/unicore64/include/arch/puv4-iomem.h     |   73 ++++++++++++++++++
+ arch/unicore64/include/arch/puv4-irq.h       |    9 +++
+ arch/unicore64/include/arch/puv4-regs-intc.h |   23 ++++++
+ arch/unicore64/kernel/Makefile               |    2 +-
+ arch/unicore64/kernel/entry.S                |   10 +--
+ arch/unicore64/kernel/puv3-core.c            |   49 ------------
+ arch/unicore64/kernel/puv3-intc.c            |  103 --------------------------
+ arch/unicore64/kernel/puv4-core.c            |   49 ++++++++++++
+ arch/unicore64/kernel/puv4-intc.c            |  103 ++++++++++++++++++++++++++
+ 13 files changed, 266 insertions(+), 263 deletions(-)
+ delete mode 100644 arch/unicore64/include/arch/puv3-iomem.h
+ delete mode 100644 arch/unicore64/include/arch/puv3-irq.h
+ delete mode 100644 arch/unicore64/include/arch/puv3-regs-intc.h
+ create mode 100644 arch/unicore64/include/arch/puv4-iomem.h
+ create mode 100644 arch/unicore64/include/arch/puv4-irq.h
+ create mode 100644 arch/unicore64/include/arch/puv4-regs-intc.h
+ delete mode 100644 arch/unicore64/kernel/puv3-core.c
+ delete mode 100644 arch/unicore64/kernel/puv3-intc.c
+ create mode 100644 arch/unicore64/kernel/puv4-core.c
+ create mode 100644 arch/unicore64/kernel/puv4-intc.c
+
+diff --git a/arch/unicore64/Kconfig b/arch/unicore64/Kconfig
+index daa66f0..4f048db9b 100644
+--- a/arch/unicore64/Kconfig
++++ b/arch/unicore64/Kconfig
+@@ -84,6 +84,9 @@ config ARCH_FPGA
+ config ARCH_PUV3
+ 	def_bool n
+ 
++config ARCH_PUV4
++	def_bool y
++
+ endmenu
+ 
+ menu "Kernel Features"
+diff --git a/arch/unicore64/include/arch/puv3-iomem.h b/arch/unicore64/include/arch/puv3-iomem.h
+deleted file mode 100644
+index dc1d497..0000000
+--- a/arch/unicore64/include/arch/puv3-iomem.h
++++ /dev/null
+@@ -1,73 +0,0 @@
+-#ifndef __UNICORE64_ARCH_PUV3_IOMEM_H__
+-#define __UNICORE64_ARCH_PUV3_IOMEM_H__
+-
+-#include <linux/types.h>
+-#include <arch/hwdef-memory.h>
+-
+-#ifndef __ASSEMBLY__
+-#define PUV3_IOMEM(x)			(resource_size_t)(UC64_VM_IO_START + (x))
+-#define PUV3_IOREG(x)			(void __iomem *)(x)
+-#else
+-#define PUV3_IOMEM(x)			(UC64_VM_IO_START + (x))
+-#define PUV3_IOREG(x)			(x)
+-#endif
+-
+-/* Assume the region for every ip in puv3 having 4K iomem */
+-#define PUV3_IOMEM_REGION		__BS(12, 0)
+-
+-/*
+- * PUV3 System Bus Addresses (PCI): 0x80000000 - 0xBFFFFFFF (1GB)
+- * 0x80000000 - 0x8000000B 12B    PCI Configuration regs
+- * 0x80010000 - 0x80010250 592B   PCI Bridge Base
+- * 0x80030000 - 0x8003FFFF 64KB   PCI Legacy IO
+- * 0x90000000 - 0x97FFFFFF 128MB  PCI AHB-PCI MEM-mapping
+- * 0x98000000 - 0x9FFFFFFF 128MB  PCI PCI-AHB MEM-mapping
+- */
+-#define PUV3_PCI_BASE			PUV3_IOMEM(0x00000000)
+-#define PUV3_PCICFG_BASE		(PUV3_PCI_BASE + 0x0)
+-#define PUV3_PCIBRI_BASE		(PUV3_PCI_BASE + 0x00010000)
+-#define PUV3_PCILIO_BASE		(PUV3_PCI_BASE + 0x00030000)
+-#define PUV3_PCIMEM_BASE		(PUV3_PCI_BASE + 0x10000000)
+-#define PUV3_PCIAHB_BASE		(PUV3_PCI_BASE + 0x18000000)
+-
+-/*
+- * PUV3 System Bus Addresses (AHB): 0xC0000000 - 0xEDFFFFFF (640MB)
+- */
+-#define PUV3_AHB_BASE			PUV3_IOMEM(0x40000000)
+-
+-/* AHB-0 is DDR2 SDRAM */
+-/* AHB-1 is PCI Space */
+-#define PUV3_ARBITER_BASE		(PUV3_AHB_BASE + 0x000000) /* AHB-2 */
+-#define PUV3_DDR2CTRL_BASE		(PUV3_AHB_BASE + 0x100000) /* AHB-3 */
+-#define PUV3_DMAC_BASE			(PUV3_AHB_BASE + 0x200000) /* AHB-4 */
+-#define PUV3_UMAL_BASE			(PUV3_AHB_BASE + 0x300000) /* AHB-5 */
+-#define PUV3_USB_BASE			(PUV3_AHB_BASE + 0x400000) /* AHB-6 */
+-#define PUV3_SATA_BASE			(PUV3_AHB_BASE + 0x500000) /* AHB-7 */
+-#define PUV3_SMC_BASE			(PUV3_AHB_BASE + 0x600000) /* AHB-8 */
+-/* AHB-9 is for APB bridge */
+-#define PUV3_MME_BASE			(PUV3_AHB_BASE + 0x700000) /* AHB-10 */
+-#define PUV3_UNIGFX_BASE		(PUV3_AHB_BASE + 0x800000) /* AHB-11 */
+-#define PUV3_NAND_BASE			(PUV3_AHB_BASE + 0x900000) /* AHB-12 */
+-#define PUV3_H264D_BASE			(PUV3_AHB_BASE + 0xA00000) /* AHB-13 */
+-#define PUV3_H264E_BASE			(PUV3_AHB_BASE + 0xB00000) /* AHB-14 */
+-
+-/*
+- * PUV3 Peripheral Bus Addresses (APB): 0xEE000000 - 0xEFFFFFFF (128MB)
+- */
+-#define PUV3_APB_BASE			PUV3_IOMEM(0x6E000000)
+-
+-#define PUV3_UART0_BASE			(PUV3_APB_BASE + 0x000000) /* APB-0 */
+-#define PUV3_UART1_BASE			(PUV3_APB_BASE + 0x100000) /* APB-1 */
+-#define PUV3_I2C_BASE			(PUV3_APB_BASE + 0x200000) /* APB-2 */
+-#define PUV3_SPI_BASE			(PUV3_APB_BASE + 0x300000) /* APB-3 */
+-#define PUV3_AC97_BASE			(PUV3_APB_BASE + 0x400000) /* APB-4 */
+-#define PUV3_GPIO_BASE			(PUV3_APB_BASE + 0x500000) /* APB-5 */
+-#define PUV3_INTC_BASE			(PUV3_APB_BASE + 0x600000) /* APB-6 */
+-#define PUV3_RTC_BASE			(PUV3_APB_BASE + 0x700000) /* APB-7 */
+-#define PUV3_OST_BASE			(PUV3_APB_BASE + 0x800000) /* APB-8 */
+-#define PUV3_RESETC_BASE		(PUV3_APB_BASE + 0x900000) /* APB-9 */
+-#define PUV3_PM_BASE			(PUV3_APB_BASE + 0xA00000) /* APB-10 */
+-#define PUV3_PS2_BASE			(PUV3_APB_BASE + 0xB00000) /* APB-11 */
+-#define PUV3_SDC_BASE			(PUV3_APB_BASE + 0xC00000) /* APB-12 */
+-
+-#endif  /* __UNICORE64_ARCH_PUV3_IOMEM_H__ */
+diff --git a/arch/unicore64/include/arch/puv3-irq.h b/arch/unicore64/include/arch/puv3-irq.h
+deleted file mode 100644
+index 2623592..0000000
+--- a/arch/unicore64/include/arch/puv3-irq.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#ifndef __UNICORE64_ARCH_PUV3_IRQ_H__
+-#define __UNICORE64_ARCH_PUV3_IRQ_H__
+-
+-#define PUV3_IRQS_MIN		(0)
+-#define PUV3_IRQS_MAX		(31)
+-
+-#define IRQ_TIMER0		(0x1a)
+-
+-#endif /* __UNICORE64_ARCH_PUV3_IRQ_H__ */
+diff --git a/arch/unicore64/include/arch/puv3-regs-intc.h b/arch/unicore64/include/arch/puv3-regs-intc.h
+deleted file mode 100644
+index c420cd1..0000000
+--- a/arch/unicore64/include/arch/puv3-regs-intc.h
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#ifndef __UNICORE64_ARCH_PUV3_REGS_INTC__
+-#define __UNICORE64_ARCH_PUV3_REGS_INTC__
+-
+-#include <arch/puv3-iomem.h>
+-
+-/*
+- * PUV3 Interrupt Controller (INTC) Registers
+- *
+- * INTC Level Reg INTC_ICLR.
+- * INTC Mask Reg INTC_ICMR.
+- * INTC Pending Reg INTC_ICPR.
+- * INTC IRQ Pending Reg INTC_ICIP.
+- * INTC REAL Pending Reg INTC_ICFP.
+- * INTC Control Reg INTC_ICCR.
+- */
+-#define INTC_ICLR		PUV3_IOREG(PUV3_INTC_BASE + 0x000)
+-#define INTC_ICMR		PUV3_IOREG(PUV3_INTC_BASE + 0x004)
+-#define INTC_ICPR		PUV3_IOREG(PUV3_INTC_BASE + 0x008)
+-#define INTC_ICIP		PUV3_IOREG(PUV3_INTC_BASE + 0x00C)
+-#define INTC_ICFP		PUV3_IOREG(PUV3_INTC_BASE + 0x010)
+-#define INTC_ICCR		PUV3_IOREG(PUV3_INTC_BASE + 0x014)
+-
+-#endif /* __UNICORE64_ARCH_PUV3_REGS_INTC__ */
+diff --git a/arch/unicore64/include/arch/puv4-iomem.h b/arch/unicore64/include/arch/puv4-iomem.h
+new file mode 100644
+index 0000000..36870bb
+--- /dev/null
++++ b/arch/unicore64/include/arch/puv4-iomem.h
+@@ -0,0 +1,73 @@
++#ifndef __UNICORE64_ARCH_PUV4_IOMEM_H__
++#define __UNICORE64_ARCH_PUV4_IOMEM_H__
++
++#include <linux/types.h>
++#include <arch/hwdef-memory.h>
++
++#ifndef __ASSEMBLY__
++#define PUV4_IOMEM(x)			(resource_size_t)(UC64_VM_IO_START + (x))
++#define PUV4_IOREG(x)			(void __iomem *)(x)
++#else
++#define PUV4_IOMEM(x)			(UC64_VM_IO_START + (x))
++#define PUV4_IOREG(x)			(x)
++#endif
++
++/* Assume the region for every ip in puv4 having 4K iomem */
++#define PUV4_IOMEM_REGION		__BS(12, 0)
++
++/*
++ * PUV4 System Bus Addresses (PCI): 0x80000000 - 0xBFFFFFFF (1GB)
++ * 0x80000000 - 0x8000000B 12B    PCI Configuration regs
++ * 0x80010000 - 0x80010250 592B   PCI Bridge Base
++ * 0x80030000 - 0x8003FFFF 64KB   PCI Legacy IO
++ * 0x90000000 - 0x97FFFFFF 128MB  PCI AHB-PCI MEM-mapping
++ * 0x98000000 - 0x9FFFFFFF 128MB  PCI PCI-AHB MEM-mapping
++ */
++#define PUV4_PCI_BASE			PUV4_IOMEM(0x00000000)
++#define PUV4_PCICFG_BASE		(PUV4_PCI_BASE + 0x0)
++#define PUV4_PCIBRI_BASE		(PUV4_PCI_BASE + 0x00010000)
++#define PUV4_PCILIO_BASE		(PUV4_PCI_BASE + 0x00030000)
++#define PUV4_PCIMEM_BASE		(PUV4_PCI_BASE + 0x10000000)
++#define PUV4_PCIAHB_BASE		(PUV4_PCI_BASE + 0x18000000)
++
++/*
++ * PUV4 System Bus Addresses (AHB): 0xC0000000 - 0xEDFFFFFF (640MB)
++ */
++#define PUV4_AHB_BASE			PUV4_IOMEM(0x40000000)
++
++/* AHB-0 is DDR2 SDRAM */
++/* AHB-1 is PCI Space */
++#define PUV4_ARBITER_BASE		(PUV4_AHB_BASE + 0x000000) /* AHB-2 */
++#define PUV4_DDR2CTRL_BASE		(PUV4_AHB_BASE + 0x100000) /* AHB-3 */
++#define PUV4_DMAC_BASE			(PUV4_AHB_BASE + 0x200000) /* AHB-4 */
++#define PUV4_UMAL_BASE			(PUV4_AHB_BASE + 0x300000) /* AHB-5 */
++#define PUV4_USB_BASE			(PUV4_AHB_BASE + 0x400000) /* AHB-6 */
++#define PUV4_SATA_BASE			(PUV4_AHB_BASE + 0x500000) /* AHB-7 */
++#define PUV4_SMC_BASE			(PUV4_AHB_BASE + 0x600000) /* AHB-8 */
++/* AHB-9 is for APB bridge */
++#define PUV4_MME_BASE			(PUV4_AHB_BASE + 0x700000) /* AHB-10 */
++#define PUV4_UNIGFX_BASE		(PUV4_AHB_BASE + 0x800000) /* AHB-11 */
++#define PUV4_NAND_BASE			(PUV4_AHB_BASE + 0x900000) /* AHB-12 */
++#define PUV4_H264D_BASE			(PUV4_AHB_BASE + 0xA00000) /* AHB-13 */
++#define PUV4_H264E_BASE			(PUV4_AHB_BASE + 0xB00000) /* AHB-14 */
++
++/*
++ * PUV4 Peripheral Bus Addresses (APB): 0xEE000000 - 0xEFFFFFFF (128MB)
++ */
++#define PUV4_APB_BASE			PUV4_IOMEM(0x6E000000)
++
++#define PUV4_UART0_BASE			(PUV4_APB_BASE + 0x000000) /* APB-0 */
++#define PUV4_UART1_BASE			(PUV4_APB_BASE + 0x100000) /* APB-1 */
++#define PUV4_I2C_BASE			(PUV4_APB_BASE + 0x200000) /* APB-2 */
++#define PUV4_SPI_BASE			(PUV4_APB_BASE + 0x300000) /* APB-3 */
++#define PUV4_AC97_BASE			(PUV4_APB_BASE + 0x400000) /* APB-4 */
++#define PUV4_GPIO_BASE			(PUV4_APB_BASE + 0x500000) /* APB-5 */
++#define PUV4_INTC_BASE			(PUV4_APB_BASE + 0x600000) /* APB-6 */
++#define PUV4_RTC_BASE			(PUV4_APB_BASE + 0x700000) /* APB-7 */
++#define PUV4_OST_BASE			(PUV4_APB_BASE + 0x800000) /* APB-8 */
++#define PUV4_RESETC_BASE		(PUV4_APB_BASE + 0x900000) /* APB-9 */
++#define PUV4_PM_BASE			(PUV4_APB_BASE + 0xA00000) /* APB-10 */
++#define PUV4_PS2_BASE			(PUV4_APB_BASE + 0xB00000) /* APB-11 */
++#define PUV4_SDC_BASE			(PUV4_APB_BASE + 0xC00000) /* APB-12 */
++
++#endif  /* __UNICORE64_ARCH_PUV4_IOMEM_H__ */
+diff --git a/arch/unicore64/include/arch/puv4-irq.h b/arch/unicore64/include/arch/puv4-irq.h
+new file mode 100644
+index 0000000..3f4713e
+--- /dev/null
++++ b/arch/unicore64/include/arch/puv4-irq.h
+@@ -0,0 +1,9 @@
++#ifndef __UNICORE64_ARCH_PUV4_IRQ_H__
++#define __UNICORE64_ARCH_PUV4_IRQ_H__
++
++#define PUV4_IRQS_MIN		(0)
++#define PUV4_IRQS_MAX		(31)
++
++#define IRQ_TIMER0		(0x1a)
++
++#endif /* __UNICORE64_ARCH_PUV4_IRQ_H__ */
+diff --git a/arch/unicore64/include/arch/puv4-regs-intc.h b/arch/unicore64/include/arch/puv4-regs-intc.h
+new file mode 100644
+index 0000000..b95bc7c0
+--- /dev/null
++++ b/arch/unicore64/include/arch/puv4-regs-intc.h
+@@ -0,0 +1,23 @@
++#ifndef __UNICORE64_ARCH_PUV4_REGS_INTC__
++#define __UNICORE64_ARCH_PUV4_REGS_INTC__
++
++#include <arch/puv4-iomem.h>
++
++/*
++ * PUV4 Interrupt Controller (INTC) Registers
++ *
++ * INTC Level Reg INTC_ICLR.
++ * INTC Mask Reg INTC_ICMR.
++ * INTC Pending Reg INTC_ICPR.
++ * INTC IRQ Pending Reg INTC_ICIP.
++ * INTC REAL Pending Reg INTC_ICFP.
++ * INTC Control Reg INTC_ICCR.
++ */
++#define INTC_ICLR		PUV4_IOREG(PUV4_INTC_BASE + 0x000)
++#define INTC_ICMR		PUV4_IOREG(PUV4_INTC_BASE + 0x004)
++#define INTC_ICPR		PUV4_IOREG(PUV4_INTC_BASE + 0x008)
++#define INTC_ICIP		PUV4_IOREG(PUV4_INTC_BASE + 0x00C)
++#define INTC_ICFP		PUV4_IOREG(PUV4_INTC_BASE + 0x010)
++#define INTC_ICCR		PUV4_IOREG(PUV4_INTC_BASE + 0x014)
++
++#endif /* __UNICORE64_ARCH_PUV4_REGS_INTC__ */
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+index c6c231e..ee7dd38 100644
+--- a/arch/unicore64/kernel/Makefile
++++ b/arch/unicore64/kernel/Makefile
+@@ -17,7 +17,7 @@ obj-y				+= time.o traps.o
+ obj-$(CONFIG_UNICORE64)		+= cpu-uc64.o
+ obj-$(CONFIG_OF_EARLY_FLATTREE)	+= devtree.o
+ obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
+-obj-$(CONFIG_ARCH_PUV3)		+= puv3-core.o puv3-intc.o
++obj-$(CONFIG_ARCH_PUV4)		+= puv4-core.o puv4-intc.o
+ obj-$(CONFIG_SMP)			+= smp.o
+ 
+ extra-y				:= vmlinux.lds
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index d914708..9158168 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -178,14 +178,14 @@ ENTRY(__vec_dtrap)
+ 	eret
+ ENDPROC(__vec_dtrap)
+ 
+-ENTRY(__vec_int_puv3)
++ENTRY(__vec_int_puv4)
+ 	__context_save
+-#ifdef CONFIG_ARCH_PUV3
+-	call		puv3_intc_handler
++#ifdef CONFIG_ARCH_PUV4
++	call		puv4_intc_handler
+ #endif
+ 	__context_restore
+ 	eret
+-ENDPROC(__vec_int_puv3)
++ENDPROC(__vec_int_puv4)
+ 
+ ENTRY(__vec_int_itimer)
+ 	__context_save
+@@ -214,7 +214,7 @@ ENTRY(__vectors_table)
+ 	call		__vec_invalid			@ 0x18: INT_KERNEL
+ 	call		__vec_invalid			@ 0x1c: INT_FAULT
+ 	b		__vec_int_itimer		@ 0x20: INT_TIMER
+-	b		__vec_int_puv3			@ 0x24: INT_PE
++	b		__vec_int_puv4			@ 0x24: INT_PE
+ 	call		__vec_invalid			@ 0x28: INT_OST
+ 	call		__vec_invalid			@ 0x2c: INT_PM
+ ENDPROC(__vectors_table)
+diff --git a/arch/unicore64/kernel/puv3-core.c b/arch/unicore64/kernel/puv3-core.c
+deleted file mode 100644
+index 4a577d9..0000000
+--- a/arch/unicore64/kernel/puv3-core.c
++++ /dev/null
+@@ -1,49 +0,0 @@
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-
+-#include <arch/puv3-iomem.h>
+-#include <arch/puv3-irq.h>
+-
+-static struct resource puv3_gpio_resources[] = {
+-	[0] = {
+-		.start	= PUV3_GPIO_BASE,
+-		.end	= PUV3_GPIO_BASE + PUV3_IOMEM_REGION,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct resource puv3_intc_resources[] = {
+-	[0] = {
+-		.start	= PUV3_INTC_BASE,
+-		.end	= PUV3_INTC_BASE + PUV3_IOMEM_REGION,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-};
+-
+-static struct resource puv3_ost_resources[] = {
+-	[0] = {
+-		.start	= PUV3_OST_BASE,
+-		.end	= PUV3_OST_BASE + PUV3_IOMEM_REGION,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-	[1] = {
+-		.start	= IRQ_TIMER0,
+-		.flags	= IORESOURCE_IRQ,
+-	},
+-};
+-
+-static int __init puv3_core_init(void)
+-{
+-	/* APB-5 */
+-	platform_device_register_simple("PUV3-INTC", -1,
+-			puv3_intc_resources, ARRAY_SIZE(puv3_intc_resources));
+-	/* APB-6 */
+-	platform_device_register_simple("PUV3-GPIO", -1,
+-			puv3_gpio_resources, ARRAY_SIZE(puv3_gpio_resources));
+-	/* APB-8 */
+-	platform_device_register_simple("PUV3-OST", -1,
+-			puv3_ost_resources, ARRAY_SIZE(puv3_ost_resources));
+-
+-	return 0;
+-}
+-postcore_initcall(puv3_core_init);
+diff --git a/arch/unicore64/kernel/puv3-intc.c b/arch/unicore64/kernel/puv3-intc.c
+deleted file mode 100644
+index 91ed244..0000000
+--- a/arch/unicore64/kernel/puv3-intc.c
++++ /dev/null
+@@ -1,103 +0,0 @@
+-#include <linux/errno.h>
+-#include <linux/hardirq.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/ioport.h>
+-#include <linux/irq.h>
+-#include <linux/platform_device.h>
+-
+-#include <arch/puv3-irq.h>
+-#include <arch/puv3-regs-intc.h>
+-
+-#define __puv3_intc_disable_all()	do {			\
+-			writel(0, INTC_ICMR);			\
+-			writel(0, INTC_ICLR);			\
+-			writel(1, INTC_ICCR);			\
+-		} while (0)
+-
+-static void puv3_intc_mask_irq(struct irq_data *d)
+-{
+-	writel(readl(INTC_ICMR) & ~(1 << d->irq), INTC_ICMR);
+-}
+-
+-static void puv3_intc_unmask_irq(struct irq_data *d)
+-{
+-	writel(readl(INTC_ICMR) | (1 << d->irq), INTC_ICMR);
+-}
+-
+-/* We don't need to ACK IRQs on the PKUnity unless they're GPIOs */
+-static struct irq_chip puv3_intc_normal_chip = {
+-	.name		= "PUV3-INTC-NORMAL",
+-	.irq_ack	= puv3_intc_mask_irq,
+-	.irq_mask	= puv3_intc_mask_irq,
+-	.irq_unmask	= puv3_intc_unmask_irq,
+-};
+-
+-static int __devinit puv3_intc_probe(struct platform_device *pdev)
+-{
+-	unsigned int irq;
+-	struct resource *res;
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (res == NULL) {
+-		dev_err(&pdev->dev, "no memory resource defined\n");
+-		return -ENODEV;
+-	}
+-
+-	res = request_mem_region(res->start, resource_size(res), pdev->name);
+-	if (res == NULL) {
+-		dev_err(&pdev->dev, "failed to request memory resource\n");
+-		return -EBUSY;
+-	}
+-
+-	/* disable all IRQs */
+-	__puv3_intc_disable_all();
+-
+-	for (irq = PUV3_IRQS_MIN; irq <= PUV3_IRQS_MAX; irq++) {
+-		irq_set_chip(irq, &puv3_intc_normal_chip);
+-		irq_set_handler(irq, handle_level_irq);
+-		irq_modify_status(irq, IRQ_NOREQUEST | IRQ_NOAUTOEN,
+-				IRQ_NOPROBE);
+-	}
+-
+-	return 0;
+-}
+-
+-static struct platform_driver puv3_intc_driver = {
+-	.driver		= {
+-		.name	= "PUV3-INTC",
+-	},
+-	.probe		= puv3_intc_probe,
+-};
+-
+-static int __init puv3_intc_init(void)
+-{
+-	int ret = 0;
+-
+-	ret = platform_driver_register(&puv3_intc_driver);
+-	if (ret) {
+-		pr_err("failed to register puv3_intc_driver\n");
+-	}
+-
+-	return ret;
+-}
+-arch_initcall(puv3_intc_init);
+-
+-/*
+- * This function handles all puv3 hardware interrupts.
+- */
+-void puv3_intc_handler(void)
+-{
+-	unsigned int irqs, irq;
+-
+-	for (;;) {
+-		irqs = readl(INTC_ICIP) & readl(INTC_ICMR);
+-		if (irqs == 0)
+-			return;
+-
+-		irq = ffs(irqs) - 1;
+-		irq_enter();
+-		generic_handle_irq(irq);
+-		irq_exit();
+-	}
+-}
+diff --git a/arch/unicore64/kernel/puv4-core.c b/arch/unicore64/kernel/puv4-core.c
+new file mode 100644
+index 0000000..e39f6eb
+--- /dev/null
++++ b/arch/unicore64/kernel/puv4-core.c
+@@ -0,0 +1,49 @@
++#include <linux/init.h>
++#include <linux/platform_device.h>
++
++#include <arch/puv4-iomem.h>
++#include <arch/puv4-irq.h>
++
++static struct resource puv4_gpio_resources[] = {
++	[0] = {
++		.start	= PUV4_GPIO_BASE,
++		.end	= PUV4_GPIO_BASE + PUV4_IOMEM_REGION,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static struct resource puv4_intc_resources[] = {
++	[0] = {
++		.start	= PUV4_INTC_BASE,
++		.end	= PUV4_INTC_BASE + PUV4_IOMEM_REGION,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static struct resource puv4_ost_resources[] = {
++	[0] = {
++		.start	= PUV4_OST_BASE,
++		.end	= PUV4_OST_BASE + PUV4_IOMEM_REGION,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_TIMER0,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static int __init puv4_core_init(void)
++{
++	/* APB-5 */
++	platform_device_register_simple("PUV4-INTC", -1,
++			puv4_intc_resources, ARRAY_SIZE(puv4_intc_resources));
++	/* APB-6 */
++	platform_device_register_simple("PUV4-GPIO", -1,
++			puv4_gpio_resources, ARRAY_SIZE(puv4_gpio_resources));
++	/* APB-8 */
++	platform_device_register_simple("PUV4-OST", -1,
++			puv4_ost_resources, ARRAY_SIZE(puv4_ost_resources));
++
++	return 0;
++}
++postcore_initcall(puv4_core_init);
+diff --git a/arch/unicore64/kernel/puv4-intc.c b/arch/unicore64/kernel/puv4-intc.c
+new file mode 100644
+index 0000000..0729dee
+--- /dev/null
++++ b/arch/unicore64/kernel/puv4-intc.c
+@@ -0,0 +1,103 @@
++#include <linux/errno.h>
++#include <linux/hardirq.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/irq.h>
++#include <linux/platform_device.h>
++
++#include <arch/puv4-irq.h>
++#include <arch/puv4-regs-intc.h>
++
++#define __puv4_intc_disable_all()	do {			\
++			writel(0, INTC_ICMR);			\
++			writel(0, INTC_ICLR);			\
++			writel(1, INTC_ICCR);			\
++		} while (0)
++
++static void puv4_intc_mask_irq(struct irq_data *d)
++{
++	writel(readl(INTC_ICMR) & ~(1 << d->irq), INTC_ICMR);
++}
++
++static void puv4_intc_unmask_irq(struct irq_data *d)
++{
++	writel(readl(INTC_ICMR) | (1 << d->irq), INTC_ICMR);
++}
++
++/* We don't need to ACK IRQs on the PKUnity unless they're GPIOs */
++static struct irq_chip puv4_intc_normal_chip = {
++	.name		= "PUV4-INTC-NORMAL",
++	.irq_ack	= puv4_intc_mask_irq,
++	.irq_mask	= puv4_intc_mask_irq,
++	.irq_unmask	= puv4_intc_unmask_irq,
++};
++
++static int __devinit puv4_intc_probe(struct platform_device *pdev)
++{
++	unsigned int irq;
++	struct resource *res;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (res == NULL) {
++		dev_err(&pdev->dev, "no memory resource defined\n");
++		return -ENODEV;
++	}
++
++	res = request_mem_region(res->start, resource_size(res), pdev->name);
++	if (res == NULL) {
++		dev_err(&pdev->dev, "failed to request memory resource\n");
++		return -EBUSY;
++	}
++
++	/* disable all IRQs */
++	__puv4_intc_disable_all();
++
++	for (irq = PUV4_IRQS_MIN; irq <= PUV4_IRQS_MAX; irq++) {
++		irq_set_chip(irq, &puv4_intc_normal_chip);
++		irq_set_handler(irq, handle_level_irq);
++		irq_modify_status(irq, IRQ_NOREQUEST | IRQ_NOAUTOEN,
++				IRQ_NOPROBE);
++	}
++
++	return 0;
++}
++
++static struct platform_driver puv4_intc_driver = {
++	.driver		= {
++		.name	= "PUV4-INTC",
++	},
++	.probe		= puv4_intc_probe,
++};
++
++static int __init puv4_intc_init(void)
++{
++	int ret = 0;
++
++	ret = platform_driver_register(&puv4_intc_driver);
++	if (ret) {
++		pr_err("failed to register puv4_intc_driver\n");
++	}
++
++	return ret;
++}
++arch_initcall(puv4_intc_init);
++
++/*
++ * This function handles all puv4 hardware interrupts.
++ */
++void puv4_intc_handler(void)
++{
++	unsigned int irqs, irq;
++
++	for (;;) {
++		irqs = readl(INTC_ICIP) & readl(INTC_ICMR);
++		if (irqs == 0)
++			return;
++
++		irq = ffs(irqs) - 1;
++		irq_enter();
++		generic_handle_irq(irq);
++		irq_exit();
++	}
++}
+-- 
+1.7.9.5
+

@@ -1,0 +1,25 @@
+From 7358a91cd97a1a008109bf3eadc43b1ed112256c Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Tue, 13 Dec 2011 14:35:11 +0800
+Subject: [PATCH 164/641] UniCore64: define UC64_PM_ZIMAGE_START
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 547f81b..7d825f9 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -88,4 +88,7 @@
+  */
+ #define UC64_PM_PGTABLE_DMAP_PMD	(UC64_PM_PGTABLE_PGD - UC64_PAGE_SIZE)
+ 
++/* The byte offset of zImage in RAM from the start of RAM. */
++#define UC64_PM_ZIMAGE_START		HEX64(00000000, 03000000)
++
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+-- 
+1.7.9.5
+

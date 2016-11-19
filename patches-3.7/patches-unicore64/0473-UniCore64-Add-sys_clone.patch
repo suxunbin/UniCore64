@@ -1,0 +1,52 @@
+From 0188f0b8ed18dbff128851785e21a9d72a0a37d3 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Mon, 19 Nov 2012 15:56:51 +0800
+Subject: [PATCH 473/641] UniCore64: Add sys_clone
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    6 ++++++
+ arch/unicore64/kernel/sys.c   |   12 ++++++++----
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 7794d5d..53bc36e 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -238,3 +238,9 @@ ENTRY(__vectors_table)
+ 	call		__vec_invalid			@ 0x28: INT_OST
+ 	call		__vec_invalid			@ 0x2c: INT_PM
+ ENDPROC(__vectors_table)
++
++ENTRY(sys_clone)
++	dadd		ip, sp, #16
++	std		ip, [sp+], #8
++	b		sys_clone_wrapper
++ENDPROC(sys_clone)
+diff --git a/arch/unicore64/kernel/sys.c b/arch/unicore64/kernel/sys.c
+index 39dc829..b0fb551 100644
+--- a/arch/unicore64/kernel/sys.c
++++ b/arch/unicore64/kernel/sys.c
+@@ -2,11 +2,15 @@
+ #include <linux/syscalls.h>
+ #include <asm-generic/syscalls.h>
+ 
+-SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
+-		void __user *, parent_tid, void __user *, child_tid,
+-		struct pt_regs *, regs)
++SYSCALL_DEFINE6(clone_wrapper, unsigned long, clone_flags, unsigned long, newsp,
++		void __user *, parent_tid, int, tls_val,
++		void __user *, child_tid, struct pt_regs *, regs)
+ {
+-	BUG();
++	if (!newsp)
++		newsp = regs->UC64_R29;
++
++	return do_fork(clone_flags, newsp, regs, 0,
++			parent_tid, child_tid);
+ }
+ 
+ #undef __SYSCALL
+-- 
+1.7.9.5
+

@@ -1,0 +1,39 @@
+From 5b7bd88664e616cb0eaa3d6ce7af695be15ab511 Mon Sep 17 00:00:00 2001
+From: yuyue <yuyue@mprc.pku.edu.cn>
+Date: Wed, 12 Oct 2011 10:42:38 +0800
+Subject: [PATCH 018/641] UniCore64:Replace __always_inline with inline
+
+Fixed error:
+/home/yuyue/unicore64/linux-unicore/arch/unicore64/include/asm/bitops.h:11:24: error: expected '=', ',', ';', 'asm' or '_    _attribute__' before 'unsigned'
+/home/yuyue/unicore64/linux-unicore/arch/unicore64/include/asm/bitops.h:24:24: error: expected '=', ',', ';', 'asm' or '_    _attribute__' before 'unsigned'
+
+Signed-off-by: yuyue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/bitops.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/bitops.h b/arch/unicore64/include/asm/bitops.h
+index 9422ee1..6d7c531 100644
+--- a/arch/unicore64/include/asm/bitops.h
++++ b/arch/unicore64/include/asm/bitops.h
+@@ -8,7 +8,7 @@
+  *
+  * Undefined if no set bit exists, so code should check against 0 first.
+  */
+-static __always_inline unsigned long __fls(unsigned long word)
++static inline unsigned long __fls(unsigned long word)
+ {
+ 	/* FIXME: NOT implemented */
+ 	return 0;
+@@ -21,7 +21,7 @@ static __always_inline unsigned long __fls(unsigned long word)
+  *
+  * Undefined if no bit exists, so code should check against 0 first.
+  */
+-static __always_inline unsigned long __ffs(unsigned long word)
++static inline unsigned long __ffs(unsigned long word)
+ {
+ 	/* FIXME: NOT implemented */
+ 	return 0;
+-- 
+1.7.9.5
+

@@ -1,0 +1,26 @@
+From e07a14700860a8197183c5beef1e253029bdbeb0 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Mon, 3 Mar 2014 16:41:08 +0800
+Subject: [PATCH 574/641] unicore64: Remove calibrate_delay for APs
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index 8825f34..a514c93 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -244,8 +244,6 @@ void __init secondary_start_kernel(void)
+ 
+ 	local_irq_enable();
+ 
+-	calibrate_delay();
+-
+ 	smp_secondary_alive = 1;
+ 
+ 	cpu_idle();
+-- 
+1.7.9.5
+

@@ -1,0 +1,37 @@
+From e1ddbf8ff73c9850e90423b562a4b67a784d2067 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 31 May 2012 14:29:17 +0800
+Subject: [PATCH 353/641] UniCore64: fix uc64_debug_puts to handle r1 equaling
+ zero
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/lib/debug.S |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/lib/debug.S b/arch/unicore64/lib/debug.S
+index c80cc12..0a089d6 100644
+--- a/arch/unicore64/lib/debug.S
++++ b/arch/unicore64/lib/debug.S
+@@ -20,14 +20,15 @@ ENTRY(uc64_debug_puts)
+ 
+ 	adr		r0, 1003f
+ 
+-1001:	ldb.w		r2, [r0]+, #1
++1001:	dsub.a		r1, r1, #1
++	bsl		1002f
++
++	ldb.w		r2, [r0]+, #1
+ 	dcmpsub.a	r2, #0
+ 	beq		1002f
+ 
+ 	__putchar	r2
+ 
+-	dsub.a		r1, r1, #1
+-	beq		1002f
+ 	b		1001b
+ 
+ 1002:	return
+-- 
+1.7.9.5
+

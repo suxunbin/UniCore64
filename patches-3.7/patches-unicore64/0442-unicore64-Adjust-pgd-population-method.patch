@@ -1,0 +1,26 @@
+From 52ab91d9f73b920343ab80bbf0f42c10b446a014 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 26 Oct 2012 15:41:41 +0800
+Subject: [PATCH 442/641] unicore64: Adjust pgd population method
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index 7e6a312..78d93d2 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -12,7 +12,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
+ 	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
+ 
+ 	if (new_pgd)
+-		memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
++		copy_page(new_pgd, swapper_pg_dir);
+ 
+ 	return new_pgd;
+ }
+-- 
+1.7.9.5
+

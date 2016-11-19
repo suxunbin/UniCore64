@@ -1,0 +1,82 @@
+From 1611ed150eda1f74ee1b2714ad9a12e533708dda Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 31 Jan 2012 10:26:14 +0800
+Subject: [PATCH 290/641] UniCore64: wrap halt instruction
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/uncompress.h         |    2 +-
+ arch/unicore64/include/arch/asm-common.h |    6 ++++++
+ arch/unicore64/kernel/entry.S            |    2 +-
+ arch/unicore64/kernel/process.c          |    5 +++--
+ 4 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/unicore64/boot/uncompress.h b/arch/unicore64/boot/uncompress.h
+index 7ac51e3..ead3e64 100644
+--- a/arch/unicore64/boot/uncompress.h
++++ b/arch/unicore64/boot/uncompress.h
+@@ -22,7 +22,7 @@ extern char input_data_end[];
+ #ifndef ARCH_HAVE_DECOMP_ERROR
+ #define arch_decomp_error()
+ #else
+-#define arch_decomp_error()	__asm__("halt")
++#define arch_decomp_error()	__halt()
+ #endif
+ 
+ #ifndef ARCH_HAVE_DECOMP_SETUP
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index a29fb74..313de27 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -21,6 +21,12 @@ __ASMMACRO_WRAP(.macro	__pop, rt;
+ 			ldd.w	&rt, [sp]+, #8;
+ 		.endm)
+ 
++__ASMMACRO_WRAP(.macro	__halt;
++			halt;
++		.endm)
++
++#define __halt()			__asm__("__halt")
++
+ /* epip for debug: all should be removed definitely */
+ #ifdef __ASSEMBLY__
+ #define __epip4d_align64	.p2align 3
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index d9fa313..86296b5 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -43,7 +43,7 @@ ENTRY(__vec_invalid)
+ 	dmovl		r0,  0xdeaddeaddeaddead
+ 	__putdata	r0, r14, r15
+ 	__putdata	lr, r14, r15
+-	halt		/* no return */
++	__halt		/* no return */
+ ENDPROC(__vec_invalid)
+ 
+ ENTRY(__vec_itrap)
+diff --git a/arch/unicore64/kernel/process.c b/arch/unicore64/kernel/process.c
+index eb955eb..f5760af 100644
+--- a/arch/unicore64/kernel/process.c
++++ b/arch/unicore64/kernel/process.c
+@@ -1,6 +1,8 @@
+ #include <linux/kernel.h>
+ #include <linux/elfcore.h>
+ 
++#include <arch/asm-common.h>
++
+ /**
+  * kernel_thread() - Create a kernel thread
+  * @fn:
+@@ -54,8 +56,7 @@ void machine_restart(char *cmd)
+  */
+ void machine_halt(void)
+ {
+-	/* FIXME */
+-	BUG();
++	__halt();
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

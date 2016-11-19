@@ -1,0 +1,29 @@
+From 1276e47fb4832f6435a55c3e28bbc7f8489e1381 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 7 Sep 2012 16:33:02 +0800
+Subject: [PATCH 437/641] unicore64: Remove codestyle warning in pgd_alloc
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index a323e16..d146ab3 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -9,9 +9,9 @@
+  */
+ pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+-	pgd_t *new_pgd;
++	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
+ 
+-	if (new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL))
++	if (new_pgd)
+ 		memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
+ 
+ 	return new_pgd;
+-- 
+1.7.9.5
+

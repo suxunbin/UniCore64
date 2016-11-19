@@ -1,0 +1,29 @@
+From 6e14e75d4afbc7981358c140d9c4509b0658705f Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 29 Aug 2012 09:21:50 +0800
+Subject: [PATCH 410/641] unicore64: Remove redundant judgment in
+ elf_check_arch
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/elf.h |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/unicore64/include/asm/elf.h b/arch/unicore64/include/asm/elf.h
+index 763daeb..46eefde 100644
+--- a/arch/unicore64/include/asm/elf.h
++++ b/arch/unicore64/include/asm/elf.h
+@@ -32,9 +32,7 @@ typedef struct fpu_regs elf_fpregset_t;
+ /*
+  * This is used to ensure we don't load something for the wrong architecture.
+  */
+-#define elf_check_arch(x)  \
+-	((x)->e_ident[EI_CLASS] == ELF_CLASS && \
+-	(x)->e_machine == EM_UNICORE64)
++#define elf_check_arch(x)	((x)->e_machine == EM_UNICORE64)
+ 
+ #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
+ 
+-- 
+1.7.9.5
+

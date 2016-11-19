@@ -1,0 +1,42 @@
+From a2d905e70f750e404b8e3d92955b7726f3bcfaaa Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Tue, 17 Jan 2012 11:33:54 +0800
+Subject: [PATCH 229/641] UniCore64: add uc64_debug_putdata
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-debug.h |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/asm-debug.h b/arch/unicore64/include/arch/asm-debug.h
+index 84129e0..7ce7919 100644
+--- a/arch/unicore64/include/arch/asm-debug.h
++++ b/arch/unicore64/include/arch/asm-debug.h
+@@ -5,6 +5,7 @@
+ 
+ /**
+  * uc64_debug_putchar - prints a 8 bits char
++ * uc64_debug_putdata - prints a 64 bits data
+  */
+ #ifdef	CONFIG_DEBUG_OCD
+ /* For OCD debug mode */
+@@ -17,6 +18,16 @@ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
+ 			mov	r0, &rt1;
+ 			mov	r1, &rt2;
+ 		.endm)
++
++__ASMMACRO_WRAP(.macro	uc64_debug_putdata, rdata, rt1, rt2;
++			mov	&rt1, r0;
++			mov	&rt2, r1;
++			mov	r0, #0;
++			mov	r1, &rdata;
++			bkpt;
++			mov	r0, &rt1;
++			mov	r1, &rt2;
++		.endm)
+ #else
+ /* For RTL simulation environment */
+ __ASMMACRO_WRAP(.macro	uc64_debug_putchar, rchar, rt1, rt2;
+-- 
+1.7.9.5
+

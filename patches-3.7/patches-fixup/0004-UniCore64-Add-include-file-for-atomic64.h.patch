@@ -1,0 +1,49 @@
+From e2c12baa89de2d16f5589fac630333fefb4ce36f Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Wed, 28 Sep 2011 17:28:55 +0800
+Subject: [PATCH 004/641] UniCore64:Add include file for atomic64.h
+
+Fixed error include/asm-generic/atomic64.h:23:49:
+ error: expected ';', ',' or ')' before '*' token
+ include/asm-generic/atomic64.h:24:38:
+ error: expected ')' before '*' token
+ include/asm-generic/atomic64.h:25:40:
+ error: expected declaration specifiers or '...' before 'atomic64_t'
+ include/asm-generic/atomic64.h:26:51:
+ error: expected declaration specifiers or '...' before 'atomic64_t'
+ include/asm-generic/atomic64.h:27:40:
+ error: expected declaration specifiers or '...' before 'atomic64_t'
+ include/asm-generic/atomic64.h:28:51:
+ error: expected declaration specifiers or '...' before 'atomic64_t'
+ include/asm-generic/atomic64.h:29:54:
+ error: expected ')' before '*' token
+ include/asm-generic/atomic64.h:30:46:
+ error: expected ')' before '*' token
+ include/asm-generic/atomic64.h:31:43:
+ error: expected ')' before '*' token
+ include/asm-generic/atomic64.h:32:44:
+ error: expected ')' before '*' token
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ include/asm-generic/atomic64.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/asm-generic/atomic64.h b/include/asm-generic/atomic64.h
+index cc6e272..4f844c4 100644
+--- a/include/asm-generic/atomic64.h
++++ b/include/asm-generic/atomic64.h
+@@ -12,7 +12,9 @@
+ #ifndef _ASM_GENERIC_ATOMIC64_H
+ #define _ASM_GENERIC_ATOMIC64_H
+ 
+-#ifndef CONFIG_64BIT
++#ifdef CONFIG_64BIT
++#include <linux/types.h>
++#else
+ typedef struct {
+ 	long long counter;
+ } atomic64_t;
+-- 
+1.7.9.5
+

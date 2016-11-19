@@ -1,0 +1,29 @@
+From 5b1c03b440705ca73d7f078d0bb3b66da16d9b22 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Sat, 21 Apr 2012 15:43:42 +0800
+Subject: [PATCH 338/641] UniCore64: Add __volatile__ attribute in macro
+ __read_cp_op
+
+Add __volatile__ attribute will avoid problems when reading itimer counter successively.
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index 2b0cf24..d9c2945 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -11,7 +11,7 @@
+ #define __read_cp_op(reg, op_no)					\
+ 	({								\
+ 		unsigned long __val;					\
+-		__asm__("movc	%0, " __stringify(reg)			\
++		__asm__ __volatile__("movc	%0, " __stringify(reg)	\
+ 				", #" __stringify(op_no)		\
+ 		    : "=r" (__val));					\
+ 		__val;							\
+-- 
+1.7.9.5
+

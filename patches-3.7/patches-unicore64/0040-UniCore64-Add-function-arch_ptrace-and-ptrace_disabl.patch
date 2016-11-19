@@ -1,0 +1,58 @@
+From 37fc475d9c87b09f5eaebda5b0aeca137cd89f65 Mon Sep 17 00:00:00 2001
+From: Yu Yue <yuyue@mprc.pku.edu.cn>
+Date: Fri, 28 Oct 2011 19:15:38 +0800
+Subject: [PATCH 040/641] UniCore64: Add function arch_ptrace and
+ ptrace_disable
+
+Fixed error:
+elfcore.c:(.text+0x18638): undefined reference to `arch_ptrace'
+elfcore.c:(.text+0x18dc4): undefined reference to `ptrace_disable'
+
+Signed-off-by: Yu Yue <yuyue@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/Makefile |    2 +-
+ arch/unicore64/kernel/ptrace.c |   23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
+ create mode 100644 arch/unicore64/kernel/ptrace.c
+
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+index ef3ca57..1705a90 100644
+--- a/arch/unicore64/kernel/Makefile
++++ b/arch/unicore64/kernel/Makefile
+@@ -1,3 +1,3 @@
+-obj-y			:= tlb.o
++obj-y			:= tlb.o ptrace.o
+ head-y			:= head.o
+ extra-y			:= $(head-y) vmlinux.lds
+diff --git a/arch/unicore64/kernel/ptrace.c b/arch/unicore64/kernel/ptrace.c
+new file mode 100644
+index 0000000..3004056
+--- /dev/null
++++ b/arch/unicore64/kernel/ptrace.c
+@@ -0,0 +1,23 @@
++#include <linux/kernel.h>
++#include <linux/ptrace.h>
++
++/**
++ * ptrace_disable() - Called by kernel/ptrace.c when detaching
++ * @child:
++ */
++void ptrace_disable(struct task_struct *child)
++{
++}
++
++/**
++ * arch_ptrace() -
++ * @child:
++ * @request:
++ * @addr:
++ * @data:
++ */
++long arch_ptrace(struct task_struct *child, long request,
++		 unsigned long addr, unsigned long data)
++{
++	return 0;
++}
+-- 
+1.7.9.5
+

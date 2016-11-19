@@ -1,0 +1,26 @@
+From c00119136daa7e0fd27240728c9b5b08bcf199f7 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sat, 14 Jan 2012 14:06:42 +0800
+Subject: [PATCH 209/641] UniCore64: correct header in hwdef-copro.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-copro.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-copro.h b/arch/unicore64/include/arch/hwdef-copro.h
+index b31dc7b..f06e961 100644
+--- a/arch/unicore64/include/arch/hwdef-copro.h
++++ b/arch/unicore64/include/arch/hwdef-copro.h
+@@ -6,7 +6,7 @@
+  *
+  * This file defines coprocessor names and their register names.
+  */
+-#include <arch/bitfield.h>
++#include <linux/stringify.h>
+ 
+ #define read_cp_op(reg, op_no)						\
+ 	({								\
+-- 
+1.7.9.5
+

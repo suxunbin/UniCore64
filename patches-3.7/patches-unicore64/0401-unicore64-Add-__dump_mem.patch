@@ -1,0 +1,67 @@
+From 6edf561ef70f9f49d9cb3bb8758e57f48c308026 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Thu, 23 Aug 2012 20:19:14 +0800
+Subject: [PATCH 401/641] unicore64: Add __dump_mem
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/showinfo.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/unicore64/kernel/showinfo.c b/arch/unicore64/kernel/showinfo.c
+index 3a830f8..26d9534 100644
+--- a/arch/unicore64/kernel/showinfo.c
++++ b/arch/unicore64/kernel/showinfo.c
+@@ -3,6 +3,7 @@
+ #include <linux/bug.h>
+ #include <linux/sched.h>
+ 
++#include <asm/uaccess.h>
+ #include <asm/setup_arch.h>
+ 
+ #include <arch/hwdef-cpu.h>
+@@ -193,6 +194,27 @@ void __show_cp0_regs(void)
+ 	pr_info(" R/W Margin: %16lx\n", __read_cp(CP0_RWMARGIN));
+ }
+ 
++static void __dump_mem(unsigned long bottom, unsigned long top)
++{
++	unsigned long p;
++	int i;
++	unsigned int val;
++
++	pr_info("Dump memory from 0x%016lx to 0x%016lx:\n", bottom, top);
++
++	for (p = bottom & ~31; p < top; ) {
++		pr_info(" %04lx:", p & 0xffff);
++
++		for (i = 0; i < 8; i++, p += 4) {
++			if (__get_user(val, (unsigned int *)p)) {
++				pr_info("Fail to access 0x%016lx\n", p);
++				return;
++			}
++			pr_cont(" %08x", val);
++		}
++	}
++}
++
+ /**
+  * dump_fpu() -
+  * @regs:
+@@ -211,8 +233,13 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fp)
+  */
+ void show_regs(struct pt_regs *regs)
+ {
++	unsigned long stack_end;
++
+ 	__show_uc64_regs(regs);
+ 	__show_cp0_regs();
++
++	stack_end = (unsigned long)current_thread_info();
++	__dump_mem(stack_end, stack_end + THREAD_SIZE);
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

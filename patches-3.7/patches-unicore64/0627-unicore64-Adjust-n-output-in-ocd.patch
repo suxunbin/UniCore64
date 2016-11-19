@@ -1,0 +1,42 @@
+From e466c9111157fc0e0247a4413da348e8aa8cb479 Mon Sep 17 00:00:00 2001
+From: Li Binbin <libinbin@mprc.pku.edu.cn>
+Date: Tue, 13 May 2014 19:20:17 +0800
+Subject: [PATCH 627/641] unicore64: Adjust \n output in ocd
+
+Signed-off-by: Li Binbin <libinbin@mprc.pku.edu.cn>
+---
+ arch/unicore64/lib/ocd_console.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/arch/unicore64/lib/ocd_console.c b/arch/unicore64/lib/ocd_console.c
+index 85c83e9..5795de8 100644
+--- a/arch/unicore64/lib/ocd_console.c
++++ b/arch/unicore64/lib/ocd_console.c
+@@ -37,6 +37,12 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
+ 	static int ypos_last;
+ 	char c = '\n';
+ 
++	while (ypos > ypos_last) {
++		uc64_debug_puts(&c, 1);
++		ypos_last++;
++	}
++	ypos_last = ypos;
++
+ 	/* For each element in *s (16bit in an unsigned short type):
+ 	 * High 8-bit is color, low 8-bit is char,
+ 	 * and only char is useful here. */
+@@ -45,11 +51,6 @@ static void ocd_con_putcs(struct vc_data *vc, const unsigned short *s,
+ 		s++;
+ 		n--;
+ 	}
+-
+-	if (ypos != ypos_last) {
+-		uc64_debug_puts(&c, 1);
+-	}
+-	ypos_last = ypos;
+ }
+ 
+ static int ocd_con_scroll(struct vc_data *vc, int t, int b, int dir, int cnt)
+-- 
+1.7.9.5
+

@@ -1,0 +1,48 @@
+From 2859020b81dcb0c927e0b0ae0e781094343b1cdc Mon Sep 17 00:00:00 2001
+From: Li Binbin <libinbin@mprc.pku.edu.cn>
+Date: Wed, 19 Feb 2014 14:44:44 +0800
+Subject: [PATCH 567/641] unicore64: Clear first 1G direct map area for AP
+
+Signed-off-by: Li Binbin <libinbin@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/smp.c |    3 +++
+ arch/unicore64/mm/pgtable.c |    2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/smp.c b/arch/unicore64/kernel/smp.c
+index 499c345..f5ab0bc 100644
+--- a/arch/unicore64/kernel/smp.c
++++ b/arch/unicore64/kernel/smp.c
+@@ -5,6 +5,7 @@
+ #include <linux/cpu.h>
+ #include <linux/interrupt.h>
+ 
++#include <asm/pgtable.h>
+ #include <arch/hwdef-cp0-sysctrl.h>
+ 
+ #define __ipi_disable()	\
+@@ -225,6 +226,8 @@ void __init secondary_start_kernel(void)
+ {
+ 	unsigned int cpu = smp_processor_id();
+ 
++	/* First 1G for direct-mapped area should be cleared. */
++	swapper_pg_dir[0] = __pgd(0);
+ 	atomic_inc(&init_mm.mm_count);
+ 	current->active_mm = &init_mm;
+ 
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index b8ec387..f67cfc4 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -9,7 +9,7 @@
+  */
+ pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+-	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
++	pgd_t *new_pgd = (pgd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+ 
+ 	if (new_pgd)
+ 		copy_page(new_pgd, swapper_pg_dir);
+-- 
+1.7.9.5
+

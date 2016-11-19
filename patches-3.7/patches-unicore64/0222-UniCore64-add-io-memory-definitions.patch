@@ -1,0 +1,43 @@
+From dfe26f15b6030320d8c55260d29199d96922af94 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 16 Jan 2012 14:04:53 +0800
+Subject: [PATCH 222/641] UniCore64: add io memory definitions
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-memory.h |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index edbd7c5..7511979 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -54,6 +54,9 @@
+ #define UC64_VM_DMAP_START		UC64_VM_KERNEL_START
+ #define UC64_VM_DMAP_END		__BC(ffffffef, ffffffff)
+ 
++#define UC64_VM_IO_START		__BC(ffffffef, 80000000)
++#define UC64_VM_IO_END			UC64_VM_DMAP_END
++
+ /* FIXME */
+ #define UC64_VM_VMALLOC_START		__BC(00000001, 00000000)
+ #define UC64_VM_VMALLOC_END		__BC(00000002, 00000000)
+@@ -110,4 +113,15 @@
+ #define UC64_VM_ZEROPAGE		UC64_PM2VM(UC64_PM_ZEROPAGE)
+ #define UC64_VM_DTB_START		UC64_PM2VM(UC64_PM_DTB_START)
+ 
++#define UC64_IO_SOC_START		__BC(0000000f, 80000000)
++#define UC64_IO_SOC_END			__BC(0000000f, ffffffff)
++
++#define UC64_IO_OCD_START		__BC(0000000f, ff400000)
++#define UC64_IO_OCD_END			__BC(0000000f, ff5fffff)
++
++#define UC64_IO2VM(ioaddr)		(UC64_VM_IO_START + (ioaddr))
++
++#define UC64_VM_IO_SOC_START		UC64_IO2VM(UC64_IO_SOC_START)
++#define UC64_VM_IO_SOC_END		UC64_IO2VM(UC64_IO_SOC_END)
++
+ #endif /* __UNICORE64_ARCH_HWDEF_MEMORY_H__ */
+-- 
+1.7.9.5
+

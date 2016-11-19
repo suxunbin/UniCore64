@@ -1,0 +1,31 @@
+From cc4619117707fd5d87a315fefd65d3cbdb356d4c Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Wed, 2 Nov 2011 16:06:48 +0800
+Subject: [PATCH 061/641] UniCore64: Fix warning about type of thread_struct
+
+Fixed warning:
+kernel/sched.c: In function 'sched_show_task':
+kernel/sched.c:5869: warning: format '%016lx' expects type
+	'long unsigned int', but argument 2 has type 'u64'
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/processor.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/processor.h b/arch/unicore64/include/asm/processor.h
+index 6d01653..177b453 100644
+--- a/arch/unicore64/include/asm/processor.h
++++ b/arch/unicore64/include/asm/processor.h
+@@ -16,7 +16,7 @@
+ #define current_text_addr()	({ __label__ _l; _l: &&_l; })
+ 
+ struct thread_struct {
+-	u64 pc;
++	unsigned long pc;
+ };
+ 
+ #define INIT_THREAD		{ }
+-- 
+1.7.9.5
+

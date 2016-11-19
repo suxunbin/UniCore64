@@ -1,0 +1,45 @@
+From bfb80a43e100202e6e250336a9d06599606cfc35 Mon Sep 17 00:00:00 2001
+From: caosong <caosong@mprc.pku.edu.cn>
+Date: Mon, 5 Mar 2012 14:29:16 +0800
+Subject: [PATCH 318/641] UniCore64: Add the disable and enable irq macros
+
+Signed-off-by: caosong <caosong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/asm-common.h |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/arch/asm-common.h b/arch/unicore64/include/arch/asm-common.h
+index 9cc9025..304f5e7 100644
+--- a/arch/unicore64/include/arch/asm-common.h
++++ b/arch/unicore64/include/arch/asm-common.h
+@@ -2,7 +2,7 @@
+ #define __UNICORE64_ARCH_ASM_COMMON_H__
+ 
+ #include <linux/stringify.h>
+-
++#include <arch/hwdef-cpu.h>
+ /*
+  * __ASMMACRO_WRAP is ONLY used for assembly macro definitions.
+  * Then this macro could be used in both assembly files and c files.
+@@ -25,6 +25,18 @@ __ASMMACRO_WRAP(.macro	__halt;
+ 			halt;
+ 		.endm)
+ 
++__ASMMACRO_WRAP(.macro	disable_irq, rt;
++			dmov	&rt, asr;
++			dor	&rt, &rt, #ASR_INTR_SELECT;
++			dmov	asr, &rt;
++		.endm)
++
++__ASMMACRO_WRAP(.macro	enable_irq, rt;
++			dmov	&rt, asr;
++			dand	&rt, &rt, #(~ASR_INTR_SELECT);
++			dmov	asr, &rt;
++		.endm)
++
+ #define __halt()			__asm__("__halt")
+ 
+ /*
+-- 
+1.7.9.5
+

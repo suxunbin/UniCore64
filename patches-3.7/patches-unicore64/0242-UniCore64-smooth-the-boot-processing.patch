@@ -1,0 +1,267 @@
+From 10c9892d5837dbe41e999fb311c0fa6161c5b048 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 18 Jan 2012 05:38:21 +0800
+Subject: [PATCH 242/641] UniCore64: smooth the boot processing
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/boot/Makefile               |   10 +++-
+ arch/unicore64/boot/boot-head.S            |   84 ----------------------------
+ arch/unicore64/boot/boot.S                 |   84 ++++++++++++++++++++++++++++
+ arch/unicore64/include/arch/hwdef-memory.h |    9 +--
+ 4 files changed, 96 insertions(+), 91 deletions(-)
+ delete mode 100644 arch/unicore64/boot/boot-head.S
+ create mode 100644 arch/unicore64/boot/boot.S
+
+diff --git a/arch/unicore64/boot/Makefile b/arch/unicore64/boot/Makefile
+index 4e3849f..c837cf4 100644
+--- a/arch/unicore64/boot/Makefile
++++ b/arch/unicore64/boot/Makefile
+@@ -8,11 +8,12 @@ ldflags-y	:= -T $(obj)/boot.lds
+ # Only copy text segment from boot.bin to zImage
+ OBJCOPYFLAGS	:= -O binary -S
+ 
++# Step one: generate Image from vmlinux
+ $(obj)/Image: vmlinux FORCE
+ 	$(call if_changed,objcopy)
+ 	@echo '  Kernel: $@ is ready'
+ 
+-# Compress Image Method
++# Step two: compress Image to piggy.bin
+ suffix_$(CONFIG_KERNEL_GZIP)	:= gzip
+ suffix_$(CONFIG_KERNEL_BZIP2)	:= bz2
+ suffix_$(CONFIG_KERNEL_LZO)	:= lzo
+@@ -21,19 +22,22 @@ suffix_$(CONFIG_KERNEL_LZMA)	:= lzma
+ $(obj)/piggy.bin: $(obj)/Image FORCE
+ 	$(call if_changed,$(suffix_y))
+ 
++# Step three: generate boot.o, which includes piggy.bin and dtb file
+ $(obj)/%.dtb: $(obj)/%.dts FORCE
+ 	$(call if_changed,dtc)
+ 
+-$(obj)/boot-head.o: $(obj)/piggy.bin $(obj)/unicore64-fpga.dtb
++$(obj)/boot.o: $(obj)/piggy.bin $(obj)/unicore64-fpga.dtb
+ 
++# Step four: generate boot.bin with special load-script
+ BOOT_OBJS	:= $(srctree)/arch/unicore64/lib/string-simple.o
+ BOOT_OBJS	+= $(srctree)/arch/unicore64/lib/debug.o
+ BOOT_OBJS	+= $(obj)/uncompress.o
+ 
+-$(obj)/boot.bin: $(obj)/boot.lds $(obj)/boot-head.o $(BOOT_OBJS) FORCE
++$(obj)/boot.bin: $(obj)/boot.lds $(obj)/boot.o $(BOOT_OBJS) FORCE
+ 	$(call if_changed,ld)
+ 	@:
+ 
++# Step five: generate zImage finally
+ $(obj)/zImage: $(obj)/boot.bin FORCE
+ 	$(call if_changed,objcopy)
+ 	@echo '  Kernel: $@ is ready'
+diff --git a/arch/unicore64/boot/boot-head.S b/arch/unicore64/boot/boot-head.S
+deleted file mode 100644
+index 1ac509f..0000000
+--- a/arch/unicore64/boot/boot-head.S
++++ /dev/null
+@@ -1,84 +0,0 @@
+-#include <arch/hwdef-memory.h>
+-#include <arch/hwdef-copro.h>
+-#include <arch/asm-common.h>
+-#include <arch/asm-mmuops.h>
+-#include <arch/head-macros.S>
+-
+-	.section ".start"
+-	.globl	_start
+-_start:
+-	/*
+-	 * Initialize ASR and coprocessor 0.
+-	 */
+-	__head_initialize	r0
+-
+-	/*
+-	 * Initialise TLB and Caches.
+-	 */
+-	uc64_invalidate_dcache	r0
+-	uc64_invalidate_icache	r0
+-	uc64_invalidate_tlb	r0
+-
+-	/*
+-	 * Turn on dcache and icache.
+-	 */
+-	uc64_enable_cache	r0
+-
+-	/*
+-	 * Set the sp register.
+-	 */
+-	dmovl	sp, #UC64_PM_ZIMAGE_SP
+-
+-	/*
+-	 * Clear BSS region.
+-	 */
+-	__head_clear_bss
+-
+-#ifdef CONFIG_ARCH_FPGA
+-	/*
+-	 * Prepare early devtree for fpga board.
+-	 */
+-	dmovl	r0, #UC64_PM_DTB_START
+-	adr	r1, dtb_data
+-	dmovl	r2, #dtb_data_end - dtb_data
+-	call	memcpy
+-#endif /* CONFIG_ARCH_FPGA */
+-
+-	/*
+-	 * Call decompress_kernel, and it's three parameters are:
+-	 *   r0: output_start
+-	 *   r1: free_mem_ptr_p
+-	 *   r2: free_mem_ptr_end_p
+-	 */
+-	dmovl	r0, #UC64_PM_KIMAGE_START
+-	dmovl	r1, #UC64_PM_ZIMAGE_SP
+-	dmovl	r2, #UC64_PM_ZIMAGE_HEAP
+-	call	decompress_kernel
+-
+-	/*
+-	 * Flush the cache to maintain consistency.
+-	 */
+-	uc64_flush_dcache	r0
+-
+-	/*
+-	 * Initialize ASR and coprocessor 0.
+-	 */
+-	__head_initialize	r0
+-
+-	/*
+-	 * Jump to the start address of kernel image.
+-	 */
+-	dmovl	r0, #UC64_VM_KIMAGE_START
+-	jump	r0
+-
+-	__epip4d_align64
+-dtb_data:
+-	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
+-dtb_data_end:
+-
+-	__epip4d_align64
+-	.globl	input_data
+-input_data:
+-	.incbin "arch/unicore64/boot/piggy.bin"
+-	.globl	input_data_end
+-input_data_end:
+diff --git a/arch/unicore64/boot/boot.S b/arch/unicore64/boot/boot.S
+new file mode 100644
+index 0000000..4ab1dd3
+--- /dev/null
++++ b/arch/unicore64/boot/boot.S
+@@ -0,0 +1,84 @@
++#include <arch/hwdef-memory.h>
++#include <arch/hwdef-copro.h>
++#include <arch/asm-common.h>
++#include <arch/asm-mmuops.h>
++#include <arch/head-macros.S>
++
++	.section ".start"
++	.globl	_start
++_start:
++	/*
++	 * Initialize ASR and coprocessor 0.
++	 */
++	__head_initialize	r0
++
++	/*
++	 * Initialise TLB and Caches.
++	 */
++	uc64_invalidate_dcache	r0
++	uc64_invalidate_icache	r0
++	uc64_invalidate_tlb	r0
++
++	/*
++	 * Turn on dcache and icache.
++	 */
++	uc64_enable_cache	r0
++
++	/*
++	 * Set the sp register.
++	 */
++	dmovl	sp, #UC64_PM_ZIMAGE_STACKTOP
++
++	/*
++	 * Clear BSS region.
++	 */
++	__head_clear_bss
++
++#ifdef CONFIG_ARCH_FPGA
++	/*
++	 * Prepare early devtree for fpga board.
++	 */
++	dmovl	r0, #UC64_PM_DTB_START
++	adr	r1, dtb_data
++	dmovl	r2, #dtb_data_end - dtb_data
++	call	memcpy
++#endif /* CONFIG_ARCH_FPGA */
++
++	/*
++	 * Call decompress_kernel, and it's three parameters are:
++	 *   r0: output_start
++	 *   r1: free_mem_ptr_p
++	 *   r2: free_mem_ptr_end_p
++	 */
++	dmovl	r0, #UC64_PM_KIMAGE_START
++	dmovl	r1, #UC64_PM_ZIMAGE_STACKTOP
++	dmovl	r2, #UC64_PM_ZIMAGE_HEAP_END
++	call	decompress_kernel
++
++	/*
++	 * Flush the cache to maintain consistency.
++	 */
++	uc64_flush_dcache	r0
++
++	/*
++	 * Initialize ASR and coprocessor 0.
++	 */
++	__head_initialize	r0
++
++	/*
++	 * Jump to the start address of kernel image.
++	 */
++	dmovl	r0, #UC64_VM_KIMAGE_START
++	jump	r0
++
++	__epip4d_align64
++dtb_data:
++	.incbin "arch/unicore64/boot/unicore64-fpga.dtb"
++dtb_data_end:
++
++	__epip4d_align64
++	.globl	input_data
++input_data:
++	.incbin "arch/unicore64/boot/piggy.bin"
++	.globl	input_data_end
++input_data_end:
+diff --git a/arch/unicore64/include/arch/hwdef-memory.h b/arch/unicore64/include/arch/hwdef-memory.h
+index 89211da..fbbd590 100644
+--- a/arch/unicore64/include/arch/hwdef-memory.h
++++ b/arch/unicore64/include/arch/hwdef-memory.h
+@@ -68,16 +68,17 @@
+  * We have 36-bit pm address which means 64GB physical space
+  * as below:
+  *
+- * ZIMAGE_START: The byte offset of zImage in RAM from the start of RAM.
+- * ZIMAGE_SP & ZIMAGE_HEAP: The address of stack and heap.
++ * ZIMAGE_START: The byte offset of zImage in RAM from the start of RAM
++ * ZIMAGE_STACKTOP: sp value for uncompressing period
++ * ZIMAGE_HEAP_END: malloc space above stack
+  *
+  */
+ #define UC64_PM_START			__BC(00000000, 00000000)
+ #define UC64_PM_END			__BC(0000000f, ffffffff)
+ 
+ #define UC64_PM_ZIMAGE_START		__BC(00000000, 03000000)
+-#define UC64_PM_ZIMAGE_SP		__BC(00000000, 03e00000)
+-#define UC64_PM_ZIMAGE_HEAP		__BC(00000000, 04000000)
++#define UC64_PM_ZIMAGE_STACKTOP		__BC(00000000, 03e00000)
++#define UC64_PM_ZIMAGE_HEAP_END		__BC(00000000, 03f00000)
+ 
+ /*
+  * Address space: 00400000 - 00408000
+-- 
+1.7.9.5
+

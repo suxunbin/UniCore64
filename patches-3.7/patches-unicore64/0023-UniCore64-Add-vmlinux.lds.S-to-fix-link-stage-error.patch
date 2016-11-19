@@ -1,0 +1,34 @@
+From 1750d7b4ad331f6dda5d70563e09531091e8696a Mon Sep 17 00:00:00 2001
+From: WangJing <wangjing@mprc.pku.edu.cn>
+Date: Tue, 25 Oct 2011 13:49:12 +0800
+Subject: [PATCH 023/641] UniCore64: Add vmlinux.lds.S to fix link stage error
+
+Fixed error:
+ld: cannot open linker script file arch/unicore64/kernel/vmlinux.lds: No
+such file or directory
+
+Signed-off-by: WangJing <wangjing@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/Makefile      |    1 +
+ arch/unicore64/kernel/vmlinux.lds.S |    1 +
+ 2 files changed, 2 insertions(+)
+ create mode 100644 arch/unicore64/kernel/Makefile
+ create mode 100644 arch/unicore64/kernel/vmlinux.lds.S
+
+diff --git a/arch/unicore64/kernel/Makefile b/arch/unicore64/kernel/Makefile
+new file mode 100644
+index 0000000..4914e9f
+--- /dev/null
++++ b/arch/unicore64/kernel/Makefile
+@@ -0,0 +1 @@
++extra-y			:= vmlinux.lds
+diff --git a/arch/unicore64/kernel/vmlinux.lds.S b/arch/unicore64/kernel/vmlinux.lds.S
+new file mode 100644
+index 0000000..1084c97
+--- /dev/null
++++ b/arch/unicore64/kernel/vmlinux.lds.S
+@@ -0,0 +1 @@
++#include <asm-generic/vmlinux.lds.h>
+-- 
+1.7.9.5
+

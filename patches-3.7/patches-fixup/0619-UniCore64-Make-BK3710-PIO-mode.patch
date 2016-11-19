@@ -1,0 +1,101 @@
+From e8e066bb8b89bda89acb70678854e296918e3726 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sun, 4 May 2014 18:36:02 +0800
+Subject: [PATCH 619/641] UniCore64: Make BK3710 PIO mode
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ drivers/ata/libata-core.c |    3 +++
+ drivers/ata/pata_bk3710.c |   19 ++++++++++++++++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 3cc7096..21af8e2 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -4257,6 +4257,9 @@ static unsigned long ata_dev_blacklisted(const struct ata_device *dev)
+ 
+ static int ata_dma_blacklisted(const struct ata_device *dev)
+ {
++#ifdef CONFIG_PATA_BK3710
++	return 1;
++#endif
+ 	/* We don't support polling DMA.
+ 	 * DMA blacklist those ATAPI devices with CDB-intr (and use PIO)
+ 	 * if the LLDD handles only interrupts in the HSM_ST_LAST state.
+diff --git a/drivers/ata/pata_bk3710.c b/drivers/ata/pata_bk3710.c
+index cd89343..6753311 100644
+--- a/drivers/ata/pata_bk3710.c
++++ b/drivers/ata/pata_bk3710.c
+@@ -24,7 +24,7 @@
+ 
+ #define BK3710_IDESTAT 0x47
+ 
+-
++#define BK3710_PIOMODE 1
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -105,7 +105,6 @@ static void bk3710_set_piomode(struct ata_port *ap, struct ata_device *adev)
+  */
+ static void bk3710_set_dmamode(struct ata_port *ap, struct ata_device *adev)
+ {
+-	
+ 	u16	val16;
+ 
+ 	static const u8 udma_timings[7] = {
+@@ -114,8 +113,8 @@ static void bk3710_set_dmamode(struct ata_port *ap, struct ata_device *adev)
+ 
+ 	int mode = adev->dma_mode;
+ 	int dshift = adev->devno ? BK3710_D1_SHIFT : BK3710_D0_SHIFT;
+-	writel(0x00000000, base + BK3710_MISCCTL);
+ 
++	writel(0x00000000, base + BK3710_MISCCTL);
+ 	writew(0xb3ff, base + BK3710_IDETIMP);
+ 	writew(0x000f, base + BK3710_UDMACTL);
+ 	if (mode >= XFER_UDMA_0) {
+@@ -137,14 +136,24 @@ static void bk3710_set_dmamode(struct ata_port *ap, struct ata_device *adev)
+ }
+ 
+ static struct scsi_host_template bk3710_sht = {
++#ifdef BK3710_PIOMODE
++	ATA_BASE_SHT(DRV_NAME),
++#else
+ 	ATA_BMDMA_SHT(DRV_NAME),
++#endif
+ };
+ 
+ static struct ata_port_operations bk3710_port_ops = {
++#ifdef BK3710_PIOMODE
++	.inherits	= &ata_sff_port_ops,
++#else
+ 	.inherits	= &ata_bmdma32_port_ops,
++#endif
+ 	.cable_detect	= bk3710_cable_detect,
+ 	.set_piomode	= bk3710_set_piomode,
++#ifndef BK3710_PIOMODE
+ 	.set_dmamode	= bk3710_set_dmamode,
++#endif
+ };
+ 
+ static int __devinit pata_bk3710_init_one(struct platform_device *pdev)
+@@ -182,12 +191,16 @@ static int __devinit pata_bk3710_init_one(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	mmio_base = (void __iomem *) res->start;
+ 	base = mmio_base;
++#ifndef BK3710_PIOMODE
+ 	host->ports[0]->ioaddr.bmdma_addr = mmio_base + 0x00;
++#endif
+ 	host->ports[0]->ioaddr.cmd_addr = mmio_base + 0x1f0;
+ 	host->ports[0]->ioaddr.ctl_addr = mmio_base + 0x3f6;
+ 	host->ports[0]->ioaddr.altstatus_addr = mmio_base + 0x3f6;
+ 	ata_sff_std_ports(&host->ports[0]->ioaddr);
++#ifndef BK3710_PIOMODE
+ 	host->ports[1]->ioaddr.bmdma_addr = mmio_base + 0x08;
++#endif
+ 	host->ports[1]->ioaddr.cmd_addr = mmio_base + 0x170;
+ 	host->ports[1]->ioaddr.ctl_addr = mmio_base + 0x376;
+ 	host->ports[1]->ioaddr.altstatus_addr = mmio_base + 0x376;
+-- 
+1.7.9.5
+

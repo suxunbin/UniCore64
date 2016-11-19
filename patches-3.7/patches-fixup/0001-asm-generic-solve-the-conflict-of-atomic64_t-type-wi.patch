@@ -1,0 +1,30 @@
+From bb62cbfb3b921bcbe945f98593bd5287ed4fbf19 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 20 Apr 2011 18:48:59 +0800
+Subject: [PATCH] asm-generic: solve the conflict of atomic64_t type with
+ linux/types.h and asm-generic/atomic64.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ include/asm-generic/atomic64.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/asm-generic/atomic64.h b/include/asm-generic/atomic64.h
+index b18ce4f..cc6e272 100644
+--- a/include/asm-generic/atomic64.h
++++ b/include/asm-generic/atomic64.h
+@@ -12,9 +12,11 @@
+ #ifndef _ASM_GENERIC_ATOMIC64_H
+ #define _ASM_GENERIC_ATOMIC64_H
+ 
++#ifndef CONFIG_64BIT
+ typedef struct {
+ 	long long counter;
+ } atomic64_t;
++#endif
+ 
+ #define ATOMIC64_INIT(i)	{ (i) }
+ 
+-- 
+1.7.9.5
+

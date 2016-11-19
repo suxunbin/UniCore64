@@ -1,0 +1,33 @@
+From 7d822c127367d216c0a2442cfaaec70c5f55eb97 Mon Sep 17 00:00:00 2001
+From: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+Date: Tue, 29 Nov 2011 11:34:17 +0800
+Subject: [PATCH 095/641] UniCore64: add discription for configs
+
+Signed-off-by: Liu Guoli <liuguoli@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/unicore64/mm/Kconfig b/arch/unicore64/mm/Kconfig
+index 673eded..b8357a6 100644
+--- a/arch/unicore64/mm/Kconfig
++++ b/arch/unicore64/mm/Kconfig
+@@ -15,6 +15,7 @@ config CPU_ICACHE_DISABLE
+ 	  Say Y here to disable the processor instruction cache.
+ 	  ONLY used when debugging or special circumstance.
+ 	  It unsure, say N.
++	  Please see web page at <http://www.pkunity.com/>
+ 
+ config CPU_DCACHE_DISABLE
+ 	bool "Disable D-Cache (D-bit)"
+@@ -22,6 +23,7 @@ config CPU_DCACHE_DISABLE
+ 	  Say Y here to disable the processor data cache.
+ 	  ONLY used when debugging or special circumstance.
+ 	  It unsure, say N.
++	  Please see web page at <http://www.pkunity.com/>
+ 
+ config SWIOTLB
+ 	def_bool y
+-- 
+1.7.9.5
+

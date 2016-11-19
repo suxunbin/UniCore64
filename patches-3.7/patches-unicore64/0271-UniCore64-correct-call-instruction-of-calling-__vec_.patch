@@ -1,0 +1,27 @@
+From 69bc3bf96ebff6364ba0e9287c368303b1ced37d Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Sun, 29 Jan 2012 12:52:31 +0800
+Subject: [PATCH 271/641] UniCore64: correct call instruction of calling
+ __vec_int_puv3
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/kernel/entry.S b/arch/unicore64/kernel/entry.S
+index 59f6084..ce715e7 100644
+--- a/arch/unicore64/kernel/entry.S
++++ b/arch/unicore64/kernel/entry.S
+@@ -49,7 +49,7 @@ ENTRY(__vectors_table)
+ 	call	__vec_invalid	/* 0x18: INT_KERNEL */
+ 	call	__vec_invalid	/* 0x1c: INT_FAULT */
+ 	call	__vec_invalid	/* 0x20: INT_TIMER */
+-	call	__vec_int_puv3	/* 0x24: INT_PE */
++	b	__vec_int_puv3	/* 0x24: INT_PE */
+ 	b	__vec_int_ost	/* 0x28: INT_OST */
+ 	call	__vec_invalid	/* 0x2c: INT_PM */
+ ENDPROC(__vectors_table)
+-- 
+1.7.9.5
+

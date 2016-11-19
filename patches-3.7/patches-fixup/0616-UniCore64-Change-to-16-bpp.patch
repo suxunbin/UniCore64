@@ -1,0 +1,35 @@
+From 078cc46754e8ff846e9ef438f251953674621cce Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Wed, 30 Apr 2014 17:09:17 +0800
+Subject: [PATCH 616/641] UniCore64: Change to 16 bpp
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ drivers/video/fb-puv4.c                        |    4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/video/fb-puv4.c b/drivers/video/fb-puv4.c
+index f612a99..0518a27 100644
+--- a/drivers/video/fb-puv4.c
++++ b/drivers/video/fb-puv4.c
+@@ -28,7 +28,7 @@ static struct fb_var_screeninfo unifb_default = {
+ 	.yres =		480,
+ 	.xres_virtual =	640,
+ 	.yres_virtual =	480,
+-	.bits_per_pixel = 32,
++	.bits_per_pixel = 16,
+ 	.red =		{ 16, 8, 0 },
+ 	.green =	{ 8,  8, 0 },
+ 	.blue =		{ 0,  8, 0 },
+@@ -424,7 +424,7 @@ static int __init unifb_probe(struct platform_device *dev)
+ 	/*FIXME use 32bpp */
+ 	retval = fb_find_mode(&info->var, info, \
+ 			unifb_option, unifb_modes, dbsize, \
+-			&unifb_modes[0], 32);
++			&unifb_modes[0], 16);
+ 	if (!retval || (retval == 4))
+ 		info->var = unifb_default;
+ 	unifb_fix.smem_start = virt_to_phys(videomemory);
+-- 
+1.7.9.5
+

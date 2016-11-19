@@ -1,0 +1,302 @@
+From 6cd5a88993b71374c96c24b53f8ccd56ac13f700 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Mon, 16 Jan 2012 08:57:35 +0800
+Subject: [PATCH 213/641] UniCore64: modify BFIELD to __BF
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/bitfield.h          |    2 +-
+ arch/unicore64/include/arch/hwdef-cp0-sysctrl.h |  104 +++++++++++------------
+ arch/unicore64/include/arch/hwdef-cpu.h         |   30 +++----
+ arch/unicore64/include/arch/hwdef-pgtable.h     |   52 ++++++------
+ 4 files changed, 94 insertions(+), 94 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/bitfield.h b/arch/unicore64/include/arch/bitfield.h
+index 114b88c..508e9a3 100644
+--- a/arch/unicore64/include/arch/bitfield.h
++++ b/arch/unicore64/include/arch/bitfield.h
+@@ -12,7 +12,7 @@
+ #define BFMASK(vmask, vshift)		(((BFSIZE(vmask)) - 1) << (vshift))
+ #define BFMASK_NOT(vmask, vshift)	(~BFMASK(vmask, vshift))
+ 
+-#define BFIELD(val, vmask, vshift)		\
++#define __BF(val, vmask, vshift)		\
+ 		(((val) << (vshift)) & BFMASK(vmask, vshift))
+ 
+ /*
+diff --git a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+index 0766178..29a14f9 100644
+--- a/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
++++ b/arch/unicore64/include/arch/hwdef-cp0-sysctrl.h
+@@ -57,12 +57,12 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define CP0_CTRLREG_MMU			BFIELD(1, 1, 0)
+-#define CP0_CTRLREG_ALIGN		BFIELD(1, 1, 1)
+-#define CP0_CTRLREG_DCACHE		BFIELD(1, 1, 2)
+-#define CP0_CTRLREG_ICACHE		BFIELD(1, 1, 3)
+-#define CP0_CTRLREG_SAVEPOWER		BFIELD(1, 1, 4)
+-#define CP0_CTRLREG_WRITEBACK		BFIELD(1, 1, 5)
++#define CP0_CTRLREG_MMU			__BF(1, 1, 0)
++#define CP0_CTRLREG_ALIGN		__BF(1, 1, 1)
++#define CP0_CTRLREG_DCACHE		__BF(1, 1, 2)
++#define CP0_CTRLREG_ICACHE		__BF(1, 1, 3)
++#define CP0_CTRLREG_SAVEPOWER		__BF(1, 1, 4)
++#define CP0_CTRLREG_WRITEBACK		__BF(1, 1, 5)
+ #define CP0_CTRLREG_DEFAULT		CP0_CTRLREG_WRITEBACK
+ 
+ /**
+@@ -81,73 +81,73 @@
+  * \\\\lt:/programlisting\\\\gt:
+  */
+ #define CP0_CPUID_PARTNO_MASK		BFMASK(16, 0)
+-#define CP0_CPUID_PARTNO_PKUNITY	BFIELD(0x863, 12, 0)
++#define CP0_CPUID_PARTNO_PKUNITY	__BF(0x863, 12, 0)
+ #define CP0_CPUID_LAYOUT_POS		(16)
+ #define CP0_CPUID_LAYOUT_MASK		BFMASK(4, CP0_CPUID_LAYOUT_POS)
+ #define CP0_CPUID_SERIES_POS		(20)
+ #define CP0_CPUID_SERIES_MASK		BFMASK(4, CP0_CPUID_SERIES_POS)
+ #define CP0_CPUID_DESIGNER_MASK		BFMASK(8, 24)
+-#define CP0_CPUID_DESIGNER_MPRC		BFIELD(0x4D, 8, 24)
++#define CP0_CPUID_DESIGNER_MPRC		__BF(0x4D, 8, 24)
+ 
+ /**
+  * DOC: HWDEF_COPRO_H_CP0_CACHE
+  * Following cache inforamtion macros in CP0 are defined.
+  */
+ #define CP0_CPUID_ICACHE_LINE_MASK		BFMASK(2, 0)
+-#define CP0_CPUID_ICACHE_LINE_8BYTE		BFIELD(0, 2, 0)
+-#define CP0_CPUID_ICACHE_LINE_16BYTE		BFIELD(1, 2, 0)
+-#define CP0_CPUID_ICACHE_LINE_32BYTE		BFIELD(2, 2, 0)
+-#define CP0_CPUID_ICACHE_LINE_64BYTE		BFIELD(3, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_8BYTE		__BF(0, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_16BYTE		__BF(1, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_32BYTE		__BF(2, 2, 0)
++#define CP0_CPUID_ICACHE_LINE_64BYTE		__BF(3, 2, 0)
+ 
+ #define CP0_CPUID_ICACHE_ASSOC_MASK		BFMASK(3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_DMAP		BFIELD(0, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_2WAY		BFIELD(1, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_4WAY		BFIELD(2, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_8WAY		BFIELD(3, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_16WAY		BFIELD(4, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_32WAY		BFIELD(5, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_64WAY		BFIELD(6, 3, 3)
+-#define CP0_CPUID_ICACHE_ASSOC_128WAY		BFIELD(7, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_DMAP		__BF(0, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_2WAY		__BF(1, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_4WAY		__BF(2, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_8WAY		__BF(3, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_16WAY		__BF(4, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_32WAY		__BF(5, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_64WAY		__BF(6, 3, 3)
++#define CP0_CPUID_ICACHE_ASSOC_128WAY		__BF(7, 3, 3)
+ 
+ #define CP0_CPUID_ICACHE_SIZE_MASK		BFMASK(3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_512B		BFIELD(0, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_1KB		BFIELD(1, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_2KB		BFIELD(2, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_4KB		BFIELD(3, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_8KB		BFIELD(4, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_16KB		BFIELD(5, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_32KB		BFIELD(6, 3, 6)
+-#define CP0_CPUID_ICACHE_SIZE_64KB		BFIELD(7, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_512B		__BF(0, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_1KB		__BF(1, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_2KB		__BF(2, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_4KB		__BF(3, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_8KB		__BF(4, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_16KB		__BF(5, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_32KB		__BF(6, 3, 6)
++#define CP0_CPUID_ICACHE_SIZE_64KB		__BF(7, 3, 6)
+ 
+ #define CP0_CPUID_DCACHE_LINE_MASK		BFMASK(2, 12)
+-#define CP0_CPUID_DCACHE_LINE_8BYTE		BFIELD(0, 2, 12)
+-#define CP0_CPUID_DCACHE_LINE_16BYTE		BFIELD(1, 2, 12)
+-#define CP0_CPUID_DCACHE_LINE_32BYTE		BFIELD(2, 2, 12)
+-#define CP0_CPUID_DCACHE_LINE_64BYTE		BFIELD(3, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_8BYTE		__BF(0, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_16BYTE		__BF(1, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_32BYTE		__BF(2, 2, 12)
++#define CP0_CPUID_DCACHE_LINE_64BYTE		__BF(3, 2, 12)
+ 
+ #define CP0_CPUID_DCACHE_ASSOC_MASK		BFMASK(3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_DMAP		BFIELD(0, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_2WAY		BFIELD(1, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_4WAY		BFIELD(2, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_8WAY		BFIELD(3, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_16WAY		BFIELD(4, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_32WAY		BFIELD(5, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_64WAY		BFIELD(6, 3, 15)
+-#define CP0_CPUID_DCACHE_ASSOC_128WAY		BFIELD(7, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_DMAP		__BF(0, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_2WAY		__BF(1, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_4WAY		__BF(2, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_8WAY		__BF(3, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_16WAY		__BF(4, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_32WAY		__BF(5, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_64WAY		__BF(6, 3, 15)
++#define CP0_CPUID_DCACHE_ASSOC_128WAY		__BF(7, 3, 15)
+ 
+ #define CP0_CPUID_DCACHE_SIZE_MASK		BFMASK(3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_512B		BFIELD(0, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_1KB		BFIELD(1, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_2KB		BFIELD(2, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_4KB		BFIELD(3, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_8KB		BFIELD(4, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_16KB		BFIELD(5, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_32KB		BFIELD(6, 3, 18)
+-#define CP0_CPUID_DCACHE_SIZE_64KB		BFIELD(7, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_512B		__BF(0, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_1KB		__BF(1, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_2KB		__BF(2, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_4KB		__BF(3, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_8KB		__BF(4, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_16KB		__BF(5, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_32KB		__BF(6, 3, 18)
++#define CP0_CPUID_DCACHE_SIZE_64KB		__BF(7, 3, 18)
+ 
+-#define CP0_CPUID_CACHE_SEPERATE		BFIELD(1, 1, 24)
+-#define CP0_CPUID_CACHE_LOCKDOWN		BFIELD(1, 1, 25)
+-#define CP0_CPUID_CACHE_WRITEBACK		BFIELD(1, 1, 26)
+-#define CP0_CPUID_CACHE_WRITETHROUGH		BFIELD(1, 1, 27)
++#define CP0_CPUID_CACHE_SEPERATE		__BF(1, 1, 24)
++#define CP0_CPUID_CACHE_LOCKDOWN		__BF(1, 1, 25)
++#define CP0_CPUID_CACHE_WRITEBACK		__BF(1, 1, 26)
++#define CP0_CPUID_CACHE_WRITETHROUGH		__BF(1, 1, 27)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_CP0_SYSCTRL_H__ */
+diff --git a/arch/unicore64/include/arch/hwdef-cpu.h b/arch/unicore64/include/arch/hwdef-cpu.h
+index 2d06515..30205ab 100644
+--- a/arch/unicore64/include/arch/hwdef-cpu.h
++++ b/arch/unicore64/include/arch/hwdef-cpu.h
+@@ -33,20 +33,20 @@
+  * \\\\lt:/programlisting\\\\gt:
+  */
+ #define ASR_MODE_MASK		BFMASK(3, 0)
+-#define ASR_MODE_USER		BFIELD(1, 1, 0)
+-#define ASR_MODE_PRIV		BFIELD(1, 1, 1)
+-#define ASR_MODE_DEBUG		BFIELD(1, 1, 2)
++#define ASR_MODE_USER		__BF(1, 1, 0)
++#define ASR_MODE_PRIV		__BF(1, 1, 1)
++#define ASR_MODE_DEBUG		__BF(1, 1, 2)
+ 
+-#define ASR_T_BIT		BFIELD(1, 1, 3)
+-#define ASR_D_BIT		BFIELD(1, 1, 4)
++#define ASR_T_BIT		__BF(1, 1, 3)
++#define ASR_D_BIT		__BF(1, 1, 4)
+ 
+ #define ASR_INTR_MASK		BFMASK(6, 5)
+-#define ASR_INTR_SMP		BFIELD(1, 1, 5)
+-#define ASR_INTR_LSU		BFIELD(1, 1, 6)
+-#define ASR_INTR_ITM		BFIELD(1, 1, 7)
+-#define ASR_INTR_OTM		BFIELD(1, 1, 8)
+-#define ASR_INTR_DEV		BFIELD(1, 1, 9)
+-#define ASR_INTR_PFM		BFIELD(1, 1, 10)
++#define ASR_INTR_SMP		__BF(1, 1, 5)
++#define ASR_INTR_LSU		__BF(1, 1, 6)
++#define ASR_INTR_ITM		__BF(1, 1, 7)
++#define ASR_INTR_OTM		__BF(1, 1, 8)
++#define ASR_INTR_DEV		__BF(1, 1, 9)
++#define ASR_INTR_PFM		__BF(1, 1, 10)
+ 
+ /**
+  * DOC: HWDEF_CPU_H_AFR
+@@ -63,9 +63,9 @@
+  * \\\\lt:/programlisting\\\\gt:
+  */
+ #define AFR_MASK		BFMASK(4, 0)
+-#define AFR_V_BIT		BFIELD(1, 1, 0)
+-#define AFR_C_BIT		BFIELD(1, 1, 1)
+-#define AFR_Z_BIT		BFIELD(1, 1, 2)
+-#define AFR_S_BIT		BFIELD(1, 1, 3)
++#define AFR_V_BIT		__BF(1, 1, 0)
++#define AFR_C_BIT		__BF(1, 1, 1)
++#define AFR_Z_BIT		__BF(1, 1, 2)
++#define AFR_S_BIT		__BF(1, 1, 3)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_CPU_H__ */
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index 7987442..15f365e 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -44,7 +44,7 @@
+  * \\\\lt:/programlisting\\\\gt:
+  * E: Exist bit
+  */
+-#define UC64_PGD_EXIST		BFIELD(1, 1, 2)
++#define UC64_PGD_EXIST		__BF(1, 1, 2)
+ 
+ /**
+  * DOC: HWDEF_PGTABLE_H_PMD
+@@ -69,21 +69,21 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define UC64_PMD_SPAGE		BFIELD(1, 1, 0)
+-#define UC64_PMD_USER		BFIELD(1, 1, 1)
+-#define UC64_PMD_EXIST		BFIELD(1, 1, 2)
+-#define UC64_PMD_YOUNG		BFIELD(1, 1, 3)
+-#define UC64_PMD_DIRTY		BFIELD(1, 1, 4)
+-#define UC64_PMD_EXEC		BFIELD(1, 1, 5)
+-#define UC64_PMD_WRITE		BFIELD(1, 1, 6)
+-#define UC64_PMD_READ		BFIELD(1, 1, 7)
++#define UC64_PMD_SPAGE		__BF(1, 1, 0)
++#define UC64_PMD_USER		__BF(1, 1, 1)
++#define UC64_PMD_EXIST		__BF(1, 1, 2)
++#define UC64_PMD_YOUNG		__BF(1, 1, 3)
++#define UC64_PMD_DIRTY		__BF(1, 1, 4)
++#define UC64_PMD_EXEC		__BF(1, 1, 5)
++#define UC64_PMD_WRITE		__BF(1, 1, 6)
++#define UC64_PMD_READ		__BF(1, 1, 7)
+ #define UC64_PMD_RWX		BFMASK(3, 5)
+-#define UC64_PMD_GLOBAL		BFIELD(1, 1, 8)
++#define UC64_PMD_GLOBAL		__BF(1, 1, 8)
+ #define UC64_PMD_TYPE_MASK	BFMASK(2, 9)
+-#define UC64_PMD_TYPE_IO	BFIELD(0, 2, 9)
+-#define UC64_PMD_TYPE_NOCACHE	BFIELD(1, 2, 9)
+-#define UC64_PMD_TYPE_CACHE	BFIELD(2, 2, 9)
+-#define UC64_PMD_SHARE		BFIELD(1, 1, 11)
++#define UC64_PMD_TYPE_IO	__BF(0, 2, 9)
++#define UC64_PMD_TYPE_NOCACHE	__BF(1, 2, 9)
++#define UC64_PMD_TYPE_CACHE	__BF(2, 2, 9)
++#define UC64_PMD_SHARE		__BF(1, 1, 11)
+ 
+ /**
+  * DOC: HWDEF_PGTABLE_H_PTE
+@@ -108,19 +108,19 @@
+  * -
+  * \\\\lt:/programlisting\\\\gt:
+  */
+-#define UC64_PTE_USER		BFIELD(1, 1, 1)
+-#define UC64_PTE_EXIST		BFIELD(1, 1, 2)
+-#define UC64_PTE_YOUNG		BFIELD(1, 1, 3)
+-#define UC64_PTE_DIRTY		BFIELD(1, 1, 4)
+-#define UC64_PTE_EXEC		BFIELD(1, 1, 5)
+-#define UC64_PTE_WRITE		BFIELD(1, 1, 6)
+-#define UC64_PTE_READ		BFIELD(1, 1, 7)
++#define UC64_PTE_USER		__BF(1, 1, 1)
++#define UC64_PTE_EXIST		__BF(1, 1, 2)
++#define UC64_PTE_YOUNG		__BF(1, 1, 3)
++#define UC64_PTE_DIRTY		__BF(1, 1, 4)
++#define UC64_PTE_EXEC		__BF(1, 1, 5)
++#define UC64_PTE_WRITE		__BF(1, 1, 6)
++#define UC64_PTE_READ		__BF(1, 1, 7)
+ #define UC64_PTE_RWX		BFMASK(3, 5)
+-#define UC64_PTE_GLOBAL		BFIELD(1, 1, 8)
++#define UC64_PTE_GLOBAL		__BF(1, 1, 8)
+ #define UC64_PTE_TYPE_MASK	BFMASK(2, 9)
+-#define UC64_PTE_TYPE_IO	BFIELD(0, 2, 9)
+-#define UC64_PTE_TYPE_NOCACHE	BFIELD(1, 2, 9)
+-#define UC64_PTE_TYPE_CACHE	BFIELD(2, 2, 9)
+-#define UC64_PTE_SHARE		BFIELD(1, 1, 11)
++#define UC64_PTE_TYPE_IO	__BF(0, 2, 9)
++#define UC64_PTE_TYPE_NOCACHE	__BF(1, 2, 9)
++#define UC64_PTE_TYPE_CACHE	__BF(2, 2, 9)
++#define UC64_PTE_SHARE		__BF(1, 1, 11)
+ 
+ #endif /* __UNICORE64_ARCH_HWDEF_PGTABLE_H__ */
+-- 
+1.7.9.5
+

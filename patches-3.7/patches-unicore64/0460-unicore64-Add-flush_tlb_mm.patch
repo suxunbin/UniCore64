@@ -1,0 +1,35 @@
+From 72749973c711f555346fc793e44090315d6c70bc Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 2 Nov 2012 13:50:09 +0800
+Subject: [PATCH 460/641] unicore64: Add flush_tlb_mm
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/tlb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/mm/tlb.c b/arch/unicore64/mm/tlb.c
+index 5c10112..57b4e2d 100644
+--- a/arch/unicore64/mm/tlb.c
++++ b/arch/unicore64/mm/tlb.c
+@@ -1,6 +1,7 @@
+ #include <linux/mm.h>
+ #include <linux/kernel.h>
+ #include <asm/tlbflush.h>
++#include <arch/asm-mmuops.h>
+ 
+ /**
+  * flush_tlb_mm() -
+@@ -8,8 +9,7 @@
+  */
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	/* FIXME */
+-	BUG();
++	__invalid_tlb();
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

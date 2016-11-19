@@ -1,0 +1,42 @@
+From 12673cb560cdaae16bfd8c33eec44f721cd04ee0 Mon Sep 17 00:00:00 2001
+From: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+Date: Tue, 16 Oct 2012 10:07:33 +0800
+Subject: [PATCH 431/641] UniCore64: Define __lock_aligned
+
+Signed-off-by: Chang Huaixin <changhuaixin@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/linkage.h  |    3 +++
+ arch/unicore64/include/asm/spinlock.h |    5 +++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/unicore64/include/asm/linkage.h b/arch/unicore64/include/asm/linkage.h
+index f48d3f6..74046a5 100644
+--- a/arch/unicore64/include/asm/linkage.h
++++ b/arch/unicore64/include/asm/linkage.h
+@@ -5,4 +5,7 @@
+ 	.type name, %function;	\
+ 	END(name)
+ 
++/* FIXME */
++#define __lock_aligned __attribute__((aligned(8)))
++
+ #endif /* __UNICORE64_ASM_LINKAGE_H__ */
+diff --git a/arch/unicore64/include/asm/spinlock.h b/arch/unicore64/include/asm/spinlock.h
+index 9f91b92..e1523b4 100644
+--- a/arch/unicore64/include/asm/spinlock.h
++++ b/arch/unicore64/include/asm/spinlock.h
+@@ -6,6 +6,11 @@
+ #endif
+ 
+ #include <linux/spinlock_types.h>
++
++/* In order to support __lock_aligned in <asm-generic/bitops/atomic.h>,
++   We need it here. */
++#include <linux/linkage.h>
++
+ #include <asm/processor.h>
+ #include <arch/asm-debug.h>
+ 
+-- 
+1.7.9.5
+

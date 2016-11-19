@@ -1,0 +1,27 @@
+From 1ad0bbd32f90d02361eb6ada8b2851c3ef603989 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 13 Jun 2012 17:11:36 +0800
+Subject: [PATCH 383/641] UniCore64: Link asm-generic/switch_to.h to asm
+ directory, and remove obsolete system.h
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/Kbuild |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/Kbuild b/arch/unicore64/include/asm/Kbuild
+index 973cd3b..fdc886d 100644
+--- a/arch/unicore64/include/asm/Kbuild
++++ b/arch/unicore64/include/asm/Kbuild
+@@ -55,7 +55,7 @@ generic-y += sockios.h
+ generic-y += stat.h
+ generic-y += statfs.h
+ generic-y += swab.h
+-generic-y += system.h
++generic-y += switch_to.h
+ generic-y += termbits.h
+ generic-y += termios.h
+ generic-y += tlb.h
+-- 
+1.7.9.5
+

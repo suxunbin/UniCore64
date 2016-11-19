@@ -1,0 +1,27 @@
+From c670b339af8360aaa4e93fbd87f742c10baf11bf Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 26 Oct 2012 16:02:45 +0800
+Subject: [PATCH 444/641] unicore64: Fix the pmd_offset calculation
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/asm/pgtable.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index 6f86bcd..c46f8ef 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -33,7 +33,8 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
+ 
+ #define pmd_index(addr)		(((addr) >> PMD_SHIFT) & (PTRS_PER_PMD - 1))
+-#define pmd_offset(pudp, addr)	((pmd_t *)pud_val(*(pudp)) + pmd_index(addr))
++#define pmd_offset(pudp, addr)	((pmd_t *)(pud_val(*(pudp)) & PAGE_MASK) + \
++					pmd_index(addr))
+ 
+ #define pte_index(addr)		(((addr) >> PAGE_SHIFT) & (PTRS_PER_PTE - 1))
+ static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
+-- 
+1.7.9.5
+

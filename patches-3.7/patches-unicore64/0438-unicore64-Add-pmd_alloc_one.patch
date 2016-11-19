@@ -1,0 +1,27 @@
+From ee37867130f0e015ff44c23684156371302bb6e8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Fri, 26 Oct 2012 15:38:41 +0800
+Subject: [PATCH 438/641] unicore64: Add pmd_alloc_one
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/mm/pgtable.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/unicore64/mm/pgtable.c b/arch/unicore64/mm/pgtable.c
+index d146ab3..8810f59 100644
+--- a/arch/unicore64/mm/pgtable.c
++++ b/arch/unicore64/mm/pgtable.c
+@@ -141,8 +141,7 @@ void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *ptep)
+  */
+ pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+ {
+-	/* FIXME */
+-	BUG();
++	return (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+ }
+ 
+ /**
+-- 
+1.7.9.5
+

@@ -1,0 +1,147 @@
+From cfb605368eed3da6b91e20eae8d74f0e361002e8 Mon Sep 17 00:00:00 2001
+From: Guan Xuetao <gxt@mprc.pku.edu.cn>
+Date: Wed, 2 Jan 2013 11:46:46 +0800
+Subject: [PATCH 524/641] unicore64: Add FPGA keyboard support
+
+Signed-off-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+---
+ arch/unicore64/configs/unicore64_defconfig  |    2 +-
+ arch/unicore64/include/arch/puv4-iomem.h    |    5 ++++-
+ arch/unicore64/include/arch/puv4-irq.h      |    2 ++
+ arch/unicore64/include/arch/puv4-regs-ps2.h |   19 +++++++++++++++++++
+ arch/unicore64/include/mach/hardware.h      |    2 ++
+ arch/unicore64/kernel/puv4-core.c           |   26 ++++++++++++++++++++++++++
+ 7 files changed, 55 insertions(+), 3 deletions(-)
+ create mode 100644 arch/unicore64/include/arch/puv4-regs-ps2.h
+ create mode 100644 arch/unicore64/include/mach/hardware.h
+
+diff --git a/arch/unicore64/configs/unicore64_defconfig b/arch/unicore64/configs/unicore64_defconfig
+index f3dc0bc..4f565aa 100644
+--- a/arch/unicore64/configs/unicore64_defconfig
++++ b/arch/unicore64/configs/unicore64_defconfig
+@@ -13,7 +13,7 @@ CONFIG_CPU_DCACHE_DISABLE=y
+ 
+ # Device Drivers
+ #	Hardware I/O ports
+-CONFIG_SERIO_I8042=n
++CONFIG_SERIO_I8042=y
+ #	Console display driver support
+ CONFIG_VGA_CONSOLE=n
+ 
+diff --git a/arch/unicore64/include/arch/puv4-iomem.h b/arch/unicore64/include/arch/puv4-iomem.h
+index 36870bb..4b45c21 100644
+--- a/arch/unicore64/include/arch/puv4-iomem.h
++++ b/arch/unicore64/include/arch/puv4-iomem.h
+@@ -67,7 +67,10 @@
+ #define PUV4_OST_BASE			(PUV4_APB_BASE + 0x800000) /* APB-8 */
+ #define PUV4_RESETC_BASE		(PUV4_APB_BASE + 0x900000) /* APB-9 */
+ #define PUV4_PM_BASE			(PUV4_APB_BASE + 0xA00000) /* APB-10 */
+-#define PUV4_PS2_BASE			(PUV4_APB_BASE + 0xB00000) /* APB-11 */
+ #define PUV4_SDC_BASE			(PUV4_APB_BASE + 0xC00000) /* APB-12 */
+ 
++/* FIXME: For FPGA board ONLY */
++#define PUV4_PS2_BASE			(PUV4_APB_BASE + 0x1100000)
++#include <arch/puv4-regs-ps2.h>
++
+ #endif  /* __UNICORE64_ARCH_PUV4_IOMEM_H__ */
+diff --git a/arch/unicore64/include/arch/puv4-irq.h b/arch/unicore64/include/arch/puv4-irq.h
+index 3f4713e..bf339cb 100644
+--- a/arch/unicore64/include/arch/puv4-irq.h
++++ b/arch/unicore64/include/arch/puv4-irq.h
+@@ -4,6 +4,8 @@
+ #define PUV4_IRQS_MIN		(0)
+ #define PUV4_IRQS_MAX		(31)
+ 
++#define IRQ_PS2_KBD		(0x16)
++#define IRQ_PS2_AUX		(0x17)
+ #define IRQ_TIMER0		(0x1a)
+ 
+ #endif /* __UNICORE64_ARCH_PUV4_IRQ_H__ */
+diff --git a/arch/unicore64/include/arch/puv4-regs-ps2.h b/arch/unicore64/include/arch/puv4-regs-ps2.h
+new file mode 100644
+index 0000000..f7bcd58
+--- /dev/null
++++ b/arch/unicore64/include/arch/puv4-regs-ps2.h
+@@ -0,0 +1,19 @@
++#ifndef __UNICORE64_ARCH_PUV4_REGS_PS2__
++#define __UNICORE64_ARCH_PUV4_REGS_PS2__
++
++#include <arch/puv4-iomem.h>
++
++/*
++ * PUV4 PS2 Controller Registers
++ *
++ * PS2_DATA	I8042_DATA_REG
++ * PS2_COMMAND	I8042_COMMAND_REG
++ * PS2_STATUS	I8042_STATUS_REG
++ * PS2_CNT	Counter register
++ */
++#define PS2_DATA		PUV4_IOREG(PUV4_PS2_BASE + (0x0060 << 2))
++#define PS2_COMMAND		PUV4_IOREG(PUV4_PS2_BASE + (0x0064 << 2))
++#define PS2_STATUS		PUV4_IOREG(PUV4_PS2_BASE + (0x0064 << 2))
++#define PS2_CNT			PUV4_IOREG(PUV4_PS2_BASE + (0x0068 << 2))
++
++#endif /* __UNICORE64_ARCH_PUV4_REGS_PS2__ */
+diff --git a/arch/unicore64/include/mach/hardware.h b/arch/unicore64/include/mach/hardware.h
+new file mode 100644
+index 0000000..7ccf7a1
+--- /dev/null
++++ b/arch/unicore64/include/mach/hardware.h
+@@ -0,0 +1,2 @@
++#include <arch/puv4-iomem.h>
++#include <arch/puv4-irq.h>
+diff --git a/arch/unicore64/kernel/puv4-core.c b/arch/unicore64/kernel/puv4-core.c
+index e39f6eb..d12b63e 100644
+--- a/arch/unicore64/kernel/puv4-core.c
++++ b/arch/unicore64/kernel/puv4-core.c
+@@ -1,5 +1,6 @@
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
++#include <linux/io.h>
+ 
+ #include <arch/puv4-iomem.h>
+ #include <arch/puv4-irq.h>
+@@ -32,8 +33,29 @@ static struct resource puv4_ost_resources[] = {
+ 	},
+ };
+ 
++static struct resource puv4_ps2_resources[] = {
++	[0] = {
++		.start	= PUV4_PS2_BASE,
++		.end	= PUV4_PS2_BASE + PUV4_IOMEM_REGION,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_PS2_KBD,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static void puv4_ps2_init(void)
++{
++#ifdef CONFIG_ARCH_FPGA
++	writeb(0x13, PS2_CNT);
++#endif
++}
++
+ static int __init puv4_core_init(void)
+ {
++	puv4_ps2_init();
++
+ 	/* APB-5 */
+ 	platform_device_register_simple("PUV4-INTC", -1,
+ 			puv4_intc_resources, ARRAY_SIZE(puv4_intc_resources));
+@@ -44,6 +66,10 @@ static int __init puv4_core_init(void)
+ 	platform_device_register_simple("PUV4-OST", -1,
+ 			puv4_ost_resources, ARRAY_SIZE(puv4_ost_resources));
+ 
++	/* APB PS2 */
++	platform_device_register_simple("PUV4-PS2", -1,
++			puv4_ps2_resources, ARRAY_SIZE(puv4_ps2_resources));
++
+ 	return 0;
+ }
+ postcore_initcall(puv4_core_init);
+-- 
+1.7.9.5
+

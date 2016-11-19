@@ -1,0 +1,77 @@
+From 589cae7e65afccd14aa86048411ca7eafd5e2d22 Mon Sep 17 00:00:00 2001
+From: LiangRongrong <Liangrongrong@mprc.pku.edu.cn>
+Date: Fri, 9 Dec 2011 18:11:43 +0800
+Subject: [PATCH 133/641] UniCore64: Move page table shift definitions to
+ hwdef-pgtable.h
+
+Signed-off-by: Liang Rongrong <liangrongrong@mprc.pku.edu.cn>
+---
+ arch/unicore64/include/arch/hwdef-pgtable.h |   21 +++++++++++++++++++++
+ arch/unicore64/include/asm/pgtable.h        |   21 ---------------------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/arch/unicore64/include/arch/hwdef-pgtable.h b/arch/unicore64/include/arch/hwdef-pgtable.h
+index 4f85614..9c8cf0e 100644
+--- a/arch/unicore64/include/arch/hwdef-pgtable.h
++++ b/arch/unicore64/include/arch/hwdef-pgtable.h
+@@ -41,4 +41,25 @@
+ #define PTE_TYPE_CACHE		FIELD(2, 2, 9)
+ #define PTE_SHARE		FIELD(1, 1, 11)
+ 
++/*
++ * 3-level translation table walking: 9+9+9+12
++ * PGTBL_ENTRYSHIFT: the logarithm of the size of pagetable entry space,
++ * which is the same for PGD/PMD/PTE, i.e., 8 bytes.
++ */
++#define PGTBL_ENTRYSHIFT	(3)
++
++#define PGDIR_SHIFT		(PAGE_SHIFT				\
++				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT)	\
++				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PGDIR_SIZE		(_AC(1, UL) << PGDIR_SHIFT)
++#define PGDIR_MASK		(~(PGDIR_SIZE-1))
++
++#define PMD_SHIFT		(PAGE_SHIFT + (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PMD_SIZE		(_AC(1, UL) << PMD_SHIFT)
++#define PMD_MASK		(~(PMD_SIZE-1))
++
++#define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
++#define PTRS_PER_PTE		(PAGE_SIZE / sizeof(pte_t))
++
+ #endif /* __UNICORE64_ARCH_HWDEF_PGTABLE_H__ */
+diff --git a/arch/unicore64/include/asm/pgtable.h b/arch/unicore64/include/asm/pgtable.h
+index f5bc0e3..3a82af1 100644
+--- a/arch/unicore64/include/asm/pgtable.h
++++ b/arch/unicore64/include/asm/pgtable.h
+@@ -11,27 +11,6 @@
+ 
+ #define FIRST_USER_ADDRESS	(0)
+ 
+-/*
+- * 3-level translation table walking: 9+9+9+12
+- *  PGTBL_ENTRYSHIFT: the logarithm of the size of pagetable entry space,
+- *			which is the same for PGD/PMD/PTE, i.e., 8 bytes.
+- */
+-#define PGTBL_ENTRYSHIFT	(3)
+-
+-#define PGDIR_SHIFT		(PAGE_SHIFT				\
+-				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT)	\
+-				+ (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+-#define PGDIR_SIZE		(_AC(1, UL) << PGDIR_SHIFT)
+-#define PGDIR_MASK		(~(PGDIR_SIZE-1))
+-
+-#define PMD_SHIFT		(PAGE_SHIFT + (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+-#define PMD_SIZE		(_AC(1, UL) << PMD_SHIFT)
+-#define PMD_MASK		(~(PMD_SIZE-1))
+-
+-#define PTRS_PER_PGD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+-#define PTRS_PER_PMD		(1 << (PAGE_SHIFT - PGTBL_ENTRYSHIFT))
+-#define PTRS_PER_PTE		(PAGE_SIZE / sizeof(pte_t))
+-
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ 
+ #define pgd_index(addr)		(((addr) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
+-- 
+1.7.9.5
+
