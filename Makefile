@@ -16,9 +16,11 @@ QEMU_BUILDLOG	:= $(DIR_WORKING)/qemu-build.log
 QEMU_TARGETS	:= unicore64-linux-user,unicore64-softmmu
 QEMU_TRACELOG	:= $(DIR_WORKING)/trace.log
 
-LINUX_GITREPO	:= /pub/git/linux-unicore.git
+LINUX_GITREPO	:= /pub/git/linux.git
+LINUX_VERSION	:= v3.7-rc3
 LINUX_ARCH	:= unicore64
 LINUX_BUILDLOG	:= $(DIR_WORKING)/linux-build.log
+LINUX_307	+= $(DIR_UNICORE64)/patches-3.7
 
 PATH		:= $(CROSS_UNICORE64)/bin:$(PATH)
 
@@ -103,7 +105,13 @@ linux-new:
 	@cd $(DIR_WORKING);					\
 		git clone $(LINUX_GITREPO) -- linux
 	@cd $(DIR_WORKING)/linux;				\
-		git checkout -b unicore64 origin/unicore64
+		git checkout -b unicore64 $(LINUX_VERSION)
+	@cd $(DIR_WORKING)/linux;				\
+		cp -a $(LINUX_307)/arch/* arch ;		\
+		cp -a $(LINUX_307)/Documentation/DocBook/* Documentation/DocBook ;	\
+		git add . ;					\
+		git commit -asm "UniCore64: Add arch/unicore64 support" ; \
+		git am $(LINUX_307)/patches-fixup/*
 
 linux-make:
 	@echo "Make mrproper ..."

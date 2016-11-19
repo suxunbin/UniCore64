@@ -40,7 +40,7 @@ index cd89343..6753311 100644
   */
  static void bk3710_set_dmamode(struct ata_port *ap, struct ata_device *adev)
  {
--	
+-
  	u16	val16;
  
  	static const u8 udma_timings[7] = {

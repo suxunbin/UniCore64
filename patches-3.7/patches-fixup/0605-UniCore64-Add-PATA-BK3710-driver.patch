@@ -154,7 +154,7 @@ index 0000000..cd89343
 + */
 +static void bk3710_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 +{
-+	
++
 +	u16	val16;
 +
 +	static const u8 udma_timings[7] = {
@@ -298,7 +298,7 @@ index 0000000..cd89343
 +static int __init bk3710_init(void)
 +{	int ret;
 +	ret = platform_device_register(&puv3_device_pata_bk3710);
-+	
++
 +	return platform_driver_register(&pata_bk3710_driver);
 +}
 +
