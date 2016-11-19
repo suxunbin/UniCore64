@@ -15,6 +15,7 @@ QEMU_GITREPO	:= /pub/git/qemu.git
 QEMU_BUILDLOG	:= $(DIR_WORKING)/qemu-build.log
 QEMU_TARGETS	:= unicore64-linux-user,unicore64-softmmu
 QEMU_TRACELOG	:= $(DIR_WORKING)/trace.log
+QEMU_PATCHES	+= $(DIR_UNICORE64)/patches-qemu
 
 LINUX_GITREPO	:= /pub/git/linux.git
 LINUX_VERSION	:= v3.7-rc3
@@ -137,8 +138,9 @@ qemu-new:
 	@rm -fr $(DIR_WORKING)/qemu
 	@cd $(DIR_WORKING); git clone $(QEMU_GITREPO)
 	@cd $(DIR_WORKING)/qemu;				\
-		git br unicore64 origin/unicore64;		\
-		git co unicore64
+		git br unicore64 0b8db8f ;			\
+		git co unicore64 ;				\
+		git am $(QEMU_PATCHES)/*
 
 qemu-make:
 	@echo "Configure qemu ..."
