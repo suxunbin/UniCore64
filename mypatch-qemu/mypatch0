@@ -1,0 +1,13 @@
+--- qemu/hw/puv4.c	2016-12-02 16:48:59.924115057 +0800
++++ qemu/hw/puv4.c	2016-11-30 16:18:37.000000000 +0800
+@@ -21,8 +21,8 @@
+     MemoryRegion *i8042 = g_new(MemoryRegion, 1);
+     int i;
+ 
+-    sysbus_create_varargs("uc64_io_ctl", UC64_IO_CTL_BASE);
+-    sysbus_create_varargs("uc64_csr", UC64_CSR_BASE);
++    sysbus_create_varargs("uc64_io_ctl", UC64_IO_CTL_BASE, NULL);
++    sysbus_create_varargs("uc64_csr", UC64_CSR_BASE, NULL);
+     sysbus_create_simple("uc64_ost", UC64_OST_BASE,
+             uc64_cpu0_intc[UC64_INTR_OTM]);
+     dev = sysbus_create_simple("uc64_soc_intc", PUV4_INTC_BASE,

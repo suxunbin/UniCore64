@@ -40,7 +40,7 @@ file /etc/passwd	../../etc/passwd	755 0 0
 #file /etc/sysinit	../../etc/sysinit	755 0 0
 
 file /bin/busybox	../busybox/_install/bin/busybox 755 0 0
-
+file /bin/helloworld	../busybox/_install/bin/helloworld 755 0 0
 slink /linuxrc		/bin/busybox 777 0 0
 slink /init		/bin/busybox 777 0 0
 

@@ -1,0 +1,38 @@
+--- qemu/Makefile	2016-12-02 16:48:56.732115131 +0800
++++ qemu/Makefile	2016-11-29 16:41:27.000000000 +0800
+@@ -36,7 +36,7 @@
+ $(call set-vpath, $(SRC_PATH))
+ 
+ LIBS+=-lz $(LIBS_TOOLS)
+-
++LIBS+=-lrt
+ HELPERS-$(CONFIG_LINUX) = qemu-bridge-helper$(EXESUF)
+ 
+ ifdef BUILD_DOCS
+@@ -161,9 +161,11 @@
+ tools-obj-$(CONFIG_POSIX) += compatfd.o
+ 
+ qemu-img$(EXESUF): qemu-img.o $(tools-obj-y) $(block-obj-y)
++qemu-img$(EXESUF): LIBS += -lrt
+ qemu-nbd$(EXESUF): qemu-nbd.o $(tools-obj-y) $(block-obj-y)
++qemu-nbd$(EXESUF): LIBS += -lrt
+ qemu-io$(EXESUF): qemu-io.o cmd.o $(tools-obj-y) $(block-obj-y)
+-
++qemu-io$(EXESUF): LIBS += -lrt
+ qemu-bridge-helper$(EXESUF): qemu-bridge-helper.o
+ 
+ fsdev/virtfs-proxy-helper$(EXESUF): fsdev/virtfs-proxy-helper.o fsdev/virtio-9p-marshal.o oslib-posix.o $(trace-obj-y)
+@@ -172,7 +174,7 @@
+ qemu-img-cmds.h: $(SRC_PATH)/qemu-img-cmds.hx
+ 	$(call quiet-command,sh $(SRC_PATH)/scripts/hxtool -h < $< > $@,"  GEN   $@")
+ 
+-qemu-ga$(EXESUF): LIBS = $(LIBS_QGA)
++qemu-ga$(EXESUF): LIBS +=-lrt $(LIBS_QGA)
+ qemu-ga$(EXESUF): QEMU_CFLAGS += -I qga/qapi-generated
+ 
+ gen-out-type = $(subst .,-,$(suffix $@))
+@@ -407,3 +409,4 @@
+ # Include automatically generated dependency files
+ # Dependencies in Makefile.objs files come from our recursive subdir rules
+ -include $(wildcard *.d tests/*.d)
++QEMU_CFLAGS+=-w

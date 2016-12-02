@@ -1,5 +1,6 @@
 DIR_UNICORE64	:= $(wildcard ~/UniCore64)
 DIR_WORKING	:= $(DIR_UNICORE64)/working
+DIR_TESTS	:= $(DIR_UNICORE64)/tests
 DIR_GNU_UC	:= /pub/toolchain/uc64/unicore64-linux/
 
 CROSS_UNICORE64	:= /pub/toolchain/uc64
@@ -7,7 +8,7 @@ CROSS_LIB	:= $(CROSS_UNICORE64)/unicore64-linux/lib
 CROSS_COMPILE	:= $(CROSS_UNICORE64)/bin/unicore64-linux-
 OBJDUMP		:= $(CROSS_COMPILE)objdump
 
-BUSYBOX_TARBALL	:= /pub/backup/busybox-1.21.1.tar.bz2
+BUSYBOX_TARBALL	:= $(DIR_UNICORE64)/busybox-1.21.1.tar.bz2
 BUSYBOX_CONFIG	:= $(DIR_UNICORE64)/initramfs/initramfs_busybox_config
 BUSYBOX_BUILDLOG:= $(DIR_WORKING)/busybox-build.log
 
@@ -70,7 +71,12 @@ all:
 	@echo "     make qemu-run  (file and local mode)"
 	@echo "     or: SMP=y make qemu-run  (file and local mode)"
 	@echo ""
-
+	@echo "Make and run helloworld.c under user mode"
+	@echo "	    make helloworld-user"
+	@echo ""
+	@echo "Make and run helloworld.c under system mode"
+	@echo "	    make helloworld-system"
+	@echo ""
 highfive:
 	@make clean
 	@make busybox
@@ -112,7 +118,8 @@ linux-new:
 		cp -a $(LINUX_307)/Documentation/DocBook/* Documentation/DocBook ;	\
 		git add . ;					\
 		git commit -asm "UniCore64: Add arch/unicore64 support" ; \
-		git am $(LINUX_307)/patches-fixup/*
+		git am $(LINUX_307)/patches-fixup/* ;			  \
+		patch -p1 < $(DIR_UNICORE64)/mypatch-3.7/mypatch4 
 
 linux-make:
 	@echo "Make mrproper ..."
@@ -138,23 +145,42 @@ qemu-new:
 	@rm -fr $(DIR_WORKING)/qemu
 	@cd $(DIR_WORKING); git clone $(QEMU_GITREPO)
 	@cd $(DIR_WORKING)/qemu;				\
-		git br unicore64 0b8db8f ;			\
-		git co unicore64 ;				\
-		git am $(QEMU_PATCHES)/*
-
+		git branch unicore64 0b8db8f ;			\
+		git checkout unicore64 ;				\
+		git am $(QEMU_PATCHES)/* ;			    	\
+		patch -p1 < $(DIR_UNICORE64)/mypatch-qemu/mypatch0 ;	\
+		patch -p1 < $(DIR_UNICORE64)/mypatch-qemu/mypatch1 ;    \
+		patch -p1 < $(DIR_UNICORE64)/mypatch-qemu/mypatch2 ;    \
+		patch -p1 < $(DIR_UNICORE64)/mypatch-qemu/mypatch3       
 qemu-make:
 	@echo "Configure qemu ..."
 	@cd $(DIR_WORKING)/qemu; ./configure			\
-		--enable-trace-backend=stderr			\
+		--enable-trace-backend=simple			\
 		--target-list=$(QEMU_TARGETS)			\
 		--enable-debug			 		\
 		--disable-sdl			 		\
+		--disable-docs					\
+                --extra-cflags='-std=gnu89'                     \
+		--extra-cflags='-Wno-error=deprecated-declarations'\
 		--interp-prefix=$(DIR_GNU_UC)			\
 		--prefix=$(DIR_WORKING)/qemu-unicore64		\
 		>> $(QEMU_BUILDLOG) 2>&1
 	@echo "Make qemu and make install ..."
-	@make -C $(DIR_WORKING)/qemu -j4 >> $(QEMU_BUILDLOG) 2>&1
+	@make -C $(DIR_WORKING)/qemu >> $(QEMU_BUILDLOG) 2>&1
 	@make -C $(DIR_WORKING)/qemu install >> $(QEMU_BUILDLOG) 2>&1
+
+helloworld-user:
+	@echo "make helloworld ..."
+	@$(CROSS_COMPILE)gcc -o $(DIR_WORKING)/helloworld $(DIR_TESTS)/helloworld.c -static
+	@echo "run helloworld ..."
+	@$(DIR_WORKING)/qemu/unicore64-linux-user/qemu-unicore64 -strace $(DIR_WORKING)/helloworld
+
+helloworld-system:
+	@echo "make helloworld ..."
+	@$(CROSS_COMPILE)gcc -o $(DIR_WORKING)/busybox/_install/bin/helloworld $(DIR_TESTS)/helloworld.c -static
+	@echo "make linux-kernel ..."
+	@make linux-make
+	@make qemu-run
 
 qemu-run:
 	@echo "Remove old log file"

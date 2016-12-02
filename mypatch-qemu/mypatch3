@@ -1,0 +1,10 @@
+--- qemu/linux-user/Makefile.objs	2016-12-02 16:48:39.456115531 +0800
++++ working/qemu/linux-user/Makefile.objs	2016-11-29 16:47:24.000000000 +0800
+@@ -1,6 +1,6 @@
+ obj-y = main.o syscall.o strace.o mmap.o signal.o \
+ 	elfload.o linuxload.o uaccess.o cpu-uname.o
+-
++LIBS += -lrt
+ obj-$(TARGET_HAS_BFLT) += flatload.o
+ obj-$(TARGET_I386) += vm86.o
+ obj-$(TARGET_ARM) += arm/nwfpe/

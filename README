@@ -4,3 +4,26 @@ patches-3.7:
 	arch/unicore64 should be placed under linux/arch/unicore64 dir
 	Documentation/DocBook/unicore64-kernel.tmpl should be placed under linux/Documentation/DocBook dir
 	patches-fixup/* should be applied
+
+mypatch-3.7:
+	mypatch4 will replace "if(!defined(@val))" in linux/kernel/timeconst.pl with "if(!@val)"
+
+Qemu:
+
+patches-qemu:
+	patches-qemu/* should be applied
+
+mypatch-qemu:
+	mypatch0 will add the third parameter "NULL" to sysbus_create_varargs("uc64_io_ctl", UC64_IO_CTL_BASE) and sysbus_create_varargs("uc64_csr", UC64_CSR_BASE) in qemu/hw/puv4.c
+	mypatch1 will add "+LIBS=-lrt" to Makefile in qemu directory to deal with no linked library
+	mypatch1 will add "+QEMU_CFLAGS+=-w" to Makefile in qemu directory to deal with [-Werror=unused-local-typedefs]
+	mypatch2 will add "+LIBS=-lrt" to Makefile.target in qemu directory to deal with no linked library
+	mypatch3 will add "+LIBS=-lrt" to Makefile.objs in qemu/linux-user directory to deal with no linked library
+
+Makefile:
+	make qemu-make: add "--disable-docs" in order to ignore .html compilation; add "--extra-cflags='-std=gnu89' in order to deal with keyword "restrict" in C99; add "--extra-cflags='-Wno-error=deprecated-declarations'" in order to ignore [-Werror=deprecated-declarations]
+	new command "make helloworld-user": make helloworld.c using unicore64-linux-gcc and run it under qemu user mode and print strace
+	new command "make helloworld-system": make helloworld.c using unicore64-linux-gcc and add it to linux kernel, then run qemu system mode
+
+initramfs/initramfs_config.busybox:
+	add new line "file /bin/helloworld	../busybox/_install/bin/helloworld 755 0 0"
